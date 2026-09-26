@@ -3,8 +3,6 @@ name: start
 description: "First-time onboarding — asks where you are, then guides you to the right workflow."
 argument-hint: "[no arguments]"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write, Edit, AskUserQuestion
-model: sonnet
 ---
 
 # Guided Onboarding

@@ -3,8 +3,6 @@ name: reverse-document
 description: "Generate missing design or architecture docs from existing implementation — works backwards from code and prototypes."
 argument-hint: "<type> <path> (e.g., 'design src/gameplay/combat' or 'architecture src/core')"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write, Edit, Bash, Bash(bash "*/.claude/skills/reverse-document/../../hooks/yaml-helper.sh" resolve_config *)
-model: sonnet
 # Read-only diagnostic skill — no specialist agent delegation needed
 ---
 
