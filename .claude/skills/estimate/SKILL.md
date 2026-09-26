@@ -3,8 +3,6 @@ name: estimate
 description: "Estimate task effort from complexity, dependencies, velocity, risk. Structured estimate with confidence levels."
 argument-hint: "[task-description]"
 user-invocable: true
-allowed-tools: Read, Glob, Grep
-model: sonnet
 ---
 
 ## Phase 1: Understand the Task

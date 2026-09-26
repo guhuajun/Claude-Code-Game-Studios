@@ -3,8 +3,6 @@ name: ux-review
 description: "Validate a UX spec, HUD design or pattern library — accessibility, GDD alignment, readiness. APPROVED / NOT ASSESSED / NEEDS REVISION / MAJOR REVISION NEEDED."
 argument-hint: "[file-path or 'all' or 'hud' or 'patterns']"
 user-invocable: true
-allowed-tools: Read, Glob, Grep
-model: sonnet
 ---
 
 ## Overview

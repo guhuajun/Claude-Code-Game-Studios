@@ -3,8 +3,6 @@ name: help
 description: "What should I do next? Use when stuck or you don't know what to do."
 argument-hint: "[optional: what you just finished, e.g. 'finished design-review' or 'stuck on ADRs']"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Bash, Bash(bash "*/.claude/skills/help/../../hooks/yaml-helper.sh" resolve_config *)
-model: haiku
 ---
 
 # Studio Help — What Do I Do Next?

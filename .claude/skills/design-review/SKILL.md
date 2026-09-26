@@ -3,8 +3,6 @@ name: design-review
 description: "Reviews one design document for completeness, internal consistency, implementability, and design standards. Before handing to programmers."
 argument-hint: "[path-to-design-doc] [--review full|lean|solo]"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write, Edit, Bash, Agent, AskUserQuestion, Bash(bash "*/.claude/skills/design-review/../../hooks/yaml-helper.sh" resolve_config *)
-model: sonnet
 ---
 
 !`bash "${CLAUDE_SKILL_DIR}/../../hooks/yaml-helper.sh" resolve_config --keys review_mode,automation,workflow,system_overrides`

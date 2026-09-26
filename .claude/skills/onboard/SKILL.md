@@ -3,8 +3,6 @@ name: onboard
 description: "Onboarding doc for a new contributor or agent — project state, conventions, priorities relevant to the specified role."
 argument-hint: "[role|area]"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write, Bash(bash "*/.claude/skills/onboard/../../hooks/yaml-helper.sh" resolve_config *)
-model: haiku
 ---
 
 !`bash "${CLAUDE_SKILL_DIR}/../../hooks/yaml-helper.sh" resolve_config --keys automation`

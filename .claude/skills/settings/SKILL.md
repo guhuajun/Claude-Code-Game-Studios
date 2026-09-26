@@ -3,8 +3,6 @@ name: settings
 description: "View or change project config — effective merged values, or set locally in project.local.yaml."
 argument-hint: "[key | key=value | --local key=value]"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write, Edit, Bash, AskUserQuestion
-model: sonnet
 ---
 
 # /settings — view or change project config

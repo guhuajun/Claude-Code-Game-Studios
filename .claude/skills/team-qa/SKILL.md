@@ -3,8 +3,6 @@ name: team-qa
 description: "Orchestrate the QA team through a full testing cycle — qa-lead strategy and test plan, qa-tester case writing, execution, sign-off."
 argument-hint: "[sprint | feature: system-name] [--review full|lean|solo]"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write, Agent, AskUserQuestion, Bash(bash "*/.claude/skills/team-qa/../../hooks/yaml-helper.sh" resolve_config *)
-model: sonnet
 ---
 
 When this skill is invoked, orchestrate the QA team through a structured testing cycle.

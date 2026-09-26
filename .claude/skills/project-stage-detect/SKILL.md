@@ -3,8 +3,6 @@ name: project-stage-detect
 description: "Analyze project state, detect stage, identify gaps, recommend next steps. 'Where are we in development?'"
 argument-hint: "[optional: role filter like 'programmer' or 'designer']"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Bash, Write, Bash(bash "*/.claude/skills/project-stage-detect/../../hooks/yaml-helper.sh" resolve_config *)
-model: haiku
 # Read-only diagnostic skill — no specialist agent delegation needed
 ---
 
