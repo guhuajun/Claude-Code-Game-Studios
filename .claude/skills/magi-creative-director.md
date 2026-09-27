@@ -3,14 +3,6 @@ name: magi-creative-director
 description: "Hub skill — interprets your intent and routes to the right skill automatically. Start here when you don't know which command to use."
 argument-hint: "[describe what you want to do, e.g. 'design a combat system' or 'review my sprint']"
 user-invocable: true
-allowed-tools: Bash
----
-
-!`bash "${CLAUDE_SKILL_DIR}/../../../hooks/yaml-helper.sh" resolve_config --keys project.stage,workflow,automation`
-
-Resolved above — use as-is. No block → defaults in
-`.claude/docs/config-resolution.md`.
-
 ---
 
 # Magi Creative Director — Intent Router
@@ -27,12 +19,10 @@ intent is genuinely ambiguous, then route.
 
 ## Step 1 — Read project state
 
-!`echo "Stage: $(grep -o 'stage:[^,]*' <<< "${YAML_RESOLVED}" || cat production/stage.txt 2>/dev/null || echo 'unknown')"`
-!`echo "Latest sprint: $(ls -t production/sprints/*.md 2>/dev/null | head -1 || echo 'none')"`
-!`head -5 production/session-state/active.md 2>/dev/null || echo "(no active session state)"`
-
-Use this context to bias routing — e.g. if stage is `Concept`, design skills are
-more relevant than sprint skills.
+Read `production/session-state/active.md` (first 5 lines), the latest file under
+`production/sprints/`, and `project.yaml` (field `project.stage`) to understand
+the current stage and sprint. Use this context to bias routing — e.g. if stage is
+`Concept`, design skills are more relevant than sprint skills.
 
 ---
 
