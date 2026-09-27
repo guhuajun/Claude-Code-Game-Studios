@@ -17,7 +17,7 @@
 > The seven shipped contracts use a simpler shape than this template:
 > `Inputs Consumed` / `Files That Must Exist` / `Preconditions` /
 > `Outputs Produced` / `Output Guarantees` / `Immutability Rules`. Match an
-> existing contract (e.g. `.claude/skills/sonnet/dev-story/CONTRACT.md`) rather than
+> existing contract (e.g. `.claude/skills/planning/dev-story/CONTRACT.md`) rather than
 > this template's schema-heavy form until the two are reconciled.
 
 **Purpose:** Define formal handoff contract for a skill. Create as `.claude/skills/<skill-name>/CONTRACT.md`.

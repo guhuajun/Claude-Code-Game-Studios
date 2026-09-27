@@ -28,7 +28,7 @@ Skills and agents are assigned tiers by task complexity:
 | **Sonnet** | `claude-sonnet-5` | Implementation, design authoring, analysis of individual systems — default for most work |
 | **Opus** | `claude-opus-5` | Multi-document synthesis, high-stakes phase gate verdicts, cross-system holistic review |
 
-Skills with `model: haiku` (5) — located under `.claude/skills/haiku/`:
+Skills with `model: haiku` (5) — in `planning/`:
 `/help`, `/onboard`, `/project-stage-detect`, `/scope-check`, `/sprint-status`
 
 > `/patch-notes` and `/changelog` are `sonnet`, not `haiku`: both produce
@@ -40,13 +40,13 @@ Skills with `model: haiku` (5) — located under `.claude/skills/haiku/`:
 > configured rigor against the project's observable working practice. That is
 > synthesis, which is what the Haiku row is defined as excluding.
 
-Skills with `model: opus` (3) — located under `.claude/skills/opus/`:
+Skills with `model: opus` (3) — in `technical/`, `creative/`, and `release/`:
 `/architecture-review`, `/gate-check`, `/review-all-gdds`
 
 Hub skills (routing only) — located under `.claude/skills/hub/`:
 `/magi-creative-director`
 
-All other skills are Sonnet — located under `.claude/skills/sonnet/`. When creating a new skill, assign Haiku if it only
+All other skills are Sonnet — now split across `.claude/skills/creative/`, `.claude/skills/technical/`, `.claude/skills/planning/`, `.claude/skills/qa/`, `.claude/skills/release/`. When creating a new skill, assign Haiku if it only
 reads and formats; assign Opus if it must synthesize 5+ documents with
 high-stakes output; otherwise write `model: sonnet` explicitly. Every skill in
 this repo declares a tier, and the lists above are kept in step with what the
