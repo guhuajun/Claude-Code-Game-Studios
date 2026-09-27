@@ -76,7 +76,7 @@ Silently ignoring it is how the above went unnoticed.
 
 > **Checked where GDDs are expected to already exist — not by the skill that
 > writes them.** `/gate-check` is the single implementing site (see
-> `.claude/skills/release/gate-check/SKILL.md` §"Per-system overrides"), and it runs at a
+> `.claude/skills/magi-game-studio/release/gate-check/SKILL.md` §"Per-system overrides"), and it runs at a
 > phase boundary, by which point every in-scope GDD should be on disk. An
 > unmatched key there is genuinely suspicious.
 >
@@ -256,7 +256,7 @@ Project has `modes.workflow: standard`, `workflow_overrides.system_overrides.com
 
 **Gate enforcement** — `gate-check` uses a different artifact checklist per
 stage per tier (the highest-visibility impact). Each gate's own checklist and
-tier reductions live in `.claude/skills/release/gate-check/references/gate-<phase>.md`,
+tier reductions live in `.claude/skills/magi-game-studio/release/gate-check/references/gate-<phase>.md`,
 and `/gate-check` loads only the one gate it is running — that is the right
 place to look, not `effects-map.md`.
 
