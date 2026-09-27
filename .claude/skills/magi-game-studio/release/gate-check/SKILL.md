@@ -380,10 +380,10 @@ decides *whether* the panel runs, `workflow` decides *how wide* it is.
 - `lean` → run the panel (phase gates always run in lean mode — this is their purpose).
 - `full` → run the panel.
 
-**Axis 2 — `workflow` decides the panel width.** Directors are Opus-tier, so a
-fixed four-director panel costs a two-system jam exactly what it costs a
-thirty-system commercial project. The gate still runs at every tier; only its
-breadth scales:
+**Axis 2 — `workflow` decides the panel width.** Director capacity remains
+constant across projects — the cost of running four directors is the same whether
+you're building a small jam game or a large commercial project. The gate still
+runs at every tier; only its breadth scales:
 
 | `workflow` | Panel | Directors |
 |---|---|---|
