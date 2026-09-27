@@ -40,13 +40,13 @@ Skills with `model: haiku` (5) — in `planning/`:
 > configured rigor against the project's observable working practice. That is
 > synthesis, which is what the Haiku row is defined as excluding.
 
-Skills with `model: opus` (3) — in `technical/`, `creative/`, and `release/`:
+Skills with `model: opus` (3) — in `magi-game-studio/technical/`, `magi-game-studio/creative/`, and `magi-game-studio/release/`:
 `/architecture-review`, `/gate-check`, `/review-all-gdds`
 
-Hub skills (routing only) — located under `.claude/skills/hub/`:
+Hub skills (routing only) — located under `.claude/skills/magi-game-studio/magi-creative-director/`:
 `/magi-creative-director`
 
-All other skills are Sonnet — now split across `.claude/skills/creative/`, `.claude/skills/technical/`, `.claude/skills/planning/`, `.claude/skills/qa/`, `.claude/skills/release/`. When creating a new skill, assign Haiku if it only
+All other skills are Sonnet — now split across `.claude/skills/magi-game-studio/creative/`, `.claude/skills/magi-game-studio/technical/`, `.claude/skills/magi-game-studio/planning/`, `.claude/skills/magi-game-studio/qa/`, `.claude/skills/magi-game-studio/release/`. When creating a new skill, assign Haiku if it only
 reads and formats; assign Opus if it must synthesize 5+ documents with
 high-stakes output; otherwise write `model: sonnet` explicitly. Every skill in
 this repo declares a tier, and the lists above are kept in step with what the

@@ -17,10 +17,10 @@
 > The seven shipped contracts use a simpler shape than this template:
 > `Inputs Consumed` / `Files That Must Exist` / `Preconditions` /
 > `Outputs Produced` / `Output Guarantees` / `Immutability Rules`. Match an
-> existing contract (e.g. `.claude/skills/planning/dev-story/CONTRACT.md`) rather than
+> existing contract (e.g. `.claude/skills/magi-game-studio/planning/dev-story/CONTRACT.md`) rather than
 > this template's schema-heavy form until the two are reconciled.
 
-**Purpose:** Define formal handoff contract for a skill. Create as `.claude/skills/<skill-name>/CONTRACT.md`.
+**Purpose:** Define formal handoff contract for a skill. Create as `.claude/skills/magi-game-studio/<skill-name>/CONTRACT.md`.
 
 **How to Use:**
 1. Copy this template
@@ -36,8 +36,8 @@
 
 **Version:** 1.0
 **Last Updated:** [DATE]
-**Skill File:** `.claude/skills/[SKILL_NAME]/SKILL.md`
-**Test File:** `.claude/skills/[SKILL_NAME]/TESTS.md`
+**Skill File:** `.claude/skills/magi-game-studio/[SKILL_NAME]/SKILL.md`
+**Test File:** `.claude/skills/magi-game-studio/[SKILL_NAME]/TESTS.md`
 
 ---
 

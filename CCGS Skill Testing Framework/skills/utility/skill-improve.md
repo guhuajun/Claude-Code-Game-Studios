@@ -94,7 +94,7 @@ None. `/skill-improve` is a meta-utility skill. No director gates apply.
 ### Case 3: Skill With Category Assignment — Baseline Captures Both Scores
 
 **Fixture:**
-- `.claude/skills/release/gate-check/SKILL.md` is a gate skill with 1 static failure
+- `.claude/skills/magi-game-studio/release/gate-check/SKILL.md` is a gate skill with 1 static failure
   and 2 category (G-criteria) failures
 - `tests/skills/quality-rubric.md` has Gate Skills section
 
@@ -106,7 +106,7 @@ None. `/skill-improve` is a meta-utility skill. No director gates apply.
    - Category: 3/5 G-criteria pass
 2. Combined baseline: 9/12
 3. Skill diagnoses all 3 failures and proposes fixes
-4. "May I write improvements to `.claude/skills/release/gate-check/SKILL.md`?"
+4. "May I write improvements to `.claude/skills/magi-game-studio/release/gate-check/SKILL.md`?"
 5. Fixes applied; both test types re-run
 6. Re-test: static 7/7, category 5/5 = 12/12
 7. Verdict is IMPROVED (9→12)
@@ -123,7 +123,7 @@ None. `/skill-improve` is a meta-utility skill. No director gates apply.
 ### Case 4: Skill Already Perfect — No Improvements Needed
 
 **Fixture:**
-- `.claude/skills/creative/brainstorm/SKILL.md` has no static failures
+- `.claude/skills/magi-game-studio/creative/brainstorm/SKILL.md` has no static failures
 - Category score is also 5/5 (if applicable)
 
 **Input:** `/skill-improve brainstorm`

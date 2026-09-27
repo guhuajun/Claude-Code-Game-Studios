@@ -186,7 +186,7 @@ No settings, config files or agents change. Your `project.yaml` and
 
 **Existing files to overwrite (no user content):**
 ```
-.claude/skills/*/SKILL.md                 ← all skills with a config line (66)
+.claude/skills/magi-game-studio/*/SKILL.md                 ← all skills with a config line (66)
 .claude/hooks/yaml-helper.sh              ← direct-execution entry point
 .claude/docs/config-resolution.md         ← corrected "why this command" section
 .claude/docs/director-gates.md            ← example line updated
@@ -201,7 +201,7 @@ version and change two lines in it — the config line and the `allowed-tools`
 entry — to this form, with your skill's folder name in place of `<name>`:
 
 ```markdown
-allowed-tools: …, Bash(bash "*/.claude/skills/<name>/../../hooks/yaml-helper.sh" resolve_config *)
+allowed-tools: …, Bash(bash "*/.claude/skills/magi-game-studio/<name>/../../hooks/yaml-helper.sh" resolve_config *)
 ```
 ```markdown
 !`bash "${CLAUDE_SKILL_DIR}/../../hooks/yaml-helper.sh" resolve_config --keys <same keys as before>`
@@ -386,18 +386,18 @@ home permanently; `--finalize` migration never deletes it.
 
 **New files to add:**
 ```
-.claude/skills/art-bible/SKILL.md
-.claude/skills/asset-spec/SKILL.md
+.claude/skills/magi-game-studio/creative/art-bible/SKILL.md
+.claude/skills/magi-game-studio/creative/asset-spec/SKILL.md
 .claude/docs/director-gates.md
 ```
 
 **Existing files to overwrite (no user content):**
 ```
-.claude/skills/brainstorm/SKILL.md
-.claude/skills/gate-check/SKILL.md
-.claude/skills/team-level/SKILL.md
-.claude/skills/team-narrative/SKILL.md
-.claude/skills/design-system/SKILL.md
+.claude/skills/magi-game-studio/creative/brainstorm/SKILL.md
+.claude/skills/magi-game-studio/release/gate-check/SKILL.md
+.claude/skills/magi-game-studio/release/team-level/SKILL.md
+.claude/skills/magi-game-studio/release/team-narrative/SKILL.md
+.claude/skills/magi-game-studio/creative/design-system/SKILL.md
 .claude/docs/workflow-catalog.yaml
 README.md
 UPGRADING.md
@@ -432,7 +432,7 @@ None — all changes are to infrastructure files with no user content.
 
 **New files to add:**
 ```
-.claude/skills/vertical-slice/SKILL.md
+.claude/skills/magi-game-studio/creative/vertical-slice/SKILL.md
 CONTRIBUTING.md
 SECURITY.md
 ```
@@ -481,22 +481,22 @@ None — all changes are to infrastructure files with no user content.
 
 **Existing files to overwrite (no user content):**
 ```
-.claude/skills/brainstorm/SKILL.md
-.claude/skills/map-systems/SKILL.md
-.claude/skills/design-system/SKILL.md
-.claude/skills/architecture-decision/SKILL.md
-.claude/skills/create-architecture/SKILL.md
-.claude/skills/create-epics/SKILL.md
-.claude/skills/create-stories/SKILL.md
-.claude/skills/sprint-plan/SKILL.md
-.claude/skills/milestone-review/SKILL.md
-.claude/skills/playtest-report/SKILL.md
-.claude/skills/prototype/SKILL.md
-.claude/skills/story-done/SKILL.md
-.claude/skills/gate-check/SKILL.md
-.claude/skills/start/SKILL.md
-.claude/skills/quick-design/SKILL.md
-.claude/skills/setup-engine/SKILL.md
+.claude/skills/magi-game-studio/creative/brainstorm/SKILL.md
+.claude/skills/magi-game-studio/creative/map-systems/SKILL.md
+.claude/skills/magi-game-studio/creative/design-system/SKILL.md
+.claude/skills/magi-game-studio/technical/architecture-decision/SKILL.md
+.claude/skills/magi-game-studio/technical/create-architecture/SKILL.md
+.claude/skills/magi-game-studio/planning/create-epics/SKILL.md
+.claude/skills/magi-game-studio/planning/create-stories/SKILL.md
+.claude/skills/magi-game-studio/planning/sprint-plan/SKILL.md
+.claude/skills/magi-game-studio/planning/milestone-review/SKILL.md
+.claude/skills/magi-game-studio/qa/playtest-report/SKILL.md
+.claude/skills/magi-game-studio/creative/prototype/SKILL.md
+.claude/skills/magi-game-studio/planning/story-done/SKILL.md
+.claude/skills/magi-game-studio/release/gate-check/SKILL.md
+.claude/skills/magi-game-studio/planning/start/SKILL.md
+.claude/skills/magi-game-studio/creative/quick-design/SKILL.md
+.claude/skills/magi-game-studio/technical/setup-engine/SKILL.md
 README.md
 docs/WORKFLOW-GUIDE.md
 UPGRADING.md
@@ -571,23 +571,23 @@ individual run with `--review [mode]` on any gate-using skill:
 
 **New files to add:**
 ```
-.claude/skills/consistency-check/SKILL.md
+.claude/skills/magi-game-studio/creative/consistency-check/SKILL.md
 ```
 
 **Existing files to overwrite (no user content):**
 ```
-.claude/skills/team-combat/SKILL.md      ← no-arg guard, verdict keywords, gate improvements
-.claude/skills/team-narrative/SKILL.md   ← no-arg guard, verdict keywords, gate improvements
+.claude/skills/magi-game-studio/release/team-combat/SKILL.md      ← no-arg guard, verdict keywords, gate improvements
+.claude/skills/magi-game-studio/release/team-narrative/SKILL.md   ← no-arg guard, verdict keywords, gate improvements
 .claude/skills/team-ui/SKILL.md          ← no-arg guard, verdict keywords, gate improvements
 .claude/skills/team-release/SKILL.md     ← no-arg guard, verdict keywords, NO-GO path
 .claude/skills/team-polish/SKILL.md      ← no-arg guard, verdict keywords, gate improvements
 .claude/skills/team-audio/SKILL.md       ← no-arg guard, verdict keywords, gate improvements
-.claude/skills/team-level/SKILL.md       ← no-arg guard, verdict keywords, adjacent area checks
+.claude/skills/magi-game-studio/release/team-level/SKILL.md       ← no-arg guard, verdict keywords, adjacent area checks
 .claude/skills/team-live-ops/SKILL.md    ← no-arg guard, verdict keywords, ethics enforcement
 .claude/skills/team-qa/SKILL.md          ← no-arg guard, verdict keywords, gate improvements
-.claude/skills/map-systems/SKILL.md      ← verdict keywords
-.claude/skills/create-epics/SKILL.md     ← "May I write" protocol fix, verdict keywords
-.claude/skills/create-stories/SKILL.md   ← verdict keywords
+.claude/skills/magi-game-studio/creative/map-systems/SKILL.md      ← verdict keywords
+.claude/skills/magi-game-studio/planning/create-epics/SKILL.md     ← "May I write" protocol fix, verdict keywords
+.claude/skills/magi-game-studio/planning/create-stories/SKILL.md   ← verdict keywords
 .claude/agents/game-designer.md          ← genre-agnostic language
 .claude/agents/systems-designer.md       ← genre-agnostic language
 .claude/agents/economy-designer.md       ← genre-agnostic language
@@ -646,21 +646,21 @@ No files require manual merging in this release. All changes are to infrastructu
 .claude/skills/ux-design/SKILL.md
 .claude/skills/ux-review/SKILL.md
 .claude/skills/help/SKILL.md
-.claude/skills/quick-design/SKILL.md
+.claude/skills/magi-game-studio/creative/quick-design/SKILL.md
 .claude/skills/review-all-gdds/SKILL.md
 .claude/skills/story-readiness/SKILL.md
-.claude/skills/story-done/SKILL.md
+.claude/skills/magi-game-studio/planning/story-done/SKILL.md
 .claude/skills/sprint-status/SKILL.md
 .claude/skills/adopt/SKILL.md
-.claude/skills/create-architecture/SKILL.md
+.claude/skills/magi-game-studio/technical/create-architecture/SKILL.md
 .claude/skills/create-control-manifest/SKILL.md
-.claude/skills/create-epics/SKILL.md
-.claude/skills/create-stories/SKILL.md
+.claude/skills/magi-game-studio/planning/create-epics/SKILL.md
+.claude/skills/magi-game-studio/planning/create-stories/SKILL.md
 .claude/skills/dev-story/SKILL.md
 .claude/skills/propagate-design-change/SKILL.md
 .claude/skills/content-audit/SKILL.md
 .claude/skills/architecture-review/SKILL.md
-.claude/skills/qa-plan/SKILL.md
+.claude/skills/magi-game-studio/qa/qa-plan/SKILL.md
 .claude/skills/smoke-check/SKILL.md
 .claude/skills/soak-test/SKILL.md
 .claude/skills/regression-suite/SKILL.md
@@ -690,13 +690,13 @@ docs/CLAUDE.md
 
 **Existing files to overwrite (no user content):**
 ```
-.claude/skills/gate-check/SKILL.md
-.claude/skills/sprint-plan/SKILL.md
+.claude/skills/magi-game-studio/release/gate-check/SKILL.md
+.claude/skills/magi-game-studio/planning/sprint-plan/SKILL.md
 .claude/skills/sprint-status/SKILL.md
 .claude/skills/design-review/SKILL.md
 .claude/skills/team-ui/SKILL.md
 .claude/skills/story-readiness/SKILL.md
-.claude/skills/story-done/SKILL.md
+.claude/skills/magi-game-studio/planning/story-done/SKILL.md
 .claude/docs/templates/game-design-document.md    ← adds Game Feel section
 README.md
 docs/WORKFLOW-GUIDE.md
@@ -868,19 +868,19 @@ The `/design-systems` skill was renamed to `/map-systems` for clarity
 
 **New files to add:**
 ```
-.claude/skills/design-system/SKILL.md
+.claude/skills/magi-game-studio/creative/design-system/SKILL.md
 .claude/statusline.sh
 ```
 
 **Existing files to overwrite (no user content):**
 ```
-.claude/skills/map-systems/SKILL.md      ← was design-systems/SKILL.md
-.claude/skills/gate-check/SKILL.md
-.claude/skills/brainstorm/SKILL.md
-.claude/skills/start/SKILL.md
+.claude/skills/magi-game-studio/creative/map-systems/SKILL.md      ← was design-systems/SKILL.md
+.claude/skills/magi-game-studio/release/gate-check/SKILL.md
+.claude/skills/magi-game-studio/creative/brainstorm/SKILL.md
+.claude/skills/magi-game-studio/planning/start/SKILL.md
 .claude/skills/design-review/SKILL.md
 .claude/skills/project-stage-detect/SKILL.md
-.claude/skills/setup-engine/SKILL.md
+.claude/skills/magi-game-studio/technical/setup-engine/SKILL.md
 .claude/hooks/log-agent.sh
 .claude/hooks/validate-commit.sh
 README.md
@@ -987,9 +987,9 @@ versions directly with no risk to your project content.
 
 **New files to add:**
 ```
-.claude/skills/start/SKILL.md
-.claude/skills/map-systems/SKILL.md
-.claude/skills/design-system/SKILL.md
+.claude/skills/magi-game-studio/planning/start/SKILL.md
+.claude/skills/magi-game-studio/creative/map-systems/SKILL.md
+.claude/skills/magi-game-studio/creative/design-system/SKILL.md
 .claude/docs/templates/systems-index.md
 .claude/hooks/detect-gaps.sh
 .claude/hooks/session-start.sh
@@ -1002,15 +1002,15 @@ docs/examples/README.md
 
 **Existing files to overwrite (no user content):**
 ```
-.claude/skills/brainstorm/SKILL.md
+.claude/skills/magi-game-studio/creative/brainstorm/SKILL.md
 .claude/skills/design-review/SKILL.md
-.claude/skills/gate-check/SKILL.md
+.claude/skills/magi-game-studio/release/gate-check/SKILL.md
 .claude/skills/project-stage-detect/SKILL.md
-.claude/skills/setup-engine/SKILL.md
+.claude/skills/magi-game-studio/technical/setup-engine/SKILL.md
 .claude/skills/team-audio/SKILL.md
-.claude/skills/team-combat/SKILL.md
-.claude/skills/team-level/SKILL.md
-.claude/skills/team-narrative/SKILL.md
+.claude/skills/magi-game-studio/release/team-combat/SKILL.md
+.claude/skills/magi-game-studio/release/team-level/SKILL.md
+.claude/skills/magi-game-studio/release/team-narrative/SKILL.md
 .claude/skills/team-polish/SKILL.md
 .claude/skills/team-release/SKILL.md
 .claude/skills/team-ui/SKILL.md
