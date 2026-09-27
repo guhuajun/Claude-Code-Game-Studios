@@ -14,7 +14,7 @@ A skill that needs config puts this near the top of its **body** (not frontmatte
 directory name in the path:
 
 ````yaml
-allowed-tools: Read, …, Bash(bash "*/.claude/skills/<skill-name>/../../hooks/yaml-helper.sh" resolve_config *)
+allowed-tools: Read, …, Bash(bash "*/.claude/skills/<tier>/<skill-name>/../../../hooks/yaml-helper.sh" resolve_config *)
 ````
 
 The command runs as preprocessing *before the model sees the skill*, and its

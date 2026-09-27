@@ -65,8 +65,8 @@ if ! echo "$FILE_PATH" | grep -qE '(^|/)\.claude/skills/'; then
     exit 0
 fi
 
-# Extract skill name from path (.claude/skills/[skill-name]/SKILL.md)
-SKILL_NAME=$(echo "$FILE_PATH" | grep -oE '\.claude/skills/[^/]+' | sed 's|\.claude/skills/||')
+# Extract skill name from path (.claude/skills/[tier]/[skill-name]/SKILL.md)
+SKILL_NAME=$(echo "$FILE_PATH" | sed -n 's|.*\.claude/skills/[^/]*/\([^/]*\).*|\1|p')
 
 if [ -z "$SKILL_NAME" ]; then
     exit 0

@@ -43,7 +43,7 @@ None. `/skill-test` is a meta-utility skill. No director gates apply.
 ### Case 1: Static Mode — Well-formed skill, all 7 checks pass, COMPLIANT
 
 **Fixture:**
-- `.claude/skills/brainstorm/SKILL.md` exists and is well-formed:
+- `.claude/skills/creative/brainstorm/SKILL.md` exists and is well-formed:
   - Has all required frontmatter fields
   - Has ≥2 phase headings
   - Has verdict keywords
@@ -55,7 +55,7 @@ None. `/skill-test` is a meta-utility skill. No director gates apply.
 **Input:** `/skill-test static brainstorm`
 
 **Expected behavior:**
-1. Skill reads `.claude/skills/brainstorm/SKILL.md`
+1. Skill reads `.claude/skills/creative/brainstorm/SKILL.md`
 2. Skill runs all 7 structural checks
 3. All 7 checks pass
 4. Skill outputs a PASS/FAIL table with all 7 checks marked PASS
@@ -97,7 +97,7 @@ None. `/skill-test` is a meta-utility skill. No director gates apply.
 
 **Fixture:**
 - `tests/skills/gate-check.md` exists with 5 test cases
-- `.claude/skills/gate-check/SKILL.md` exists
+- `.claude/skills/release/gate-check/SKILL.md` exists
 
 **Input:** `/skill-test spec gate-check`
 
@@ -147,7 +147,7 @@ None. `/skill-test` is a meta-utility skill. No director gates apply.
 **Fixture:**
 - `tests/skills/quality-rubric.md` exists with a "Gate Skills" section defining
   criteria G1-G5 (e.g., G1: has mode guard, G2: has verdict table, etc.)
-- `.claude/skills/gate-check/SKILL.md` is a gate skill
+- `.claude/skills/release/gate-check/SKILL.md` is a gate skill
 
 **Input:** `/skill-test category gate-check`
 
