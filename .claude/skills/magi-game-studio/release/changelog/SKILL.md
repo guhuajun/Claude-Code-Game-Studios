@@ -1,7 +1,7 @@
 ---
 name: changelog
-description: "Auto-generate a changelog from git commits and sprint data. Internal and player-facing versions."
-argument-hint: "[version|sprint-number]"
+description: "Auto-generate a changelog from git commits and change set data. Internal and player-facing versions."
+argument-hint: "[version|change set-number]"
 user-invocable: true
 ---
 
@@ -79,7 +79,7 @@ for Phase 2 rather than re-running the same commands.
 
 ## Phase 1: Parse Arguments
 
-Read the argument for the target version or sprint number. If a version is given, use the corresponding git tag. If a sprint number is given, use the sprint date range.
+Read the argument for the target version or change set number. If a version is given, use the corresponding git tag. If a change set number is given, use the change set date range.
 
 Verify the repository is initialized: run `git rev-parse --is-inside-work-tree` to confirm git is available. If not a git repo, inform the user and abort gracefully.
 
@@ -99,7 +99,7 @@ a changelog covering one release, and the oldest of them are the least relevant.
 If 100 commits does not reach far enough back, say so and ask for a start ref
 rather than widening blindly.
 
-Read sprint reports from `production/sprints/` for the relevant period to understand planned work and context behind changes.
+Read change set reports from `openspec/changes/` for the relevant period to understand planned work and context behind changes.
 
 Read completed design documents from `design/gdd/` for any new features implemented during this period.
 
@@ -116,7 +116,7 @@ Categorize every change into one of these categories:
 - **Known Issues**: Issues the team is aware of but have not yet resolved
 - **Miscellaneous**: Changes that do not fit the above categories, or commits whose messages are too vague to classify confidently
 
-For each commit, check whether the message contains a task ID or story reference
+For each commit, check whether the message contains a task ID or change reference
 (e.g. `[STORY-123]`, `TR-`, `#NNN`, or similar). Count commits that lack any task reference
 and include this count in the Phase 4 Metrics section as: `Commits without task reference: [N]`.
 
@@ -127,7 +127,7 @@ and include this count in the Phase 4 Metrics section as: `Commits without task 
 ```markdown
 # Internal Changelog: [Version]
 Date: [Date]
-Sprint(s): [Sprint numbers covered]
+Change Set(s): [Change Set numbers covered]
 Commits: [Count] ([first-hash]..[last-hash])
 
 ## New Features
@@ -242,7 +242,7 @@ If the user declines: Verdict: **COMPLETE** — changelog generated.
 
 - Never expose internal code references, file paths, or developer names in the player-facing changelog
 - Group related changes together rather than listing individual commits
-- If a commit message is unclear, check the associated files and sprint data for context
+- If a commit message is unclear, check the associated files and change set data for context
 - Balance changes should always include the design reasoning, not just the numbers
 - Known issues should be honest — players appreciate transparency
 - If the git history is messy (merge commits, reverts, fixup commits), clean up the narrative rather than listing every commit literally

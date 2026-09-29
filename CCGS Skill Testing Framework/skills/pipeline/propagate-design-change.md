@@ -4,7 +4,7 @@
 
 `/propagate-design-change` handles GDD revision cascades. When a GDD is updated,
 the skill traces all downstream artifacts that reference it: ADRs, TR-registry
-entries, stories, and epics. It produces a structured impact report showing what
+entries, changes, and capabilities. It produces a structured impact report showing what
 needs to change and why. The skill does NOT automatically apply changes — it
 proposes edits for each affected artifact and asks "May I write" per artifact
 before making any modification.
@@ -38,26 +38,26 @@ director review is required at the analysis stage.
 
 ## Test Cases
 
-### Case 1: Happy Path — GDD revision affects 2 stories and 1 epic
+### Case 1: Happy Path — GDD revision affects 2 changes and 1 capability
 
 **Fixture:**
 - `design/gdd/[system].md` exists and has been recently revised (git diff shows changes)
-- `production/epics/[layer]/EPIC-[system].md` references this GDD
-- 2 story files reference TR-IDs from this GDD
-- The changed GDD section affects the acceptance criteria of both stories
+- `openspec/changes/[layer]/EPIC-[system].md` references this GDD
+- 2 change directorys reference TR-IDs from this GDD
+- The changed GDD section affects the acceptance criteria of both changes
 
 **Input:** `/propagate-design-change design/gdd/[system].md`
 
 **Expected behavior:**
 1. Skill reads the revised GDD and identifies what changed (git diff or content comparison)
-2. Skill scans ADRs, TR-registry, epics, and stories for references to this GDD
-3. Skill produces an impact report: 1 epic affected, 2 stories affected
+2. Skill scans ADRs, TR-registry, capabilities, and changes for references to this GDD
+3. Skill produces an impact report: 1 capability affected, 2 changes affected
 4. Skill shows the proposed change for each artifact
 5. For each artifact: asks "May I update [filepath]?" separately
 6. Applies changes only after per-artifact approval
 
 **Assertions:**
-- [ ] Impact report identifies all 3 affected artifacts (1 epic + 2 stories)
+- [ ] Impact report identifies all 3 affected artifacts (1 capability + 2 changes)
 - [ ] Each affected artifact's proposed change is shown before asking to write
 - [ ] "May I write" is asked per artifact (not once for all artifacts)
 - [ ] Skill does NOT apply any changes without per-artifact approval
@@ -69,13 +69,13 @@ director review is required at the analysis stage.
 
 **Fixture:**
 - `design/gdd/[system].md` exists and has been revised
-- No ADRs, stories, or epics reference this GDD's TR-IDs or GDD path
+- No ADRs, changes, or capabilities reference this GDD's TR-IDs or GDD path
 
 **Input:** `/propagate-design-change design/gdd/[system].md`
 
 **Expected behavior:**
 1. Skill reads the revised GDD
-2. Skill scans all ADRs, stories, and epics for references
+2. Skill scans all ADRs, changes, and capabilities for references
 3. No references found
 4. Skill outputs: "No downstream impact found for [system].md — no artifacts reference this GDD."
 5. No write operations are performed
@@ -88,24 +88,24 @@ director review is required at the analysis stage.
 
 ---
 
-### Case 3: In-Progress Story Warning — Referenced story is currently being developed
+### Case 3: In-Progress Change Warning — Referenced change is currently being developed
 
 **Fixture:**
-- A story referencing this GDD has `Status: In Progress`
-- The developer has already started implementing this story
+- A change referencing this GDD has `Status: In Progress`
+- The developer has already started implementing this change
 
 **Input:** `/propagate-design-change design/gdd/[system].md`
 
 **Expected behavior:**
-1. Skill identifies the In Progress story as an affected artifact
-2. Skill outputs an elevated warning: "CAUTION: [story-file] is currently In Progress — a developer may be working on this. Coordinate before updating."
-3. The warning appears in the impact report before the "May I write" ask for that story
-4. User can still approve or skip the update for that story
+1. Skill identifies the In Progress change as an affected artifact
+2. Skill outputs an elevated warning: "CAUTION: [change-file] is currently In Progress — a developer may be working on this. Coordinate before updating."
+3. The warning appears in the impact report before the "May I write" ask for that change
+4. User can still approve or skip the update for that change
 
 **Assertions:**
-- [ ] In Progress story is flagged with an elevated warning (distinct from regular affected-artifact entries)
-- [ ] Warning appears before the "May I write" ask for that story
-- [ ] Skill still offers to update the story — the warning does not block the option
+- [ ] In Progress change is flagged with an elevated warning (distinct from regular affected-artifact entries)
+- [ ] Warning appears before the "May I write" ask for that change
+- [ ] Skill still offers to update the change — the warning does not block the option
 - [ ] Other (non-In-Progress) artifacts are not affected by this warning
 
 ---
@@ -158,7 +158,7 @@ director review is required at the analysis stage.
 - [ ] Reads revised GDD and all potentially affected artifacts before producing impact report
 - [ ] Impact report shown in full before any "May I write" ask
 - [ ] "May I write" asked per artifact — never for the entire set at once
-- [ ] In Progress stories flagged with elevated warning before their approval ask
+- [ ] In Progress changes flagged with elevated warning before their approval ask
 - [ ] No director gates — no review-mode.txt read
 - [ ] Ends with next-step handoff appropriate to verdict (COMPLETE or NO IMPACT)
 
@@ -167,7 +167,7 @@ director review is required at the analysis stage.
 ## Coverage Notes
 
 - ADR impact (when a GDD change requires an ADR update or new ADR) follows the
-  same per-artifact approval pattern as story/epic updates — not independently
+  same per-artifact approval pattern as change/capability updates — not independently
   fixture-tested.
 - TR-registry impact (when changed GDD requires new or updated TR-IDs) is part
   of the analysis phase but not independently fixture-tested.

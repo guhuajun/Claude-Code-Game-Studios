@@ -1,7 +1,7 @@
 ---
 name: adopt
 description: "Brownfield audit — do existing artifacts actually work? Numbered migration plan. Unlike /project-stage-detect, checks compliance not existence."
-argument-hint: "[focus: full | gdds | adrs | stories | infra]"
+argument-hint: "[focus: full | gdds | adrs | changes | infra]"
 user-invocable: true
 ---
 
@@ -21,7 +21,7 @@ the template's skill pipeline, then produces a prioritised migration plan.
 `/project-stage-detect` answers: *what exists?*
 `/adopt` answers: *will what exists actually work with the template's skills?*
 
-A project can have GDDs, ADRs, and stories — and every format-sensitive skill
+A project can have GDDs, ADRs, and changes — and every format-sensitive skill
 will still fail silently or produce wrong results if those artifacts are in the
 wrong internal format.
 
@@ -34,8 +34,8 @@ wrong internal format.
 - **No argument / `full`**: Complete audit — all artifact types
 - **`gdds`**: GDD format compliance only
 - **`adrs`**: ADR format compliance only
-- **`stories`**: Story format compliance only
-- **`infra`**: Infrastructure artifact gaps only (registry, manifest, sprint-status, stage.txt)
+- **`changes`**: Change format compliance only
+- **`infra`**: Infrastructure artifact gaps only (registry, manifest, openspec status, stage.txt)
 
 ---
 
@@ -62,7 +62,7 @@ Then read silently before presenting anything else.
 - `design/gdd/systems-index.md` — systems index exists?
 - Count GDD files: `design/gdd/*.md` (excluding game-concept.md and systems-index.md)
 - Count ADR files: `docs/architecture/adr-*.md`
-- Count story files: `production/epics/**/*.md` (excluding EPIC.md)
+- Count change directorys: `openspec/specs/**/*.md` (excluding spec.md)
 - `project.yaml` (`engine.name`) / `.claude/docs/technical-preferences.md` — engine configured?
 - `docs/engine-reference/` — engine reference docs present?
 - Glob `docs/adoption-plan-*.md` — note the filename of the most recent prior plan if any exist
@@ -70,7 +70,7 @@ Then read silently before presenting anything else.
 ### Infer phase (if no project.stage / stage.txt)
 Use the same heuristic as `/project-stage-detect`:
 - 10+ source files in the code root → Production
-- Stories in `production/epics/` → Pre-Production
+- Changes in `openspec/specs/` → Pre-Production
 - ADRs exist → Technical Setup
 - systems-index.md exists → Systems Design
 - game-concept.md (or `design/game-brief.md`) exists → Concept
@@ -86,7 +86,7 @@ If the project appears fresh (no artifacts at all), use `AskUserQuestion`:
 Then stop — do not proceed with the audit regardless of which option the user picks
 (each option leads to a different skill or manual investigation).
 
-Report: "Detected phase: [phase]. Found: [N] GDDs, [M] ADRs, [P] stories."
+Report: "Detected phase: [phase]. Found: [N] GDDs, [M] ADRs, [P] changes."
 
 ---
 
@@ -154,7 +154,7 @@ For each ADR file found, check for these critical sections:
 
 | Section | Impact if missing |
 |---|---|
-| `## Status` | **BLOCKING** — `/story-readiness` ADR status check silently passes everything |
+| `## Status` | **BLOCKING** — `/change-readiness` ADR status check silently passes everything |
 | `## ADR Dependencies` | HIGH — dependency ordering in `/architecture-review` breaks |
 | `## Engine Compatibility` | HIGH — post-cutoff API risk is unknown |
 | `## GDD Requirements Addressed` | MEDIUM — traceability matrix loses coverage |
@@ -169,7 +169,7 @@ If `design/gdd/systems-index.md` exists:
 
 1. **Parenthetical status values** — Grep for any Status cell containing
    parentheses: `"Needs Revision ("`, `"In Progress ("`, etc.
-   These break exact-string matching in `/gate-check`, `/create-stories`,
+   These break exact-string matching in `/gate-check`, `/create-changes`,
    and `/architecture-review`. **BLOCKING.**
 
 2. **Valid status values** — check that Status column values are only from:
@@ -179,24 +179,24 @@ If `design/gdd/systems-index.md` exists:
 3. **Column structure** — check that the table has at minimum: System name,
    Layer, Priority, Status columns. Missing columns degrade skill functionality.
 
-### 2d: Story Format Audit
+### 2d: Change Format Audit
 
-For each story file found:
+For each change directory found:
 
-- **`Manifest Version:` field** — present in story header? (LOW — auto-passes if absent)
-- **TR-ID reference** — does story contain `TR-[a-z]+-[0-9]+` pattern? (MEDIUM — no staleness tracking)
-- **ADR reference** — does story reference at least one ADR? (check for `ADR-` pattern)
+- **`Manifest Version:` field** — present in change header? (LOW — auto-passes if absent)
+- **TR-ID reference** — does change contain `TR-[a-z]+-[0-9]+` pattern? (MEDIUM — no staleness tracking)
+- **ADR reference** — does change reference at least one ADR? (check for `ADR-` pattern)
 - **Status field** — present and readable?
-- **Acceptance criteria** — does the story have a checkbox list (`- [ ]`)?
+- **Acceptance criteria** — does the change have a checkbox list (`- [ ]`)?
 
 ### 2e: Infrastructure Audit
 
 | Artifact | Path | Impact if missing |
 |---|---|---|
 | TR registry | `docs/architecture/tr-registry.yaml` | HIGH — no stable requirement IDs |
-| Control manifest | `docs/architecture/control-manifest.md` | HIGH — no layer rules for stories |
+| Control manifest | `docs/architecture/control-manifest.md` | HIGH — no layer rules for changes |
 | Manifest version stamp | In manifest header: `Manifest Version:` | MEDIUM — staleness checks blind |
-| Sprint status | `production/sprint-status.yaml` | MEDIUM — `/sprint-status` falls back to markdown |
+| Change Set status | `openspec status` | MEDIUM — `openspec status` falls back to markdown |
 | Stage file | `project.stage` in `project.yaml` (fallback `production/stage.txt`) | MEDIUM — phase auto-detect unreliable |
 | Engine reference | `docs/engine-reference/[engine]/VERSION.md` | HIGH — ADR engine checks blind |
 | Architecture traceability | `docs/architecture/requirements-traceability.md` | MEDIUM — no persistent matrix |
@@ -271,17 +271,17 @@ Organise every gap found across all audits into four severity tiers:
 Examples: ADR missing Status field, systems-index parenthetical status values,
 engine not configured when ADRs exist.
 
-**HIGH** — Will cause stories to be generated with missing safety checks, or
+**HIGH** — Will cause changes to be generated with missing safety checks, or
 infrastructure bootstrapping will fail.
 Examples: ADRs missing Engine Compatibility, GDDs missing Acceptance Criteria
-(stories can't be generated from them), tr-registry.yaml missing.
+(changes can't be generated from them), tr-registry.yaml missing.
 
 **MEDIUM** — Degrades quality and pipeline tracking but does not break functionality.
-Examples: GDDs missing Tuning Knobs or Formulas sections, stories missing TR-IDs,
-sprint-status.yaml missing.
+Examples: GDDs missing Tuning Knobs or Formulas sections, changes missing TR-IDs,
+openspec status missing.
 
 **LOW** — Retroactive improvements that are nice-to-have but not urgent.
-Examples: Stories missing Manifest Version stamps, GDDs missing Open Questions section.
+Examples: Changes missing Manifest Version stamps, GDDs missing Open Questions section.
 
 Count totals per tier. If zero BLOCKING and zero HIGH gaps: report that the project
 is template-compatible and only advisory improvements remain.
@@ -293,7 +293,7 @@ is template-compatible and only advisory improvements remain.
 Compose a numbered, ordered action plan. Ordering rules:
 1. BLOCKING gaps first (must fix before any pipeline skill runs reliably)
 2. HIGH gaps next, infrastructure before GDD/ADR content (bootstrapping needs correct formats)
-3. MEDIUM gaps ordered: GDD gaps before ADR gaps before story gaps (stories depend on GDDs and ADRs)
+3. MEDIUM gaps ordered: GDD gaps before ADR gaps before change gaps (changes depend on GDDs and ADRs)
 4. LOW gaps last
 
 For each gap, produce a plan entry with:
@@ -320,14 +320,14 @@ For each affected GDD, list which sections are missing and the fix:
 1. Fix ADR formats first (registry depends on reading ADR Status fields)
 2. Run `/architecture-review` → bootstraps `tr-registry.yaml`
 3. Run `/create-control-manifest` → creates manifest with version stamp
-4. Run `/sprint-plan update` → creates `sprint-status.yaml`
+4. Run `/create-changes` → creates `openspec status`
 5. Run `/gate-check [phase]` → writes `project.stage` in `project.yaml` (and legacy `stage.txt`) authoritatively
 
-**Existing stories** — note explicitly:
-> "Existing stories continue to work with all template skills — all new format
+**Existing changes** — note explicitly:
+> "Existing changes continue to work with all template skills — all new format
 > checks auto-pass when the fields are absent. They won't benefit from TR-ID
 > staleness tracking or manifest version checks until they're regenerated. This
-> is intentional: do not regenerate stories that are already in progress."
+> is intentional: do not regenerate changes that are already in progress."
 
 ---
 
@@ -341,11 +341,11 @@ Phase detected: [phase]
 Engine: [configured / NOT CONFIGURED]
 GDDs audited: [N] ([X] fully compliant, [Y] with gaps)
 ADRs audited: [N] ([X] fully compliant, [Y] with gaps)
-Stories audited: [N]
+Changes audited: [N]
 
 Gap counts:
   BLOCKING: [N] — template skills will malfunction without these fixes
-  HIGH:     [N] — unsafe to run /create-stories or /story-readiness
+  HIGH:     [N] — unsafe to run /create-changes or /change-readiness
   MEDIUM:   [N] — quality degradation
   LOW:      [N] — optional improvements
 
@@ -417,10 +417,10 @@ Run `/create-control-manifest`
 **Time**: 30 min
 - [ ] docs/architecture/control-manifest.md created
 
-### 3c. Create sprint tracking file
-Run `/sprint-plan update`
-**Time**: 5 min (if sprint plan already exists as markdown)
-- [ ] production/sprint-status.yaml created
+### 3c. Create change set tracking file
+Run `/create-changes`
+**Time**: 5 min (if change list already exists as markdown)
+- [ ] openspec status created
 
 ### 3d. Set authoritative project stage
 Run `/gate-check [current-phase]`
@@ -441,12 +441,12 @@ Run `/gate-check [current-phase]`
 
 ---
 
-## What to Expect from Existing Stories
+## What to Expect from Existing Changes
 
-Existing stories continue to work with all template skills. New format checks
+Existing changes continue to work with all template skills. New format checks
 (TR-ID validation, manifest version staleness) auto-pass when the fields are
 absent — so nothing breaks. They won't benefit from staleness tracking until
-regenerated. Do not regenerate stories that are in progress or done.
+regenerated. Do not regenerate changes that are in progress or done.
 
 ---
 
@@ -498,7 +498,7 @@ branch that applies:
 Use `AskUserQuestion`:
 - "The most urgent fix is `systems-index.md` — [N] rows have parenthetical status
   values (e.g. `Needs Revision (see notes)`) that break /gate-check,
-  /create-stories, and /architecture-review right now. I can fix these in-place."
+  /create-changes, and /architecture-review right now. I can fix these in-place."
   - "Fix it now — edit systems-index.md"
   - "I'll fix it myself"
   - "Done — leave me with the plan"
@@ -506,7 +506,7 @@ Use `AskUserQuestion`:
 **If ADRs are missing `## Status` (and no parenthetical issue):**
 Use `AskUserQuestion`:
 - "The most urgent fix is adding `## Status` to [N] ADR(s): [list filenames].
-  Without it, /story-readiness silently passes all ADR checks. Start with
+  Without it, /change-readiness silently passes all ADR checks. Start with
   [first affected filename]?"
   - "Yes — retrofit [first affected filename] now"
   - "Retrofit all [N] ADRs one by one"
@@ -515,7 +515,7 @@ Use `AskUserQuestion`:
 **If GDDs are missing Acceptance Criteria (and no blocking issues above):**
 Use `AskUserQuestion`:
 - "The most urgent gap is missing Acceptance Criteria in [N] GDD(s):
-  [list filenames]. Without them, /create-stories can't generate stories.
+  [list filenames]. Without them, /create-changes can't generate changes.
   Start with [highest-priority GDD filename]?"
   - "Yes — add Acceptance Criteria to [GDD filename] now"
   - "Do all [N] GDDs one by one"
@@ -545,4 +545,4 @@ describe what collaborative mode requires, not universal behavior.
 5. **One action at a time** — after handing off the plan, offer one specific next step,
    not a list of six things to do simultaneously
 6. **Never regenerate existing artifacts** — only fill gaps in what exists;
-   do not rewrite GDDs, ADRs, or stories that already have content
+   do not rewrite GDDs, ADRs, or changes that already have content

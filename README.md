@@ -3,14 +3,14 @@
   <p align="center">
     Turn a single Claude Code session into a full game development studio.
     <br />
-    49 agents. 74 skills. One coordinated AI team.
+    49 agents. 71 skills. One coordinated AI team.
   </p>
 </p>
 
 <p align="center">
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="MIT License"></a>
   <a href=".claude/agents"><img src="https://img.shields.io/badge/agents-49-blueviolet" alt="49 Agents"></a>
-  <a href=".claude/skills"><img src="https://img.shields.io/badge/skills-74-green" alt="74 Skills"></a>
+  <a href=".claude/skills"><img src="https://img.shields.io/badge/skills-71-green" alt="71 Skills"></a>
   <a href=".claude/hooks"><img src="https://img.shields.io/badge/hooks-12-orange" alt="12 Hooks"></a>
   <a href=".claude/rules"><img src="https://img.shields.io/badge/rules-13-red" alt="13 Rules"></a>
   <a href="https://docs.anthropic.com/en/docs/claude-code"><img src="https://img.shields.io/badge/built%20for-Claude%20Code-f5f5f5?logo=anthropic" alt="Built for Claude Code"></a>
@@ -55,10 +55,10 @@ The result: you still make every decision, but now you have a team that asks the
 | Category | Count | Description |
 |----------|-------|-------------|
 | **Agents** | 49 | Specialized subagents across design, programming, art, audio, narrative, QA, and production |
-| **Skills** | 74 | Slash commands for every workflow phase (`/start`, `/design-system`, `/create-epics`, `/create-stories`, `/dev-story`, `/story-done`, etc.) |
+| **Skills** | 71 | Slash commands for every workflow phase (`/start`, `/design-system`, `/create-changes`, `/dev-change`, `/change-done`, `/opsx:propose`, etc.) |
 | **Hooks** | 12 | Automated validation on commits, pushes, asset changes, session lifecycle, agent audit trail, and gap detection |
 | **Rules** | 13 | Path-scoped coding standards enforced when editing gameplay, engine, AI, UI, network code, and more |
-| **Templates** | 39 | Document templates for GDDs, UX specs, ADRs, sprint plans, HUD design, accessibility, and more |
+| **Templates** | 39 | Document templates for specs (GDDs), UX specs, ADRs, milestone definitions, HUD design, accessibility, and more |
 
 ## Studio Hierarchy
 
@@ -101,7 +101,7 @@ The template includes agent sets for all three major engines. Use the set that m
 
 ## Slash Commands
 
-Type `/` in Claude Code to access all 74 skills:
+Type `/` in Claude Code to access all 71 skills:
 
 **Onboarding & Navigation**
 `/start` `/help` `/project-stage-detect` `/setup-engine` `/adopt` `/settings`
@@ -118,8 +118,8 @@ Type `/` in Claude Code to access all 74 skills:
 **Architecture**
 `/create-architecture` `/architecture-decision` `/architecture-review` `/create-control-manifest`
 
-**Stories & Sprints**
-`/create-epics` `/create-stories` `/dev-story` `/sprint-plan` `/sprint-status` `/story-readiness` `/story-done` `/estimate`
+**Changes & Capabilities (OpenSpec)**
+`/opsx:propose` `/opsx:apply` `/opsx:update` `/opsx:archive` `/opsx:sync` `/opsx:explore` `/create-changes` `/dev-change` `/change-readiness` `/change-done` `/estimate`
 
 **Reviews & Analysis**
 `/design-review` `/code-review` `/balance-check` `/content-audit` `/scope-check` `/perf-profile` `/tech-debt` `/gate-check` `/consistency-check` `/security-audit`
@@ -158,7 +158,7 @@ bought traceability, not a better game.
 
 The measurement above is about cost. The other half is whether the thing works,
 and for a game that means someone has to *look* at it — a passing test says
-nothing about a menu drawn off-screen. So a story that changes anything the
+nothing about a menu drawn off-screen. So a change that alters anything the
 player sees is not closed until the game has been launched, observed, and a
 screenshot retained in `production/qa/evidence/`. A parse check is not a run.
 This holds at every rigor level, including `minimal`, where automated tests are
@@ -212,9 +212,9 @@ which GDD sections are required, `docs.density`, `qa.level`,
 `story_granularity`, `review_mode` — how many director agents review your work,
 and `team.size`), so `/start` asks it once instead of six times:
 
-- **`minimal`** (default) — jam-game speed. No GDDs required, terse docs, minimal QA evidence, solo review. `/start` → `/setup-engine` → `/dev-story` in a handful of steps.
+- **`minimal`** (default) — jam-game speed. No GDDs required, terse docs, minimal QA evidence, solo review. `/start` → `/setup-engine` → `/dev-change` in a handful of steps.
 - **`standard`** — 5 required GDD sections, balanced doc depth, standard QA evidence, lean review.
-- **`full`** — all 8 GDD sections, thorough docs, full QA evidence on every story type, full director review.
+- **`full`** — all 8 GDD sections, thorough docs, full QA evidence on every change type, full director review.
 
 `minimal` is the default because it was measured against the alternatives: the
 heavier tier cost several times more to reach working code, was ranked last on
@@ -226,7 +226,7 @@ Two escape hatches keep one setting from being a blunt instrument.
 **`system_overrides`** holds a single system to a higher standard than the rest
 of the project — your combat system gets the full treatment while everything
 else stays light. **`testing.strict`** sets, per test type (logic, integration,
-visual, UI, config), whether missing evidence blocks a story or merely warns.
+visual, UI, config), whether missing evidence blocks a change or merely warns.
 
 Any of the six underlying knobs can still be set individually if you want a mix
 (e.g. `workflow: full` with `docs.density: terse` — comprehensive but compact).
@@ -264,7 +264,7 @@ CLAUDE.md                           # Master configuration
   hooks/                            # 14 scripts (bash) — 12 event hooks, yaml-helper.sh,
                                     #   and one opt-in diagnostic you wire yourself
   rules/                            # 13 path-scoped coding standards
-  statusline.sh                     # Status line script (context%, model, stage, epic breadcrumb)
+  statusline.sh                     # Status line script (context%, model, stage, change breadcrumb)
   docs/
     workflow-catalog.yaml           # 7-phase pipeline definition (read by /help)
     templates/                      # 39 document templates (+ per-section guidance)
@@ -272,12 +272,18 @@ src/                                # Game source code (Godot). The code root is
                                     #   ENGINE-SPECIFIC: Unity compiles only
                                     #   Assets/, Unreal builds from Source/<Module>/
 assets/                             # Art, audio, VFX, shaders, data files
-design/                             # GDDs, narrative docs, level designs
+design/                             # Game concept, pillars, narrative, level designs
 docs/                               # Technical documentation and ADRs
+openspec/                           # THE WORKFLOW ROOT (OpenSpec)
+  config.yaml                       #   project context, artifact rules, operations
+  specs/<system>/spec.md            #   capabilities — each IS a system's GDD
+  changes/<change-id>/              #   in-flight work: proposal, delta spec, tasks
+  changes/archive/                  #   archived changes, merged into specs/
+  schemas/ccgs-game/                #   forked schema adding GDD sections to specs
 tests/                              # Test suites (unit, integration, performance, playtest)
 tools/                              # Build and pipeline tools
 prototypes/                         # Throwaway prototypes (isolated from src/)
-production/                         # Sprint plans, milestones, release tracking
+production/                         # Milestones, QA evidence, session state, release tracking
 CCGS Skill Testing Framework/       # QA for the skills and agents themselves — see below
 ```
 
@@ -285,7 +291,7 @@ CCGS Skill Testing Framework/       # QA for the skills and agents themselves �
 
 CCGS is a template you are meant to edit. `CCGS Skill Testing Framework/` is how
 you check that an edited or newly written skill still holds up — a catalog of all
-74 skills and 49 agents, per-category quality rubrics, behavioral specs, and
+71 skills and 49 agents, per-category quality rubrics, behavioral specs, and
 templates for writing specs of your own.
 
 ```

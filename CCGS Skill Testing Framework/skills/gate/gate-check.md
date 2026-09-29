@@ -190,7 +190,7 @@ Case 3 must not treat this confirmation as a failure.
 ## Coverage Notes
 
 - The Production → Polish and Polish → Release gates are not covered here
-  because they require complex multi-artifact setups (sprint plans, playtest
+  because they require complex multi-artifact setups (change set plans, playtest
   data, QA sign-off); these are deferred to dedicated follow-up specs.
 - The "CONCERNS" verdict path (minor gaps, not blocking) is not explicitly
   tested here; it falls between Case 1 and Case 2 and follows the same pattern.

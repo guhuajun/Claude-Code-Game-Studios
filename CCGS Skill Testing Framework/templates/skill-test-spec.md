@@ -1,6 +1,6 @@
 # Skill Spec: /[skill-name]
 
-> **Category**: [gate | review | authoring | readiness | pipeline | analysis | team | sprint | utility]
+> **Category**: [gate | review | authoring | readiness | pipeline | analysis | team | change set | utility]
 > **Priority**: [critical | high | medium | low]
 > **Spec written**: [YYYY-MM-DD]
 

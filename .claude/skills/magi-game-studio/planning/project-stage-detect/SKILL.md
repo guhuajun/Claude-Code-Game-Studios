@@ -81,7 +81,7 @@ track, and the judgement calls.
 - Estimate lines of code (rough scale)
 
 **Production Artifacts** (`production/`):
-- Check for active sprint plans
+- Check for active change lists
 - Look for milestone definitions
 - Find roadmap documents
 
@@ -108,7 +108,7 @@ Based on scanned artifacts, determine stage. Check `project.stage` in `project.y
 > so explicitly:
 >
 > > "Configured stage: **Release**. Observed artifacts indicate
-> > **Pre-Production** (2 source files, 0 ADRs, no architecture doc, no epics).
+> > **Pre-Production** (2 source files, 0 ADRs, no architecture doc, no capabilities).
 > > These disagree — the configured stage may be stale, or work exists outside
 > > this repo."
 >
@@ -134,7 +134,7 @@ Based on scanned artifacts, determine stage. Check `project.stage` in `project.y
 - **`full`** — flag every missing doc type (GDDs, art bible, UX specs, ADRs) as a gap.
 - **`standard`** — flag only required docs: missing GDDs for built systems and
   missing critical (Foundation-layer) ADRs. Do NOT flag an absent art bible unless
-  visual-asset stories exist, and do NOT flag non-core UX specs.
+  visual-asset changes exist, and do NOT flag non-core UX specs.
 - **`minimal`** — a `design/game-brief.md` + engine present is the normal state. Do NOT flag
   absent GDDs, art bible, UX specs, or ADRs as gaps; the expected next step is code.
 
@@ -143,7 +143,7 @@ for gaps the tier above says to surface):
 
 - "I see combat code (`src/gameplay/combat/`) but no `design/gdd/combat-system.md`. Was this prototyped first, or should we reverse-document?"
 - "You have 15 ADRs but no architecture overview. Should I create one to help new contributors?"
-- "No sprint plans in `production/`. Are you tracking work elsewhere (Jira, Trello, etc.)?"
+- "No change lists in `production/`. Are you tracking work elsewhere (Jira, Trello, etc.)?"
 - "I found a game concept but no systems index. Have you decomposed the concept into individual systems yet, or should we run `/map-systems`?"
 - "Prototypes directory has 3 projects with no READMEs. Were these experiments, or do they need documentation?"
 
@@ -187,7 +187,7 @@ If user provided a role argument (e.g., `/project-stage-detect programmer`):
 - Prototype documentation
 
 **Producer**:
-- Focus on sprint plans, milestone tracking, roadmap
+- Focus on change lists, milestone tracking, roadmap
 - Cross-team coordination docs
 
 **General** (no role):
@@ -244,7 +244,7 @@ absent GDD at `minimal`, where code is the expected next step):
 - **Missing design docs?** → `/reverse-document design src/[system]`
 - **Missing architecture docs?** → `/architecture-decision` or `/reverse-document architecture`
 - **Prototypes need documentation?** → `/reverse-document concept prototypes/[name]`
-- **No sprint plan?** → `/sprint-plan`
+- **No change list?** → `/create-changes`
 - **Approaching milestone?** → `/milestone-review`
 
 ---

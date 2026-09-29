@@ -8,6 +8,58 @@ existing project on the older config files.
 
 ---
 
+## [1.2.0] — 2026-09-29
+
+**The execution layer moved to OpenSpec.** Sprints, stories and epics were
+replaced by OpenSpec's capability/change workflow. See
+[UPGRADING.md](UPGRADING.md) before pulling — this is a breaking change for any
+project mid-flight.
+
+### Changed
+
+- **Capabilities replace GDDs-at-a-path and epics.** A game system's design now
+  lives at `openspec/specs/<system>/spec.md`, where it also serves as the
+  OpenSpec capability spec. An epic is that capability; a story is a change under
+  `openspec/changes/`; **sprint is retired** — in-flight changes are the unit of
+  work.
+- **A forked `ccgs-game` schema carries the game-design sections.**
+  `openspec/schemas/ccgs-game/` extends the stock `spec-driven` schema so a spec
+  keeps Player Fantasy, Detailed Design, Formulas, Edge Cases, Tuning Knobs and
+  Dependencies alongside the required `## Purpose` / `### Requirement:` /
+  `#### Scenario:` structure. Verified: a spec carrying all of them passes
+  `openspec validate --strict`.
+- **Renamed skills:** `/dev-story` → `/dev-change`, `/story-done` →
+  `/change-done`, `/story-readiness` → `/change-readiness`, `/create-stories` →
+  `/create-changes`. Removed: `/create-epics`, `/sprint-plan`, `/sprint-status`.
+  Added: the `/opsx:{propose,apply,update,archive,sync,explore}` commands.
+- **`modes.story_granularity` → `modes.change_granularity`**, with the old name
+  still resolving as a fallback so an existing `project.yaml` is unaffected. The
+  resolver reports the source as `project.yaml (as modes.story_granularity)`.
+- **Gate IDs renamed:** `QL-STORY-READY` → `QL-CHANGE-READY`, `PR-EPIC` →
+  `PR-CAPABILITY`, `PR-SPRINT` → `PR-CHANGESET`.
+- **Hooks read OpenSpec for progress.** `session-start.sh` reports in-flight
+  changes instead of a sprint; `detect-gaps.sh` counts changes instead of
+  stories; the status-line breadcrumb is now Change > Capability > Task.
+
+### Fixed
+
+- **The hub skill no longer reads three paths that never existed.** Its Step 1
+  told every session to read `production/session-state/active.md`, the latest
+  file in `production/sprints/`, and `project.stage` — but no project this
+  template produces contains the first two, and `project.stage` is written only
+  by `/start`. It now reads the OpenSpec root first and treats a missing
+  `active.md` as normal on a fresh clone. The same falling-through references
+  were corrected across ~175 files.
+
+### Known trap
+
+- `openspec archive` creates a missing main spec from a skeleton holding only
+  `## Purpose` and `## Requirements`, discarding any hand-written GDD sections.
+  **Write the capability spec before archiving a change against it.** Documented
+  in `openspec/config.yaml`, `/change-done` and `/create-changes`.
+
+---
+
 ## [1.1.1] — 2026-09-24
 
 **Skills and agents work again outside auto mode.** A fix release for
@@ -78,7 +130,7 @@ studio production no longer have to carry the same overhead.
   `minimal` now rests on a one-page game brief with six fields, replacing the
   30-section concept document, the systems breakdown and the per-system design
   docs. Four steps to running code: pick your engine → write the brief →
-  `/create-stories` → `/dev-story`. On Godot, `/setup-engine` now also creates
+  `/create-changes` → `/dev-change`. On Godot, `/setup-engine` now also creates
   the `project.godot` the engine needs to open what those steps produce — until
   it did, the path delivered real source files with no project to load them, and
   the claim above was not true. **Unity and Unreal projects must still be created

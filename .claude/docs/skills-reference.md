@@ -51,13 +51,13 @@
 
 | Command | Purpose |
 |---------|---------|
-| `/create-epics` | Translate GDDs + ADRs into epics — one per architectural module |
-| `/create-stories` | Break a single epic into implementable story files |
-| `/dev-story` | Read a story and implement it — routes to the correct programmer agent |
-| `/sprint-plan` | Generate or update a sprint plan; initializes sprint-status.yaml |
-| `/sprint-status` | Fast 30-line sprint snapshot (reads sprint-status.yaml) |
-| `/story-readiness` | Validate a story is implementation-ready before pickup (READY/NEEDS WORK/BLOCKED) |
-| `/story-done` | 8-phase completion review after implementation; updates story file, surfaces next story |
+| `/design-system` | Translate GDDs + ADRs into epics — one per architectural module |
+| `/create-changes` | Break a single epic into implementable story files |
+| `/dev-change` | Read a story and implement it — routes to the correct programmer agent |
+| `/create-changes` | Generate or update a sprint plan; initializes openspec status |
+| `openspec status` | Fast 30-line sprint snapshot (reads openspec status) |
+| `/change-readiness` | Validate a story is implementation-ready before pickup (READY/NEEDS WORK/BLOCKED) |
+| `/change-done` | 8-phase completion review after implementation; updates story file, surfaces next story |
 | `/estimate` | Structured effort estimate with complexity, dependencies, and risk breakdown |
 
 ## Reviews & Analysis
@@ -147,7 +147,7 @@ Claude Code ships its own skills, and one name collides with CCGS's.
 | `/code-review:code-review` | **Claude Code's bundled** review | Reviewing a pull request or a plain diff, with no knowledge of CCGS's design documents or gates. |
 
 Both are useful; they answer different questions. Reach for the CCGS one during
-`/dev-story` and before `/story-done`, because it checks the things the gates
+`/dev-change` and before `/change-done`, because it checks the things the gates
 later check. Reach for the bundled one when you want a general review of a diff
 that has nothing to do with a story.
 

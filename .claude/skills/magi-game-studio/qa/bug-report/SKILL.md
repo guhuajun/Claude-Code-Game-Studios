@@ -41,7 +41,7 @@ If no argument is provided, ask the user for a bug description before proceeding
 **Title**: [Concise, descriptive title]
 **ID**: BUG-[NNNN]
 **Severity**: [S1-Critical / S2-Major / S3-Minor / S4-Trivial]
-**Priority**: [P1-Fix this sprint / P2-Fix soon / P3-Backlog / P4-Won't fix]
+**Priority**: [P1-Fix this change set / P2-Fix soon / P3-Backlog / P4-Won't fix]
 
 > **These labels must match `/bug-triage`'s priority table exactly** — it parses
 > this field out of the file you are writing. P4 is the easiest to get wrong:

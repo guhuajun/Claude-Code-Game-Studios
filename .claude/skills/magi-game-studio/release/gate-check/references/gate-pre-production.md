@@ -63,5 +63,5 @@ Reductions only ever *relax* a requirement — `workflow_overrides` is the
 only thing that adds one.
 
 - **`full`** — engine + art bible §1–4+ + 3+ ADRs + architecture + UX specs started + accessibility doc + traceability index all required
-- **`standard`** — art bible required **only if visual-asset stories exist**; ADRs reduced to **critical (Foundation-layer) only**; UX-specs-started, accessibility doc, interaction-patterns, traceability index → recommended
+- **`standard`** — art bible required **only if visual-asset changes exist**; ADRs reduced to **critical (Foundation-layer) only**; UX-specs-started, accessibility doc, interaction-patterns, traceability index → recommended
 - **`minimal`** — only **engine configured** required (the minimal floor); everything else **drops**

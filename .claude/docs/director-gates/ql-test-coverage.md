@@ -4,20 +4,20 @@
 
 Agent: `qa-lead` | Model tier: Sonnet (Tier 2 lead — invoked when a domain specialist's feasibility sign-off is needed)
 
-**Trigger**: After implementation stories are complete, before marking an epic
-done, or at `/gate-check` Production → Polish
+**Trigger**: After implementation changes are complete, before marking a
+capability done, or at `/gate-check` Production → Polish
 
 **Context to pass**:
-- List of implemented stories with story types (Logic / Integration / Visual / UI / Config)
+- List of implemented changes with their types (Logic / Integration / Visual / UI / Config)
 - Test file paths in `tests/`
-- GDD acceptance criteria for the system
+- The capability spec's requirements and scenarios (`openspec/specs/<system>/spec.md`)
 
 **Prompt**:
-> "Review the test coverage for these implementation stories. Are all Logic stories
-> covered by passing unit tests? Are Integration stories covered by integration
-> tests or documented playtests? Are the GDD acceptance criteria each mapped to at
-> least one test? Are there untested edge cases from the GDD Edge Cases section?
-> Return ADEQUATE (coverage meets standards), GAPS [specific missing tests], or
-> INADEQUATE [critical logic is untested — do not advance]."
+> "Review the test coverage for these implementation changes. Are all Logic changes
+> covered by passing unit tests? Are Integration changes covered by integration
+> tests or documented playtests? Is each requirement scenario in the capability
+> spec mapped to at least one test? Are there untested edge cases from the spec's
+> Edge Cases section? Return ADEQUATE (coverage meets standards), GAPS [specific
+> missing tests], or INADEQUATE [critical logic is untested — do not advance]."
 
 **Verdicts**: ADEQUATE / GAPS / INADEQUATE

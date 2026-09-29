@@ -4,17 +4,17 @@
 
 Agent: `producer` | Model tier: Opus | Domain: Scope, timeline, dependencies, production risk
 
-**Trigger**: At milestone review (`/milestone-review`), at mid-sprint retrospectives,
+**Trigger**: At milestone review (`/milestone-review`), at retrospectives,
 or when a scope change is proposed that affects the milestone
 
 **Context to pass**:
 - Milestone definition and target date
 - Current completion percentage
-- Blocked stories count
-- Sprint velocity data (if available)
+- Blocked changes count
+- Change throughput data (if available)
 
 **Prompt**:
-> "Review this milestone status. Based on current velocity and blocked story count,
+> "Review this milestone status. Based on current throughput and blocked change count,
 > will this milestone hit its target date? What are the top 3 production risks
 > between now and the milestone? Are there scope items that should be cut to protect
 > the milestone date vs. items that are non-negotiable? Return ON TRACK, AT RISK

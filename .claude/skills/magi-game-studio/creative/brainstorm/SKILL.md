@@ -53,7 +53,7 @@ rather than restart.
    - **One-sentence pitch** — the excited one-liner.
    - **Core loop** — the 2–4 step cycle the player repeats.
    - **MVP** — the ruthlessly short feature list that makes it *the game* (each becomes
-     a story downstream). If it runs past ~7, push back on scope.
+     a change downstream). If it runs past ~7, push back on scope.
    - **Out of scope** — what they're deliberately NOT building.
    - **Build order** — sequence to build the MVP, risky / core-fun thing first.
    - **Who it's for / what they feel** and **Art & audio direction** — one line each
@@ -68,10 +68,10 @@ rather than restart.
    `project.yaml` first and list `/setup-engine` only if it is absent or empty:**
    1. *(only when `engine.name` is absent or empty)* "`/setup-engine` — configure
       the engine (required before code)"
-   2. "`/create-stories` — turn the brief's MVP list into implementable stories. The
-      epic is implicit at `minimal`; there is no separate `/create-epics` or
-      `/sprint-plan` — the brief's build order is the plan."
-   3. "`/dev-story` — first line of game code"
+   2. "`/create-changes` — turn the brief's MVP list into implementable changes. The
+      capability is implicit at `minimal`; there is no separate `/design-system` or
+      `/create-changes` — the brief's build order is the plan."
+   3. "`/dev-change` — first line of game code"
 
    > **Why the condition.** `/start`'s `minimal` path runs `/setup-engine`
    > *before* `/brainstorm`, and `/setup-engine` Section 2 states that a missing
@@ -135,12 +135,12 @@ conversationally (not as a checklist):
   *(Ask this as plain text — the user must be able to type specific game names freely.
   Do NOT put this in an AskUserQuestion with preset options.)*
 - Are there genres you love? Genres you avoid? Why?
-- Do you prefer games that challenge you, relax you, tell you stories,
+- Do you prefer games that challenge you, relax you, tell you changes,
   or let you express yourself? *(Use `AskUserQuestion` for this — constrained choice.)*
 
 **Practical constraints** (shape the sandbox before brainstorming).
 Bundle these into a single multi-tab `AskUserQuestion` with these exact tab labels:
-- Tab "Experience" — "What kind of experience do you most want players to have?" (Challenge & Mastery / Story & Discovery / Expression & Creativity / Relaxation & Flow)
+- Tab "Experience" — "What kind of experience do you most want players to have?" (Challenge & Mastery / Change & Discovery / Expression & Creativity / Relaxation & Flow)
 - Tab "Timeline" — "What's your realistic development timeline?" (Weeks / Months / 1-2 years / Multi-year)
 - Tab "Dev level" — "Where are you in your dev journey?" (First game / Shipped before / Professional background)
 
@@ -239,7 +239,7 @@ After capturing answers, analyze: Is this action intrinsically satisfying? What 
 - What's the "hook" that makes them think about the game when not playing?
 
 **Progression Loop** (days/weeks):
-- How does the player grow? (Power? Knowledge? Options? Story?)
+- How does the player grow? (Power? Knowledge? Options? Change?)
 - What's the long-term goal? When is the game "done"?
 
 **Player Motivation Analysis** (based on Self-Determination Theory):
@@ -329,7 +329,7 @@ who this game is actually for:
 Ground the concept in reality:
 
 - **Target platform**: Use `AskUserQuestion` — "What platforms are you targeting for this game?"
-  Options: `PC (Steam / Epic)` / `Mobile (iOS / Android)` / `Console` / `Web / Browser` / `Multiple platforms`
+  Options: `PC (Steam / Capability)` / `Mobile (iOS / Android)` / `Console` / `Web / Browser` / `Multiple platforms`
   Record the answer — it directly shapes the engine recommendation and will be passed to `/setup-engine`.
   Note platform implications if relevant (e.g., mobile means Unity is strongly preferred; console means Godot has limitations; web means Godot exports cleanly).
 
@@ -428,7 +428,7 @@ If yes, generate the document using the template at `.claude/docs/templates/game
    2. "Run `/prototype [core-mechanic]` — validate the core idea is fun before writing any GDDs (1–3 days throwaway code)"
    3. "If prototype PROCEEDS: run `/art-bible`, then continue with Path A steps 5–10 above, using prototype learnings to inform your GDDs"
    4. "If prototype PIVOTS: return to `/brainstorm` with the learnings and reshape the concept"
-   5. "After full design and architecture, build the `/vertical-slice` to validate production readiness before committing to sprints"
+   5. "After full design and architecture, build the `/vertical-slice` to validate production readiness before committing to change sets"
 
 7. **Output a summary** with the chosen concept's elevator pitch, pillars,
    primary player type, engine recommendation, biggest risk, and file path.

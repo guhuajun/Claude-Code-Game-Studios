@@ -1,6 +1,6 @@
 ---
 name: hotfix
-description: "Emergency fix bypassing normal sprint process — hotfix branch, approvals tracked, backport verified, full audit trail."
+description: "Emergency fix bypassing normal change set process — hotfix branch, approvals tracked, backport verified, full audit trail."
 argument-hint: "[bug-id or description]"
 user-invocable: true
 disable-model-invocation: true
@@ -124,7 +124,7 @@ Ask qa-lead: **Is a full smoke check sufficient, or does this fix require a targ
 Apply the verdict:
 - **Smoke check sufficient** — run `/smoke-check` against the hotfix build. If PASS, proceed to Phase 6.
 - **Targeted QA pass required** — run `/team-qa [affected-system]` scoped to the changed system only. If QA returns APPROVED or APPROVED WITH CONDITIONS, proceed to Phase 6.
-- **Full QA required** — S1 fixes that touch core systems may require a full `/team-qa sprint`. This delays deployment but prevents a bad patch.
+- **Full QA required** — S1 fixes that touch core systems may require a full `/team-qa change set`. This delays deployment but prevents a bad patch.
 
 **If the QA step returns `NOT ASSESSED`, the gate did not run — treat it as unmet,
 not as met.** `/smoke-check` returns it when the suite never executed and

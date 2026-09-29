@@ -2,7 +2,7 @@
 
 ## Skill Summary
 
-`/adopt` audits an existing project's artifacts — GDDs, ADRs, stories, infrastructure
+`/adopt` audits an existing project's artifacts — GDDs, ADRs, changes, infrastructure
 files, and `technical-preferences.md` — for format compliance with the template's
 skill pipeline. It classifies every gap by severity (BLOCKING / HIGH / MEDIUM / LOW),
 composes a numbered, ordered migration plan, and writes it to `docs/adoption-plan-[date].md`
@@ -49,7 +49,7 @@ None. `/adopt` is a brownfield audit utility. No director gates apply.
 
 **Expected behavior:**
 1. Skill emits "Scanning project artifacts..." then reads all artifacts silently
-2. Reports detected phase, GDD count, ADR count, story count
+2. Reports detected phase, GDD count, ADR count, change count
 3. Phase 2 audit: all 3 GDDs have all 8 sections, Status field present and valid
 4. ADR audit: all required sections present
 5. Infrastructure audit: all critical files exist
@@ -87,8 +87,8 @@ None. `/adopt` is a brownfield audit utility. No director gates apply.
    - `adr-0001.md`: missing `## Status` — BLOCKING impact
    - `tr-registry.yaml`: missing — HIGH impact
 3. Phase 3 classifies:
-   - BLOCKING: `adr-0001.md` missing `## Status` (story-readiness silently passes)
-   - HIGH: `tr-registry.yaml` missing; `combat.md` missing Acceptance Criteria (can't generate stories)
+   - BLOCKING: `adr-0001.md` missing `## Status` (change-readiness silently passes)
+   - HIGH: `tr-registry.yaml` missing; `combat.md` missing Acceptance Criteria (can't generate changes)
    - MEDIUM: `combat.md` missing Formulas
 4. Phase 4 builds ordered migration plan:
    - Step 1 (BLOCKING): Add `## Status` to `adr-0001.md` — command: `/architecture-decision retrofit`
@@ -114,7 +114,7 @@ None. `/adopt` is a brownfield audit utility. No director gates apply.
 **Fixture:**
 - 4 GDD files: 2 fully compliant, 2 with gaps (one missing Tuning Knobs, one missing Edge Cases)
 - ADRs: 3 files — 2 compliant, 1 missing `## ADR Dependencies`
-- Stories: 5 files — 3 have TR-ID references, 2 do not
+- Changes: 5 files — 3 have TR-ID references, 2 do not
 - Infrastructure: all critical files present; `technical-preferences.md` fully configured
 
 **Input:** `/adopt`
@@ -122,20 +122,20 @@ None. `/adopt` is a brownfield audit utility. No director gates apply.
 **Expected behavior:**
 1. Skill audits all artifact types
 2. Audit summary shows totals: "4 GDDs (2 fully compliant, 2 with gaps); 3 ADRs
-   (2 fully compliant, 1 with gaps); 5 stories (3 with TR-IDs, 2 without)"
+   (2 fully compliant, 1 with gaps); 5 changes (3 with TR-IDs, 2 without)"
 3. Gap classification:
    - No BLOCKING gaps
    - HIGH: 1 ADR missing `## ADR Dependencies`
-   - MEDIUM: 2 GDDs with missing sections; 2 stories missing TR-IDs
+   - MEDIUM: 2 GDDs with missing sections; 2 changes missing TR-IDs
    - LOW: none
 4. Migration plan lists HIGH gap first, then MEDIUM gaps in order
-5. Note included: "Existing stories continue to work — do not regenerate stories
+5. Note included: "Existing changes continue to work — do not regenerate changes
    that are in progress or done"
 6. `AskUserQuestion` to write plan; writes after approval
 
 **Assertions:**
 - [ ] Per-artifact compliance tallies are shown (N compliant, M with gaps)
-- [ ] Existing story compatibility note is included in the plan
+- [ ] Existing change compatibility note is included in the plan
 - [ ] No BLOCKING gaps results in no BLOCKING section in migration plan
 - [ ] HIGH gap precedes MEDIUM gaps in plan ordering
 - [ ] `AskUserQuestion` is used before writing
@@ -145,7 +145,7 @@ None. `/adopt` is a brownfield audit utility. No director gates apply.
 ### Case 4: No Artifacts Found — Fresh project, guidance to run /start
 
 **Fixture:**
-- Repository has no files in `design/gdd/`, `docs/architecture/`, `production/epics/`
+- Repository has no files in `design/gdd/`, `docs/architecture/`, `openspec/changes/`
 - `production/stage.txt` does not exist
 - `src/` directory does not exist or has fewer than 10 files
 - No game-concept.md, no systems-index.md
@@ -205,7 +205,7 @@ None. `/adopt` is a brownfield audit utility. No director gates apply.
 
 ## Coverage Notes
 
-- The `gdds`, `adrs`, `stories`, and `infra` argument modes narrow the audit scope;
+- The `gdds`, `adrs`, `changes`, and `infra` argument modes narrow the audit scope;
   each follows the same pattern as the full audit but limited to that artifact type.
   Not separately fixture-tested here.
 - The systems-index.md parenthetical status value check (BLOCKING) is a special case

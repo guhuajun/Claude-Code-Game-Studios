@@ -21,7 +21,7 @@ ADR Dependencies, Engine Compatibility, GDD Requirements Addressed
 **Control Manifest:** `docs/architecture/control-manifest.md`
 - Flat programmer rules sheet: Required / Forbidden / Guardrails per layer
 - Date-stamped `Manifest Version:` in header
-- Stories embed this version; `/story-done` checks for staleness
+- Stories embed this version; `/change-done` checks for staleness
 
 **Validation:** Run `/architecture-review` after completing a set of ADRs.
 

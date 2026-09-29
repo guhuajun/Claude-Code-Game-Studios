@@ -8,7 +8,7 @@ accessibility-specialist, and qa-tester through five sequential steps with one
 parallel phase (Step 4). Compiles all team outputs into a single level design
 document saved to `design/levels/[level-name].md`. Uses `AskUserQuestion` at each
 step transition. Delegates all file writes to sub-agents. Produces a summary report
-with verdict COMPLETE / BLOCKED and handoffs to `/design-review`, `/dev-story`,
+with verdict COMPLETE / BLOCKED and handoffs to `/design-review`, `/dev-change`,
 `/qa-plan`.
 
 ---
@@ -19,7 +19,7 @@ with verdict COMPLETE / BLOCKED and handoffs to `/design-review`, `/dev-story`,
 - [ ] Has ≥2 phase/step headings (Step 1 through Step 5 are all present)
 - [ ] Contains verdict keywords: COMPLETE, BLOCKED
 - [ ] Contains "May I write" or "File Write Protocol" — writes delegated to sub-agents, orchestrator does not write files directly
-- [ ] Has a next-step handoff at the end (references `/design-review`, `/dev-story`, `/qa-plan`)
+- [ ] Has a next-step handoff at the end (references `/design-review`, `/dev-change`, `/qa-plan`)
 - [ ] Error Recovery Protocol section is present with all four recovery steps
 - [ ] Uses `AskUserQuestion` at step transitions for user approval before proceeding
 - [ ] Step 4 is explicitly marked as parallel (art-director and accessibility-specialist run simultaneously)
@@ -51,7 +51,7 @@ with verdict COMPLETE / BLOCKED and handoffs to `/design-review`, `/dev-story`,
 6. Step 5 — qa-tester spawned: test cases for critical path, boundary/edge cases (sequence breaks, softlocks), playtest checklist, acceptance criteria
 7. Orchestrator compiles all team outputs into level design document format; sub-agent asked "May I write to `design/levels/forest-dungeon.md`?"; file saved
 8. Summary report: area overview, encounter count, estimated asset list, narrative beats, cross-team dependencies, verdict: COMPLETE
-9. Next steps listed: `/design-review design/levels/forest-dungeon.md`, `/dev-story`, `/qa-plan`
+9. Next steps listed: `/design-review design/levels/forest-dungeon.md`, `/dev-change`, `/qa-plan`
 
 **Assertions:**
 - [ ] All five sources read during context gathering before any agent is spawned
@@ -61,7 +61,7 @@ with verdict COMPLETE / BLOCKED and handoffs to `/design-review`, `/dev-story`,
 - [ ] All file writes delegated to sub-agents — orchestrator does not write directly
 - [ ] Level doc saved to `design/levels/forest-dungeon.md` (slugified from argument)
 - [ ] Verdict COMPLETE in final summary report
-- [ ] Next steps include `/design-review`, `/dev-story`, `/qa-plan`
+- [ ] Next steps include `/design-review`, `/dev-change`, `/qa-plan`
 - [ ] Summary report includes: area overview, encounter count, estimated asset list, narrative beats
 
 ---
@@ -188,7 +188,7 @@ with verdict COMPLETE / BLOCKED and handoffs to `/design-review`, `/dev-story`,
 - [ ] Partial report always produced even when agents are BLOCKED
 - [ ] Accessibility BLOCKING concerns surface before sign-off and require explicit user acknowledgment
 - [ ] Verdict is one of COMPLETE / BLOCKED
-- [ ] Next steps present at end: `/design-review`, `/dev-story`, `/qa-plan`
+- [ ] Next steps present at end: `/design-review`, `/dev-change`, `/qa-plan`
 
 ---
 

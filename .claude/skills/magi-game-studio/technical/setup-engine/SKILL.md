@@ -65,7 +65,7 @@ Read the design artifact for the resolved tier (see **Tier awareness** above):
 
 **Question 2 — Target platform** (ask this second, always, via `AskUserQuestion` — platform eliminates or heavily weights engines before any other factor):
 - Prompt: "What platforms are you targeting for this game?"
-- Options: `PC (Steam / Epic)` / `Mobile (iOS / Android)` / `Console` / `Web / Browser` / `Multiple platforms`
+- Options: `PC (Steam / Capability)` / `Mobile (iOS / Android)` / `Console` / `Web / Browser` / `Multiple platforms`
 - Platform rules that feed directly into the recommendation:
   - Mobile → Unity strongly preferred; Unreal is a poor fit; Godot is viable for simple mobile
   - Console → Unity or Unreal; Godot console support requires third-party publishers or significant extra work
@@ -609,7 +609,7 @@ naming:
 > **`commands.run` is the one the run-and-observe step depends on.** It must
 > launch the **game**, windowed, at a fixed resolution — never the editor, and
 > never with a headless / batch / null-RHI flag, which exist to skip rendering.
-> `/dev-story` Phase 6 step 4 appends the per-engine capture flags to it
+> `/dev-change` Phase 6 step 4 appends the per-engine capture flags to it
 > (`.claude/docs/run-and-observe.md`). `test` and `smoke` feed the parse check
 > and `/smoke-check`; `build` is the one row you must ask for.
 
@@ -651,7 +651,7 @@ commands:
 >
 > ```yaml
 > engine:
->   path: "C:/Program Files/Epic Games/UE_5.7"   # omit if the editor is on PATH
+>   path: "C:/Program Files/Capability Games/UE_5.7"   # omit if the editor is on PATH
 > ```
 >
 > **This is not cosmetic.** Without it, an agent reports *"no editor on this
@@ -904,7 +904,7 @@ Wait for confirmation before writing any files.
 ## 7.5 Scaffold the Engine Project
 
 **Without this step the framework produces source files no engine can open.**
-`/dev-story` writes `.gd`/`.cs`/`.cpp` under the resolved code root, and the `minimal` path
+`/dev-change` writes `.gd`/`.cs`/`.cpp` under the resolved code root, and the `minimal` path
 advertises "four steps to running code" — but nothing anywhere created a project
 for the engine to load. Verified by grep across every skill: no `project.godot`,
 no Unity project, no `.uproject` was ever written. The files were real and
@@ -941,7 +941,7 @@ Fill it from decisions already made — do not ask again:
 | `<renderer feature>` / `<rendering method>` | the `rendering` value chosen in Section 5.5.1 — Compatibility → `"GL Compatibility"` / `gl_compatibility`; Forward+ → `"Forward Plus"` / `forward_plus`; Mobile → `"Mobile"` / `mobile` |
 
 **Leave `run/main_scene` unset.** There is no scene yet at engine-setup time.
-Add a comment saying `/dev-story` or the developer sets it once a scene exists;
+Add a comment saying `/dev-change` or the developer sets it once a scene exists;
 an empty project with no main scene opens fine in the editor.
 
 **Then verify, and report what the verification actually was.** If the engine
@@ -966,7 +966,7 @@ these engines and they should create it first:
 
 - **Unity** — create the project in Unity Hub at the repo root, choosing the
   template matching the 2D/3D answer from Section 2, then re-run `/setup-engine`.
-- **Unreal** — create the project in the Epic launcher or via `UnrealEditor`,
+- **Unreal** — create the project in the Capability launcher or via `UnrealEditor`,
   then re-run.
 
 Report the outcome in the Section 12 summary either way — created, already
@@ -1135,7 +1135,7 @@ Ask the user before making any changes:
 > "Pre-upgrade audit complete. Found [N] files using deprecated APIs.
 > Proceed with upgrading VERSION.md to [new-version]?
 > (This will update the pinned version and add migration notes — it does NOT
-> change any source files. Source migration is done manually or via stories.)"
+> change any source files. Source migration is done manually or via changes.)"
 
 Wait for explicit confirmation before continuing.
 
@@ -1174,7 +1174,7 @@ Next steps:
 3. Run /architecture-review — the engine upgrade may invalidate ADRs that
    reference specific APIs or engine capabilities
 4. If any ADRs are invalidated, run /propagate-design-change to update
-   downstream stories
+   downstream changes
 ```
 
 ---
@@ -1204,10 +1204,10 @@ Then print **one** Next-Steps list, matching the resolved `workflow` tier:
 **`minimal` — the lean 4-step floor (you are on step 1):**
 ```
 2. Run /brainstorm to produce your one-page design/game-brief.md (the lean-tier design artifact)
-3. Run /create-stories to turn the brief's MVP list into stories
-4. Run /dev-story — first line of game code
+3. Run /create-changes to turn the brief's MVP list into changes
+4. Run /dev-change — first line of game code
 ```
-(No `/map-systems`, `/design-system`, `/prototype`, or `/sprint-plan` at
+(No `/map-systems`, `/design-system`, `/prototype`, or `/create-changes` at
 `minimal` — the brief replaces the GDDs and its build order is the plan.)
 
 **`standard` / `full` — the full pipeline:**
@@ -1216,7 +1216,7 @@ Then print **one** Next-Steps list, matching the resolved `workflow` tier:
 3. [If from /brainstorm] Run /design-system to author per-system GDDs (guided, section-by-section)
 4. [If from /brainstorm] Run /prototype [core-mechanic] to validate the core idea before writing GDDs
 5. [If fresh start] Run /brainstorm to discover your game concept
-6. Create your first milestone: /sprint-plan new
+6. Create your first milestone: /create-changes
 ```
 
 ---

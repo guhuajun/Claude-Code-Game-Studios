@@ -73,34 +73,34 @@ a single-draft pattern appropriate to their smaller scope.
 
 ### `readiness`
 
-**Skills**: story-readiness, story-done
+**Skills**: change-readiness, change-done
 
-Readiness skills validate stories before or after implementation. They must produce
+Readiness skills validate changes before or after implementation. They must produce
 multi-dimensional verdicts and integrate correctly with director gate mode.
 
 | Metric | PASS criteria |
 |---|---|
 | **RD1 — Multi-dimensional check** | Skill checks ≥3 independent dimensions (e.g., Design, Architecture, Scope, DoD) and reports each separately |
 | **RD2 — Three verdict levels** | Verdict hierarchy is clearly defined: READY/COMPLETE > NEEDS WORK/COMPLETE WITH NOTES > BLOCKED |
-| **RD3 — BLOCKED requires external action** | BLOCKED verdict is reserved for issues that cannot be fixed by the story author alone (e.g., Proposed ADR, unresolvable dependency) |
-| **RD4 — Director gate at correct mode** | QL-STORY-READY or LP-CODE-REVIEW gate spawns in `full` mode, skips in `lean`/`solo` with a noted skip message |
-| **RD5 — Next-story handoff** | After completion, skill surfaces the next READY story from the active sprint |
+| **RD3 — BLOCKED requires external action** | BLOCKED verdict is reserved for issues that cannot be fixed by the change author alone (e.g., Proposed ADR, unresolvable dependency) |
+| **RD4 — Director gate at correct mode** | QL-CHANGE-READY or LP-CODE-REVIEW gate spawns in `full` mode, skips in `lean`/`solo` with a noted skip message |
+| **RD5 — Next-change handoff** | After completion, skill surfaces the next READY change from the active change set |
 
 ---
 
 ### `pipeline`
 
-**Skills**: create-epics, create-stories, dev-story, create-control-manifest, propagate-design-change, map-systems, vertical-slice
+**Skills**: create-capabilities, create-changes, dev-change, create-control-manifest, propagate-design-change, map-systems, vertical-slice
 
 Pipeline skills produce artifacts that other skills consume. They must write files
 with correct schema, respect layer/priority ordering, and gate before writing.
 
 | Metric | PASS criteria |
 |---|---|
-| **P1 — Correct output schema** | Each produced file follows the project template (EPIC.md, story frontmatter, etc.); skill references the template path |
-| **P2 — Layer/priority ordering** | Skills that produce epics or stories respect layer ordering (core → extended → meta) and priority fields |
+| **P1 — Correct output schema** | Each produced file follows the project template (spec.md, change frontmatter, etc.); skill references the template path |
+| **P2 — Layer/priority ordering** | Skills that produce capabilities or changes respect layer ordering (core → extended → meta) and priority fields |
 | **P3 — May-I-write before each artifact** | Skill asks "May I write [artifact]?" before creating each output file, not batch-approving all files at once |
-| **P4 — Director gate at correct tier** | In-scope gates (PR-EPIC, QL-STORY-READY, LP-CODE-REVIEW, etc.) run in `full`, skip in `lean`/`solo` with noted skip |
+| **P4 — Director gate at correct tier** | In-scope gates (PR-CAPABILITY, QL-CHANGE-READY, LP-CODE-REVIEW, etc.) run in `full`, skip in `lean`/`solo` with noted skip |
 | **P5 — Reads before writes** | Skill reads the relevant GDD/ADR/manifest before producing artifacts to ensure alignment |
 
 ---
@@ -140,19 +140,19 @@ spawn the right agents, run independent ones in parallel, and surface blocks imm
 
 ---
 
-### `sprint`
+### `change set`
 
-**Skills**: sprint-plan, sprint-status, milestone-review, retrospective, changelog, patch-notes
+**Skills**: change set-plan, change set-status, milestone-review, retrospective, changelog, patch-notes
 
-Sprint skills read production state and produce reports or planning artifacts.
-They have a PR-SPRINT or PR-MILESTONE gate at specific mode thresholds.
+Change Set skills read production state and produce reports or planning artifacts.
+They have a PR-CHANGESET or PR-MILESTONE gate at specific mode thresholds.
 
 | Metric | PASS criteria |
 |---|---|
-| **SP1 — Reads sprint/milestone state** | Skill reads `production/sprints/` or `production/milestones/` before producing output |
-| **SP2 — Correct sprint gate** | PR-SPRINT (for planning) or PR-MILESTONE (for milestone review) gate runs in `full` mode, skips in `lean`/`solo` |
+| **SP1 — Reads change set/milestone state** | Skill reads `openspec/changes/` or `production/milestones/` before producing output |
+| **SP2 — Correct change set gate** | PR-CHANGESET (for planning) or PR-MILESTONE (for milestone review) gate runs in `full` mode, skips in `lean`/`solo` |
 | **SP3 — Structured output** | Output uses a consistent structure (velocity table, risk list, action items) rather than free prose |
-| **SP4 — No auto-commit** | Skill never writes sprint files or milestone records without "May I write" |
+| **SP4 — No auto-commit** | Skill never writes change lists or milestone records without "May I write" |
 
 ---
 

@@ -1,6 +1,6 @@
 ---
 name: test-setup
-description: "Scaffold the test framework and CI — tests/ directory, engine test runner, GitHub Actions workflow. Once, before the first sprint."
+description: "Scaffold the test framework and CI — tests/ directory, engine test runner, GitHub Actions workflow. Once, before the first change set."
 argument-hint: "[force]"
 user-invocable: true
 ---
@@ -21,8 +21,8 @@ configuration, creates the standard directory layout, and wires up CI/CD
 so tests run on every push.
 
 Run this once during the Technical Setup phase, before any implementation
-begins. A test framework installed at sprint start costs 30 minutes.
-A test framework installed at sprint four costs 3 sprints.
+begins. A test framework installed at change set start costs 30 minutes.
+A test framework installed at change set four costs 3 change sets.
 
 **Output:** `tests/` directory structure + `.github/workflows/tests.yml`
 
@@ -139,9 +139,9 @@ production/qa/
 - **Functions**: `test_[scenario]_[expected]`
 - **Example**: `combat_damage_test.gd` → `test_base_attack_returns_expected_damage()`
 
-## Story Type → Test Evidence
+## Change Type → Test Evidence
 
-| Story Type | Required Evidence | Location |
+| Change Type | Required Evidence | Location |
 |---|---|---|
 | Logic | Automated unit test — must pass | `tests/unit/[system]/` |
 | Integration | Integration test OR playtest doc | `tests/integration/[system]/` |
@@ -387,9 +387,9 @@ Create `tests/smoke/critical-paths.md`:
 2. New game / session can be started from the main menu
 3. Main menu responds to all inputs without freezing
 
-## Core Mechanic (update per sprint)
+## Core Mechanic (update per change set)
 
-<!-- Add the primary mechanic for each sprint here as it is implemented -->
+<!-- Add the primary mechanic for each change set here as it is implemented -->
 <!-- Example: "Player can move, jump, and the camera follows correctly" -->
 4. [Primary mechanic — update when first core system is implemented]
 
@@ -425,7 +425,7 @@ Files created:
 Next steps:
 1. [Engine-specific install step, e.g., "Install GdUnit4 via AssetLib"]
 2. Write your first test: create tests/unit/[first-system]/[system]_test.[ext]
-3. Run `/qa-plan sprint` before your first sprint to classify stories and set
+3. Run `/qa-plan change set` before your first change set to classify changes and set
    test evidence requirements
 4. `/smoke-check` before every QA hand-off
 

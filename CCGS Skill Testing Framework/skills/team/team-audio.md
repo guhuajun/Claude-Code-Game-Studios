@@ -23,7 +23,7 @@ engine is configured.
 - [ ] Contains "File Write Protocol" section
 - [ ] File writes are delegated to sub-agents — orchestrator does not write files directly
 - [ ] Sub-agents enforce "May I write to [path]?" before any write
-- [ ] Has a next-step handoff at the end (references `/dev-story`, `/asset-audit`)
+- [ ] Has a next-step handoff at the end (references `/dev-change`, `/asset-audit`)
 - [ ] Error Recovery Protocol section is present
 - [ ] `AskUserQuestion` is used at step transitions before proceeding
 - [ ] Step 2 explicitly spawns sound-designer and accessibility-specialist in parallel
@@ -191,7 +191,7 @@ engine is configured.
 - [ ] A partial report is always produced when some agents complete and others block
 - [ ] Audio design document path follows the pattern `design/gdd/audio-[feature].md`
 - [ ] Verdict is exactly COMPLETE or BLOCKED — no other verdict values used
-- [ ] Next Steps handoff references `/dev-story` and `/asset-audit`
+- [ ] Next Steps handoff references `/dev-change` and `/asset-audit`
 
 ---
 

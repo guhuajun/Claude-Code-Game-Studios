@@ -1,7 +1,7 @@
 ---
 name: team-qa
 description: "Orchestrate the QA team through a full testing cycle — qa-lead strategy and test plan, qa-tester case writing, execution, sign-off."
-argument-hint: "[sprint | feature: system-name] [--review full|lean|solo]"
+argument-hint: "[change set | feature: system-name] [--review full|lean|solo]"
 user-invocable: true
 ---
 
@@ -35,7 +35,7 @@ defaults in `.claude/docs/config-resolution.md`.
 **`team.size`**: which agents are active (orthogonal to review_mode gate-depth and workflow docs).
 - **`individual`** (default): `qa-tester` only; `qa-lead` invoked at phase gates only.
 - **`small`**: `qa-lead` + `qa-tester` pipeline (as documented).
-- **`studio`**: `qa-lead` + per-story `qa-tester` spawn + sign-off.
+- **`studio`**: `qa-lead` + per-change `qa-tester` spawn + sign-off.
 Directors (CD/TD/PR) still spawn at phase gates regardless of size; a non-core agent needed at `individual` routes through the nearest active core agent with an informational note. **"Phase gate" means any phase that ends in an `AskUserQuestion` decision point before the pipeline advances** — not every phase. Apply the test literally: if the phase below has no decision point, it is not a gate, and an agent restricted to "phase gates only" is not spawned for it. This active-set scoping applies throughout the pipeline below: any phase that names an agent outside the active set routes through the nearest core agent rather than spawning it.
 
 **Announce the active set before Phase 1 — never let the collapse be silent.**
@@ -65,7 +65,7 @@ enforced.**
 
 ## Team Composition
 
-- **qa-lead** — QA strategy, test plan generation, story classification, sign-off report
+- **qa-lead** — QA strategy, test plan generation, change classification, sign-off report
 - **qa-tester** — Test case writing, bug report writing, manual QA documentation
 
 ## How to Delegate
@@ -80,7 +80,7 @@ Use the `Agent` tool to spawn each team member as a subagent:
 
 > **Why this does not violate the Collaboration Protocol.** `CLAUDE.md` requires an agent to ask "May I write this to [filepath]?" before Write/Edit. A subagent spawned here writes **without** asking, and that is a deliberate, bounded exception rather than an oversight — the same call already made for `consistency-check` appending to `active.md`. The exception holds only when all three are true: (1) the path is one **you** named in the prompt, so the user approved the destination when they approved the phase; (2) it is a new artifact under `production/`, `docs/` or `tests/`, never an edit to existing source or config; (3) the phase that produced it is itself gated by an `AskUserQuestion` before the pipeline advances. Outside those three, the agent must ask. **Do not "fix" this by asking per subagent** — a prompt per agent per phase makes an orchestrator unusable, which is why the exception exists.
 
-Launch independent qa-tester tasks in parallel where possible (e.g., multiple stories in Phase 5 can be scaffolded simultaneously).
+Launch independent qa-tester tasks in parallel where possible (e.g., multiple changes in Phase 5 can be scaffolded simultaneously).
 
 ## Pipeline
 
@@ -88,30 +88,30 @@ Launch independent qa-tester tasks in parallel where possible (e.g., multiple st
 
 Before doing anything else, gather the full scope:
 
-1. Detect the current sprint or feature scope from the argument:
-   - If argument is a sprint identifier (e.g., `sprint-03`): Glob `production/sprints/` for files matching `*[sprint-identifier]*.md`. Read the matched file. If multiple match, use the most recently modified.
-   - If argument is `feature: [system-name]`: glob story files tagged for that system
-   - If no argument: read `production/session-state/active.md` and `production/sprint-status.yaml` (if present) to infer the active sprint
+1. Detect the current change set or feature scope from the argument:
+   - If argument is a change set identifier (e.g., `change set-03`): Glob `openspec/changes/` for files matching `*[change set-identifier]*.md`. Read the matched file. If multiple match, use the most recently modified.
+   - If argument is `feature: [system-name]`: glob change directorys tagged for that system
+   - If no argument: read `production/session-state/active.md` and `openspec status` (if present) to infer the active change set
 
 2. Read `project.stage` from `project.yaml` (fallback `production/stage.txt`) to confirm the current project phase.
 
-3. Count stories found and report to the user:
-   > "QA cycle starting for [sprint/feature]. Found [N] stories. Current stage: [stage]. Ready to begin QA strategy?"
+3. Count changes found and report to the user:
+   > "QA cycle starting for [change set/feature]. Found [N] changes. Current stage: [stage]. Ready to begin QA strategy?"
 
 ### Phase 2: QA Strategy (qa-lead)
 
-Spawn `qa-lead` via `Agent` to review all in-scope stories and produce a QA strategy.
+Spawn `qa-lead` via `Agent` to review all in-scope changes and produce a QA strategy.
 
 Prompt the qa-lead to:
-- Read each story file
-- Classify each story by type: **Logic** / **Integration** / **Visual/Feel** / **UI** / **Config/Data**
-- Identify which stories require automated test evidence vs. manual QA
-- Flag any stories with missing acceptance criteria or missing test evidence that would block QA
+- Read each change directory
+- Classify each change by type: **Logic** / **Integration** / **Visual/Feel** / **UI** / **Config/Data**
+- Identify which changes require automated test evidence vs. manual QA
+- Flag any changes with missing acceptance criteria or missing test evidence that would block QA
 - Estimate manual QA effort (number of test sessions needed)
-- **Before assessing smoke status, check for an existing smoke check report**: Glob `production/qa/smoke-*.md` and read the most recently modified file (if found). If a report exists, use its verdict and findings directly — do not re-interview the user. If no report exists, note: "No prior smoke check report found — run `/smoke-check sprint` before proceeding." and set smoke check status to UNKNOWN (treat as PASS WITH WARNINGS for the purpose of continuing). Produce a smoke check verdict: **PASS** / **PASS WITH WARNINGS [list]** / **FAIL [list of failures]** / **UNKNOWN (no report found)**
+- **Before assessing smoke status, check for an existing smoke check report**: Glob `production/qa/smoke-*.md` and read the most recently modified file (if found). If a report exists, use its verdict and findings directly — do not re-interview the user. If no report exists, note: "No prior smoke check report found — run `/smoke-check` before proceeding." and set smoke check status to UNKNOWN (treat as PASS WITH WARNINGS for the purpose of continuing). Produce a smoke check verdict: **PASS** / **PASS WITH WARNINGS [list]** / **FAIL [list of failures]** / **UNKNOWN (no report found)**
 - Produce a strategy summary table and smoke check result:
 
-  | Story | Type | Automated Required | Manual Required | Blocker? |
+  | Change | Type | Automated Required | Manual Required | Blocker? |
   |-------|------|--------------------|-----------------|----------|
 
   **Smoke Check**: [PASS / PASS WITH WARNINGS / FAIL / UNKNOWN] — [source: `production/qa/smoke-[date].md` or "no report found"] — [details if not PASS]
@@ -124,31 +124,31 @@ Present the qa-lead's full strategy to the user, then use `AskUserQuestion`:
 question: "QA Strategy Review"
 options:
   - "Looks good — proceed to test plan"
-  - "Adjust story types before proceeding"
-  - "Skip blocked stories and proceed with the rest"
+  - "Adjust change types before proceeding"
+  - "Skip blocked changes and proceed with the rest"
   - "Smoke check failed — fix issues and re-run /team-qa"
   - "Cancel — resolve blockers first"
 ```
 
-If smoke check **FAIL**: do not proceed to Phase 3. Surface the failures from the smoke check report and stop. The user must fix them, re-run `/smoke-check sprint`, and then re-run `/team-qa`.
-If smoke check **UNKNOWN**: surface a warning — "No smoke check report found. Recommend running `/smoke-check sprint` before QA. Proceeding with caution."
+If smoke check **FAIL**: do not proceed to Phase 3. Surface the failures from the smoke check report and stop. The user must fix them, re-run `/smoke-check`, and then re-run `/team-qa`.
+If smoke check **UNKNOWN**: surface a warning — "No smoke check report found. Recommend running `/smoke-check` before QA. Proceeding with caution."
 If smoke check **PASS WITH WARNINGS**: note the warnings for the sign-off report and continue.
-If blockers are present: list them explicitly. The user may choose to skip blocked stories or cancel the cycle.
+If blockers are present: list them explicitly. The user may choose to skip blocked changes or cancel the cycle.
 
 ### Phase 3: Test Plan Generation
 
 Using the strategy from Phase 2, produce a structured test plan document.
 
 The test plan should cover:
-- **Scope**: sprint/feature name, story count, dates
-- **Story Classification Table**: from Phase 2 strategy
-- **Automated Test Requirements**: which stories need test files, expected paths in `tests/`
-- **Manual QA Scope**: which stories need manual walkthrough and what to validate
+- **Scope**: change set/feature name, change count, dates
+- **Change Classification Table**: from Phase 2 strategy
+- **Automated Test Requirements**: which changes need test files, expected paths in `tests/`
+- **Manual QA Scope**: which changes need manual walkthrough and what to validate
 - **Out of Scope**: what is explicitly not being tested this cycle and why
-- **Entry Criteria**: what must be true before QA can begin. Always include: (1) Smoke check PASS or PASS WITH WARNINGS report exists at `production/qa/smoke-*.md`, (2) build is stable (no crashes on launch), (3) all Must Have stories have Status: in-progress or done in `production/sprint-status.yaml`. Add any sprint-specific criteria beyond these.
-- **Exit Criteria**: what constitutes a completed QA cycle (all stories PASS or FAIL with bugs filed)
+- **Entry Criteria**: what must be true before QA can begin. Always include: (1) Smoke check PASS or PASS WITH WARNINGS report exists at `production/qa/smoke-*.md`, (2) build is stable (no crashes on launch), (3) all Must Have changes have Status: in-progress or done in `openspec status`. Add any change set-specific criteria beyond these.
+- **Exit Criteria**: what constitutes a completed QA cycle (all changes PASS or FAIL with bugs filed)
 
-Ask: "May I write the QA plan to `production/qa/qa-plan-[sprint]-[date].md`?"
+Ask: "May I write the QA plan to `production/qa/qa-plan-[change set]-[date].md`?"
 
 Write only after receiving approval.
 
@@ -156,15 +156,15 @@ Write only after receiving approval.
 
 > **Smoke check** is performed as part of Phase 2 (QA Strategy). If the smoke check returned FAIL in Phase 2, the cycle was stopped there. This phase only runs when the Phase 2 smoke check was PASS, PASS WITH WARNINGS, or UNKNOWN.
 
-For each story requiring manual QA (Visual/Feel, UI, Integration without automated tests):
+For each change requiring manual QA (Visual/Feel, UI, Integration without automated tests):
 
-Spawn `qa-tester` via `Agent` for each story (run in parallel where possible), providing:
-- The story file path
-- The relevant section of the QA plan for that story
+Spawn `qa-tester` via `Agent` for each change (run in parallel where possible), providing:
+- The change directory path
+- The relevant section of the QA plan for that change
 - The GDD acceptance criteria for the system being tested (if available)
 - Instructions to write detailed test cases covering all acceptance criteria
-- **The output path: `production/qa/test-cases/[story-slug]-cases.md`.** Name it
-  explicitly in the prompt, one per story.
+- **The output path: `production/qa/test-cases/[change-slug]-cases.md`.** Name it
+  explicitly in the prompt, one per change.
 
 > **Why the path is stated here rather than left to the orchestrator.** The
 > bounded write exception above holds only when "the path is one **you** named in
@@ -180,26 +180,26 @@ Each test case set should include:
 - **Actual Result**: field left blank for the tester to fill in
 - **Pass/Fail**: field left blank
 
-Present the test cases to the user for review before execution. Group by story.
+Present the test cases to the user for review before execution. Group by change.
 
-Use `AskUserQuestion` per story group (batched 3-4 at a time):
+Use `AskUserQuestion` per change group (batched 3-4 at a time):
 
 ```
-question: "Test cases ready for [Story Group]. Review before manual QA begins?"
+question: "Test cases ready for [Change Group]. Review before manual QA begins?"
 options:
-  - "Approved — begin manual QA for these stories"
-  - "Revise test cases for [story name]"
-  - "Skip manual QA for [story name] — not ready"
+  - "Approved — begin manual QA for these changes"
+  - "Revise test cases for [change name]"
+  - "Skip manual QA for [change name] — not ready"
 ```
 
 ### Phase 5: Manual QA Execution
 
-Walk through each story in the approved manual QA list.
+Walk through each change in the approved manual QA list.
 
-Batch stories into groups of 3-4 and use `AskUserQuestion` for each:
+Batch changes into groups of 3-4 and use `AskUserQuestion` for each:
 
 ```
-question: "Manual QA — [Story Title]\n[brief description of what to test]"
+question: "Manual QA — [Change Title]\n[brief description of what to test]"
 options:
   - "PASS — all acceptance criteria verified"
   - "PASS WITH NOTES — minor issues found (describe after)"
@@ -209,20 +209,20 @@ options:
 
 After each FAIL result: use `AskUserQuestion` to collect the failure description, then spawn `qa-tester` via `Agent` to write a formal bug report in `production/qa/bugs/`.
 
-**After each PASS or PASS WITH NOTES on a Visual/Feel or UI story, write the
-evidence artifact** to `production/qa/evidence/[story-slug]-evidence.md`, from
+**After each PASS or PASS WITH NOTES on a Visual/Feel or UI change, write the
+evidence artifact** to `production/qa/evidence/[change-slug]-evidence.md`, from
 `.claude/docs/templates/test-evidence.md`, carrying the sign-off table intact.
 Save the screenshot you took while testing into the same directory and reference
-it from the doc — `/story-done` checks for a retained image, not just the
+it from the doc — `/change-done` checks for a retained image, not just the
 write-up.
 
 > **This is not optional bookkeeping — it is the artifact the next skill gates
-> on.** `/story-done` globs `production/qa/evidence/` for Visual/Feel and UI
-> stories and reads the sign-off table; `/story-readiness`,
+> on.** `/change-done` globs `production/qa/evidence/` for Visual/Feel and UI
+> changes and reads the sign-off table; `/change-readiness`,
 > `/test-evidence-review` and `gate-release` read the same directory. Write
-> anywhere else and a story can pass a full manual QA cycle here, then be told by
-> `/story-done` that no visual evidence exists. Visual/Feel and UI gates are
-> **BLOCKING by default**, so that is a deadlock — QA passed, story cannot
+> anywhere else and a change can pass a full manual QA cycle here, then be told by
+> `/change-done` that no visual evidence exists. Visual/Feel and UI gates are
+> **BLOCKING by default**, so that is a deadlock — QA passed, change cannot
 > close. It is a merely confusing flag only where `testing.strict.ui` or
 > `.visual` has been explicitly set to `false`.
 >
@@ -233,10 +233,10 @@ write-up.
 Bug report naming: `BUG-[NNN]-[short-slug].md` (increment NNN from existing bugs in the directory).
 
 After collecting all results, summarize:
-- Stories PASS: [count]
-- Stories PASS WITH NOTES: [count]
-- Stories FAIL: [count] — bugs filed: [IDs]
-- Stories BLOCKED: [count]
+- Changes PASS: [count]
+- Changes PASS WITH NOTES: [count]
+- Changes FAIL: [count] — bugs filed: [IDs]
+- Changes BLOCKED: [count]
 
 ### Phase 6: QA Sign-Off Report
 
@@ -245,19 +245,19 @@ Spawn `qa-lead` via `Agent` to produce the sign-off report using all results fro
 The sign-off report format:
 
 ```markdown
-## QA Sign-Off Report: [Sprint/Feature]
+## QA Sign-Off Report: [Change Set/Feature]
 **Date**: [date]
 
 ### Test Coverage Summary
-| Story | Type | Auto Test | Manual QA | Result |
+| Change | Type | Auto Test | Manual QA | Result |
 |-------|------|-----------|-----------|--------|
 | [title] | Logic | PASS | — | PASS |
 | [title] | Visual | — | PASS | PASS |
 
 ### Bugs Found
-| ID | Story | Severity | Status |
+| ID | Change | Severity | Status |
 |----|-------|----------|--------|
-| BUG-001 | [story] | S2 | Open |
+| BUG-001 | [change] | S2 | Open |
 
 ### Verdict: NOT ASSESSED / APPROVED / APPROVED WITH CONDITIONS / NOT APPROVED
 
@@ -270,21 +270,21 @@ The sign-off report format:
 Verdict rules:
 
 **Precondition, checked first.** APPROVED and APPROVED WITH CONDITIONS both
-require that **every story in scope produced executed evidence** — a test that
-ran, or a manual case that was walked. If any story is BLOCKED, unexecuted, or
+require that **every change in scope produced executed evidence** — a test that
+ran, or a manual case that was walked. If any change is BLOCKED, unexecuted, or
 has no evidence, the verdict is **NOT ASSESSED** and the other three rules are
 not evaluated.
 
-- **NOT ASSESSED — NO EVIDENCE**: One or more stories produced no executed
+- **NOT ASSESSED — NO EVIDENCE**: One or more changes produced no executed
   evidence (BLOCKED, tests not written, cases not walked, or smoke check FAIL /
   UNKNOWN). This is **not** a pass and **not** a fail; it means QA did not
-  happen. Say which stories and why.
-- **APPROVED**: All stories PASS or PASS WITH NOTES; no S1/S2 bugs open
+  happen. Say which changes and why.
+- **APPROVED**: All changes PASS or PASS WITH NOTES; no S1/S2 bugs open
 - **APPROVED WITH CONDITIONS**: S3/S4 bugs open, or PASS WITH NOTES issues documented; no S1/S2 bugs
-- **NOT APPROVED**: Any S1/S2 bugs open; or stories FAIL without documented workaround
+- **NOT APPROVED**: Any S1/S2 bugs open; or changes FAIL without documented workaround
 
 > **Why the precondition exists.** The three rules below it assume
-> every story resolves to PASS or FAIL. A sprint where nothing was executed
+> every change resolves to PASS or FAIL. A change set where nothing was executed
 > trips none of the NOT APPROVED conditions and **vacuously satisfies "no S1/S2
 > bugs open"** — because zero executed tests means zero observed failures. Read
 > literally, and without this precondition, the rules let a completely untested
@@ -299,7 +299,7 @@ Next step guidance by verdict:
 - APPROVED WITH CONDITIONS: "Resolve conditions before advancing. S3/S4 bugs may be deferred to polish."
 - NOT APPROVED: "Resolve S1/S2 bugs and re-run `/team-qa` or targeted manual QA before advancing."
 
-Ask: "May I write this QA sign-off report to `production/qa/qa-signoff-[sprint]-[date].md`?"
+Ask: "May I write this QA sign-off report to `production/qa/qa-signoff-[change set]-[date].md`?"
 
 Write only after receiving approval.
 
@@ -318,14 +318,14 @@ immediately, don't proceed past a dependency it blocks, and always produce a
 partial report.** Full procedure: `.claude/docs/error-recovery-protocol.md`.
 
 Common blockers:
-- Input file missing (story not found, GDD absent) → redirect to the skill that creates it
+- Input file missing (change not found, GDD absent) → redirect to the skill that creates it
 - ADR status is Proposed → do not implement; run `/architecture-decision` first
-- Scope too large → split into two stories via `/create-stories`
-- Conflicting instructions between ADR and story → surface the conflict, do not guess
+- Scope too large → split into two changes via `/create-changes`
+- Conflicting instructions between ADR and change → surface the conflict, do not guess
 
 ## Output
 
-A summary covering: stories in scope, smoke check result, manual QA results, bugs filed (with IDs and severities), and the final APPROVED / APPROVED WITH CONDITIONS / NOT APPROVED verdict.
+A summary covering: changes in scope, smoke check result, manual QA results, bugs filed (with IDs and severities), and the final APPROVED / APPROVED WITH CONDITIONS / NOT APPROVED verdict.
 
 Verdict: **COMPLETE** — QA cycle finished.
 Verdict: **BLOCKED** — smoke check failed or critical blocker prevented cycle completion; partial report produced.
@@ -335,5 +335,5 @@ Verdict: **BLOCKED** — smoke check failed or critical blocker prevented cycle 
 After the final phase completes (sign-off report written or BLOCKED verdict reached), silently append to `production/session-state/active.md`:
 
 ```
-<!-- QA RUN: [date] | Sprint: [sprint identifier or "ad-hoc"] | Verdict: [PASS/FAIL/CONCERNS] | Report: production/qa/qa-[date].md -->
+<!-- QA RUN: [date] | Change Set: [change set identifier or "ad-hoc"] | Verdict: [PASS/FAIL/CONCERNS] | Report: production/qa/qa-[date].md -->
 ```

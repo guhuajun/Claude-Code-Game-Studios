@@ -170,7 +170,7 @@ partial report.** Full procedure: `.claude/docs/error-recovery-protocol.md`.
 Common blockers:
 - Input file missing (story not found, GDD absent) → redirect to the skill that creates it
 - ADR status is Proposed → do not implement; run `/architecture-decision` first
-- Scope too large → split into two stories via `/create-stories`
+- Scope too large → split into two stories via `/create-changes`
 - Conflicting instructions between ADR and story → surface the conflict, do not guess
 
 ## File Write Protocol
@@ -197,4 +197,4 @@ Verdict: **BLOCKED** — [reason]
 
 - Run `/design-review` on the narrative documents for consistency validation.
 - Run `/localize extract` to extract new strings for translation after dialogue is finalized.
-- Run `/dev-story` to implement dialogue triggers and narrative events in-engine.
+- Run `/dev-change` to implement dialogue triggers and narrative events in-engine.

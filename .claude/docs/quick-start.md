@@ -95,13 +95,13 @@ Ask yourself: "What department would handle this in a real studio?"
 | `/architecture-decision` | Creates an ADR |
 | `/architecture-review` | Validate all ADRs, dependency ordering, GDD traceability |
 | `/create-control-manifest` | Flat programmer rules sheet from Accepted ADRs |
-| `/create-epics` | Translate GDDs + ADRs into epics (one per architectural module) |
-| `/create-stories` | Break a single epic into implementable story files |
-| `/dev-story` | Read a story and implement it — routes to the correct programmer agent |
-| `/sprint-plan` | Creates or updates sprint plans |
-| `/sprint-status` | Quick 30-line sprint snapshot |
-| `/story-readiness` | Validate a story is implementation-ready before pickup |
-| `/story-done` | End-of-story completion review — verifies acceptance criteria |
+| `/design-system` | Translate GDDs + ADRs into epics (one per architectural module) |
+| `/create-changes` | Break a single epic into implementable story files |
+| `/dev-change` | Read a story and implement it — routes to the correct programmer agent |
+| `/create-changes` | Creates or updates sprint plans |
+| `openspec status` | Quick 30-line sprint snapshot |
+| `/change-readiness` | Validate a story is implementation-ready before pickup |
+| `/change-done` | End-of-story completion review — verifies acceptance criteria |
 | `/estimate` | Produces structured effort estimates |
 | `/design-review` | Reviews a design document |
 | `/code-review` | Reviews code for quality and architecture |
@@ -160,7 +160,7 @@ Templates are in `.claude/docs/templates/`:
 - `risk-register-entry.md` -- for new risks
 - `narrative-character-sheet.md` -- for new characters
 - `test-plan.md` -- for feature test plans
-- `sprint-plan.md` -- for sprint planning
+- `create-changes.md` -- for sprint planning
 - `milestone-definition.md` -- for new milestones
 - `level-design-document.md` -- for new levels
 - `game-pillars.md` -- for core design pillars
@@ -222,7 +222,7 @@ If you already know what you need, jump directly to the relevant path:
    to write GDDs in dependency order
 6. **Prototype the mechanic** — Run `/prototype [core-mechanic]` (1–3 days — before writing GDDs)
 7. **Design each system** — Run `/design-system [system-name]` to write GDDs, informed by prototype findings
-8. **Plan the first sprint** — After architecture and `/vertical-slice`, run `/sprint-plan new`
+8. **Plan the first sprint** — After architecture and `/vertical-slice`, run `/create-changes`
 9. Start building
 
 ### Path B: "I know what I want to build"
@@ -236,7 +236,7 @@ If you already have a game concept and engine choice:
 4. **Design each system** — Run `/design-system [system-name]` for GDDs in dependency order
 5. **Create the initial ADR** — Run `/architecture-decision`
 6. **Create the first milestone** in `production/milestones/`
-7. **Plan the first sprint** — Run `/sprint-plan new`
+7. **Plan the first sprint** — Run `/create-changes`
 8. Start building
 
 ### Path C: "I know the game but not the engine"
@@ -259,7 +259,7 @@ If you have design docs, prototypes, or code already:
    without overwriting your existing work
 3. **Configure engine if needed** — Run `/setup-engine` if not yet configured
 4. **Validate phase readiness** — Run `/gate-check` to see where you stand
-5. **Plan the next sprint** — Run `/sprint-plan new`
+5. **Plan the next sprint** — Run `/create-changes`
 
 ## File Structure Reference
 

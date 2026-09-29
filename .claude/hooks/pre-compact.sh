@@ -64,8 +64,12 @@ if [ -f "$STATE_FILE" ]; then
     echo "## Active Session State — checkpoint from $STATE_FILE"
     CHECKPOINT=$(sed -n '/<!-- CHECKPOINT -->/,/<!-- \/CHECKPOINT -->/p' "$STATE_FILE" 2>/dev/null \
                  | grep -v '<!-- /\?CHECKPOINT -->')
+    # Field names follow the session-state template: Change / Capability / Task.
+    # The older Epic / Feature / Task names described the retired sprint/story
+    # execution layer and are still matched so an existing user's active.md is
+    # not silently blanked on their first session after upgrading.
     STATUS_BLOCK=$(sed -n '/<!-- STATUS -->/,/<!-- \/STATUS -->/p' "$STATE_FILE" 2>/dev/null \
-                   | grep -v '<!-- /\?STATUS -->' | grep -E '^(Epic|Feature|Task):[[:space:]]*[^[:space:]]')
+                   | grep -v '<!-- /\?STATUS -->' | grep -E '^(Change|Capability|Task|Epic|Feature):[[:space:]]*[^[:space:]]')
     [ -n "$STATUS_BLOCK" ] && printf '%s\n' "$STATUS_BLOCK"
     if [ -n "$CHECKPOINT" ]; then
         printf '%s\n' "$CHECKPOINT"
@@ -142,7 +146,7 @@ WIP_FOUND=false
 # report is capped. What the agent needs after compaction is "these docs are
 # unfinished", not every TODO line in the project.
 _WIP_HITS=$(printf '%s\n' design/gdd/*.md | tr '\n' '\0' \
-    | xargs -0 grep -lE "TODO|WIP|PLACEHOLDER|\[TO BE|\[TBD\]" 2>/dev/null || true)
+    | xargs -0 grep -AE "TODO|WIP|PLACEHOLDER|\[TO BE|\[TBD\]" 2>/dev/null || true)
 if [ -n "$_WIP_HITS" ]; then
     WIP_FOUND=true
     _wn=$(printf '%s\n' "$_WIP_HITS" | grep -c .)

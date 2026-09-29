@@ -80,7 +80,7 @@ review_mode: lean (production/review-mode.txt)
 automation: guided (project.local.yaml)
 workflow: standard (project.yaml)
 docs.density: balanced (default)
-story_granularity: balanced (default)
+change_granularity: balanced (default)
 qa.level: standard (default)
 team.size: individual (rigor:standard)
 project.stage: Systems Design (production/stage.txt)
@@ -105,7 +105,7 @@ wrong value diagnosable — `review_mode: solo (default)` when `project.yaml` sa
 | 1 | `project.local.yaml` | any setting on the `/settings --local` whitelist (12 keys — `modes.review_mode`, `modes.automation`, `modes.automation_always_ask`, `team.size`, all five `testing.strict.*`, `performance.enforce`, `features.*`) |
 | 2 | `project.yaml` | all keys |
 | 3 | legacy plain-text mirror | `modes.review_mode` → `production/review-mode.txt`; `project.stage` → `production/stage.txt` |
-| 4 | **`modes.rigor` expansion** | the six knobs `rigor` fronts — `modes.workflow`, `docs.density`, `qa.level`, `modes.story_granularity`, `modes.review_mode`, `team.size` |
+| 4 | **`modes.rigor` expansion** | the six knobs `rigor` fronts — `modes.workflow`, `docs.density`, `qa.level`, `modes.change_granularity`, `modes.review_mode`, `team.size` |
 | 5 | documented default | the table below |
 
 An **enum-invalid value does not win** — the chain continues past it and the
@@ -166,12 +166,12 @@ default rather than propagating a nonsense mode into every skill.
 | `modes.automation_always_ask` | `scope_changes`, `file_deletions`, `schema_changes` |
 
 **The six knobs `rigor` fronts have no terminal default at all.** `modes.workflow`,
-`docs.density`, `qa.level`, `modes.story_granularity`, `modes.review_mode` and `team.size` are
+`docs.density`, `qa.level`, `modes.change_granularity`, `modes.review_mode` and `team.size` are
 deliberately absent from `_yaml_helper_defaults`: a default there would answer at step 5 before the
 expansion at step 4 ever ran, making `rigor` a no-op for anyone who had not also
 set the sub-knob. Their effective values come from the rigor level:
 
-| `modes.rigor` | `modes.workflow` | `docs.density` | `qa.level` | `modes.story_granularity` | `modes.review_mode` | `team.size` |
+| `modes.rigor` | `modes.workflow` | `docs.density` | `qa.level` | `modes.change_granularity` | `modes.review_mode` | `team.size` |
 |---|---|---|---|---|---|---|
 | `minimal` (default) | `minimal` | `terse` | `minimal` | `coarse` | `solo` | `individual` |
 | `standard` | `standard` | `balanced` | `standard` | `balanced` | `lean` | `individual` |
@@ -215,7 +215,7 @@ expansion), unlike the four on-disk knobs, which are locked.
 
 **`testing.strict.*` has no central default on purpose.** Its unset default
 differs per skill by design: `/smoke-check` treats unset as **blocking** (it is a
-build-health gate), while `/story-done` and `/dev-story` apply the per-story-type
+build-health gate), while `/change-done` and `/dev-change` apply the per-story-type
 table in `.claude/docs/coding-standards.md`. `resolve_config` therefore reports
 only the *configured state* (`unset` where absent) and each skill applies its own
 default. The script resolves **sources**; the skill owns **policy**.

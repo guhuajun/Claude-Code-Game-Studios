@@ -222,7 +222,7 @@ Verdict: **BLOCKED** — one or more agents blocked; partial report produced wit
 ## Next Steps
 
 - Run `/design-review design/levels/[level-name].md` to validate the completed level design doc.
-- Run `/dev-story` to implement level content once the design is approved.
+- Run `/dev-change` to implement level content once the design is approved.
 - Run `/qa-plan` to generate a QA test plan for this level.
 
 ## Error Recovery Protocol
@@ -242,5 +242,5 @@ partial report.** Full procedure: `.claude/docs/error-recovery-protocol.md`.
 Common blockers:
 - Input file missing (story not found, GDD absent) → redirect to the skill that creates it
 - ADR status is Proposed → do not implement; run `/architecture-decision` first
-- Scope too large → split into two stories via `/create-stories`
+- Scope too large → split into two stories via `/create-changes`
 - Conflicting instructions between ADR and story → surface the conflict, do not guess

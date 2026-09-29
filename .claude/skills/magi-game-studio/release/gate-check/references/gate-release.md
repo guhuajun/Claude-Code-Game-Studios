@@ -11,9 +11,9 @@
 - [ ] Localization strings are externalized (no hardcoded player-facing text in the code root)
 - [ ] QA test plan exists (`/qa-plan` output in `production/qa/`)
 - [ ] QA sign-off report exists (`/team-qa` output — APPROVED or APPROVED WITH CONDITIONS)
-- [ ] All Must Have story test evidence is present (Logic/Integration: test files pass; Visual/Feel/UI: sign-off docs in `production/qa/evidence/`)
+- [ ] All Must Have change test evidence is present (Logic/Integration: test files pass; Visual/Feel/UI: sign-off docs in `production/qa/evidence/`)
 - [ ] Smoke check passes cleanly (PASS verdict) on the release candidate build
-- [ ] No test regressions from previous sprint (test suite passes fully)
+- [ ] No test regressions from previous change set (test suite passes fully)
 - [ ] Balance data has been reviewed (`/balance-check` run)
 - [ ] Release checklist completed (`/release-checklist` or `/launch-checklist` run)
 - [ ] Store metadata prepared (if applicable)

@@ -173,7 +173,7 @@ with verdict COMPLETE / NEEDS WORK / BLOCKED and handoffs to `/code-review`,
 - The NEEDS WORK verdict path (qa-tester finds failures in Phase 5) is not separately tested
   here; it follows the same error recovery and partial report protocol as Case 2.
 - "Retry with narrower scope" error recovery option is listed in assertions but its full
-  recursive behavior (splitting via `/create-stories`) is covered by the `/create-stories` spec.
+  recursive behavior (splitting via `/create-changes`) is covered by the `/create-changes` spec.
 - Phase 4 integration logic (wiring gameplay, AI, VFX, audio) is validated implicitly by
   the Happy Path case; a dedicated integration test would require fixture code files.
 - Engine specialist unavailable (no engine configured) is partially covered in Case 5

@@ -30,7 +30,7 @@ fi
 # Claude Code Game Studios — Status Line
 # Receives JSON on stdin, outputs a single-line status.
 #
-# Segments: ctx% | model | production stage [| Epic > Feature > Task]
+# Segments: ctx% | model | production stage [| Change > Capability > Task]
 
 input=$(cat)
 
@@ -161,12 +161,16 @@ if [ -f "$project_yaml" ] && [ -f "$yaml_helper" ]; then
     # depth, so a false positive only costs the precise checks below, while a
     # miss is impossible. Never let it decide on its own: a bare `size:` under
     # some unrelated block would suppress the posture with no reason.
-    _fronted='^[[:space:]]+(review_mode|workflow|density|level|story_granularity|size):[[:space:]]*[^[:space:]#]'
+    # `change_granularity` must be checked under BOTH its current and previous
+    # name: a project that set the old `story_granularity` explicitly has made a
+    # real choice, so the rigor-derived posture must be suppressed just as it is
+    # for the new name.
+    _fronted='^[[:space:]]+(review_mode|workflow|density|level|change_granularity|story_granularity|size):[[:space:]]*[^[:space:]#]'
     for _f in "$project_yaml" "$cwd/project.local.yaml"; do
       [ -f "$_f" ] || continue
       grep -qE "$_fronted" "$_f" 2>/dev/null || continue
       for _k in modes.review_mode modes.workflow docs.density qa.level \
-                modes.story_granularity team.size; do
+                modes.change_granularity modes.story_granularity team.size; do
         if [ -n "$(get_yaml_key "$_f" "$_k" 2>/dev/null)" ]; then rigor=""; break; fi
       done
       [ -z "$rigor" ] && break
@@ -174,14 +178,20 @@ if [ -f "$project_yaml" ] && [ -f "$yaml_helper" ]; then
   fi
 fi
 
-# --- Epic/Feature/Task breadcrumb (Production+ only) ---
+# --- Change/Capability/Task breadcrumb (Production+ only) ---
+#
+# Field names follow the OpenSpec model: a change, the capability it touches,
+# and the task within that change. The previous Epic/Feature/Task naming
+# described the retired sprint/story execution layer, and `pre-compact.sh` and
+# the session-state template were updated with it — all three must agree, since
+# the template writes these keys and this hook reads them.
 breadcrumb=""
 if [ "$stage" = "Production" ] || [ "$stage" = "Polish" ] || [ "$stage" = "Release" ]; then
   state_file="$cwd/production/session-state/active.md"
   if [ -f "$state_file" ]; then
     # Parse structured STATUS block
     in_block=false
-    epic="" feature="" task=""
+    change="" capability="" task=""
     while IFS= read -r line; do
       case "$line" in
         *"<!-- STATUS -->"*) in_block=true; continue ;;
@@ -189,8 +199,8 @@ if [ "$stage" = "Production" ] || [ "$stage" = "Polish" ] || [ "$stage" = "Relea
       esac
       if [ "$in_block" = true ]; then
         case "$line" in
-          Epic:*) epic=$(echo "$line" | sed 's/^Epic: *//') ;;
-          Feature:*) feature=$(echo "$line" | sed 's/^Feature: *//') ;;
+          Change:*) change=$(echo "$line" | sed 's/^Change: *//') ;;
+          Capability:*) capability=$(echo "$line" | sed 's/^Capability: *//') ;;
           Task:*) task=$(echo "$line" | sed 's/^Task: *//') ;;
         esac
       fi
@@ -198,8 +208,8 @@ if [ "$stage" = "Production" ] || [ "$stage" = "Polish" ] || [ "$stage" = "Relea
 
     # Build breadcrumb from whatever is set
     parts=""
-    [ -n "$epic" ] && parts="$epic"
-    [ -n "$feature" ] && parts="${parts:+$parts > }$feature"
+    [ -n "$change" ] && parts="$change"
+    [ -n "$capability" ] && parts="${parts:+$parts > }$capability"
     [ -n "$task" ] && parts="${parts:+$parts > }$task"
     [ -n "$parts" ] && breadcrumb=" | $parts"
   fi

@@ -232,7 +232,7 @@ Note: aim to flag any element where a 40% text expansion (common in translations
 
 #### Section I: Acceptance Criteria
 
-Write at least 5 specific, testable criteria that a QA tester can verify without reading any other design document. These become the pass/fail conditions for `/story-done`.
+Write at least 5 specific, testable criteria that a QA tester can verify without reading any other design document. These become the pass/fail conditions for `/change-done`.
 
 **Format**: Use checkboxes. Each criterion must be verifiable by a human tester:
 

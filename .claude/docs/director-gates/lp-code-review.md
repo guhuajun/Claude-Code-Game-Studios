@@ -4,20 +4,20 @@
 
 Agent: `lead-programmer` | Model tier: Sonnet (Tier 2 lead — invoked when a domain specialist's feasibility sign-off is needed)
 
-**Trigger**: After a dev story is implemented (`/dev-story`, `/story-done`), or
+**Trigger**: After a change is implemented (`/dev-change`, `/change-done`), or
 as part of `/code-review`
 
 **Context to pass**:
 - Implementation file paths
-- Story file path (for acceptance criteria)
-- Relevant GDD section
+- Change id / path (for acceptance criteria)
+- Relevant capability spec section (`openspec/specs/<system>/spec.md`)
 - ADR that governs this system
 
 **Prompt**:
-> "Review this implementation against the story acceptance criteria and governing
+> "Review this implementation against the change acceptance criteria and governing
 > ADR. Does the code match the architecture boundary definitions? Are there
 > violations of the coding standards or forbidden patterns? Is the public API
-> testable and documented? Are there any correctness issues against the GDD rules?
+> testable and documented? Are there any correctness issues against the spec rules?
 > Return APPROVE, CONCERNS [specific issues], or REJECT [must be revised before merge]."
 
 **Verdicts**: APPROVE / CONCERNS / REJECT

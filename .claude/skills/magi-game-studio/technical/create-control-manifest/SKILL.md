@@ -133,7 +133,7 @@ Combine rules that apply to all layers:
   > a physics engine it never uses. If you cannot tell whether an entry applies —
   > 2D vs 3D, a module the project does not include — either scope the rule
   > ("when using 3D physics: ...") or omit it and note it as unresolved. A manifest
-  > of rules that do not apply is one nobody reads, and `/create-stories` consumes
+  > of rules that do not apply is one nobody reads, and `/create-changes` consumes
   > this file.
 
 ### From current-best-practices.md (if available):
@@ -214,9 +214,9 @@ Format:
 > **ADRs Covered**: [ADR-NNNN, ADR-MMMM, ...]
 > **Status**: [Active — regenerate with `/create-control-manifest update` when ADRs change]
 
-`Manifest Version` is the date this manifest was generated. Story files embed
-this date when created. `/story-readiness` compares a story's embedded version
-to this field to detect stories written against stale rules. Always matches
+`Manifest Version` is the date this manifest was generated. Change directorys embed
+this date when created. `/change-readiness` compares a change's embedded version
+to this field to detect changes written against stale rules. Always matches
 `Last Updated` — they are the same date, serving different consumers.
 
 This manifest is a programmer's quick-reference extracted from all Accepted ADRs,
@@ -317,8 +317,8 @@ These APIs are deprecated or unverified for [engine + version]:
 
 After writing the manifest:
 
-- If epics/stories don't exist yet: "Run `/create-epics layer: foundation` then `/create-stories [epic-slug]` — programmers
-  can now use this manifest when writing story implementation notes."
+- If capabilities/changes don't exist yet: "Run `/design-system layer: foundation` then `/create-changes [capability-slug]` — programmers
+  can now use this manifest when writing change implementation notes."
 - If this is a regeneration (manifest already existed): "Updated. Recommend
   notifying the team of changed rules — especially any new Forbidden entries."
 

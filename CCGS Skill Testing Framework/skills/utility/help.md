@@ -4,7 +4,7 @@
 
 `/help` analyzes what has been done and what comes next in the project workflow.
 It runs on the Haiku model (read-only, formatting task) and reads `production/stage.txt`,
-the active sprint file, and recent session state to produce a concise situational
+the active change list, and recent session state to produce a concise situational
 guidance summary. The skill optionally accepts a context query (e.g., `/help testing`)
 to surface relevant skills for a specific topic.
 
@@ -34,26 +34,26 @@ None. `/help` is a read-only navigation skill. No director gates apply.
 
 ## Test Cases
 
-### Case 1: Happy Path — Production stage with active sprint
+### Case 1: Happy Path — Production stage with active change set
 
 **Fixture:**
 - `production/stage.txt` contains `Production`
-- `production/sprints/sprint-004.md` exists with in-progress stories
+- `openspec/changes/change set-004.md` exists with in-progress changes
 - `production/session-state/active.md` has a recent checkpoint
 
 **Input:** `/help`
 
 **Expected behavior:**
-1. Skill reads stage.txt and active sprint
-2. Skill identifies current sprint number and in-progress story count
-3. Skill outputs: current stage, sprint summary, and 3 suggested next skills
-   (e.g., `/sprint-status`, `/dev-story`, `/story-done`)
-4. Suggestions are ranked by relevance to current sprint state
+1. Skill reads stage.txt and active change set
+2. Skill identifies current change set number and in-progress change count
+3. Skill outputs: current stage, change set summary, and 3 suggested next skills
+   (e.g., `/change set-status`, `/dev-change`, `/change-done`)
+4. Suggestions are ranked by relevance to current change set state
 5. Verdict is HELP COMPLETE
 
 **Assertions:**
 - [ ] Current stage is shown (Production)
-- [ ] Active sprint number and story count are mentioned
+- [ ] Active change set number and change count are mentioned
 - [ ] Exactly 2-3 next-skill suggestions are given (not a list of all skills)
 - [ ] Suggestions are appropriate for Production stage
 - [ ] Verdict is HELP COMPLETE
@@ -65,7 +65,7 @@ None. `/help` is a read-only navigation skill. No director gates apply.
 
 **Fixture:**
 - `production/stage.txt` contains `Concept`
-- No sprint files, no GDD files
+- No change lists, no GDD files
 - `technical-preferences.md` is configured (engine selected)
 
 **Input:** `/help`
@@ -79,7 +79,7 @@ None. `/help` is a read-only navigation skill. No director gates apply.
 **Assertions:**
 - [ ] Stage is identified as Concept
 - [ ] Workflow path shows the expected sequence for this stage
-- [ ] Suggestions do not include Production-stage skills (e.g., `/dev-story`)
+- [ ] Suggestions do not include Production-stage skills (e.g., `/dev-change`)
 - [ ] Verdict is HELP COMPLETE
 
 ---
@@ -88,7 +88,7 @@ None. `/help` is a read-only navigation skill. No director gates apply.
 
 **Fixture:**
 - No `production/stage.txt`
-- No sprint files
+- No change lists
 - `technical-preferences.md` has placeholders
 
 **Input:** `/help`
@@ -112,7 +112,7 @@ None. `/help` is a read-only navigation skill. No director gates apply.
 
 **Fixture:**
 - `production/stage.txt` contains `Production`
-- Active sprint has a story with `Status: In Review`
+- Active change set has a change with `Status: In Review`
 
 **Input:** `/help testing`
 
@@ -120,13 +120,13 @@ None. `/help` is a read-only navigation skill. No director gates apply.
 1. Skill reads context query: "testing"
 2. Skill surfaces skills relevant to testing: `/qa-plan`, `/smoke-check`,
    `/regression-suite`, `/test-setup`, `/test-evidence-review`
-3. Output is focused on testing workflow, not general sprint navigation
-4. Currently in-review story is highlighted as a testing candidate
+3. Output is focused on testing workflow, not general change set navigation
+4. Currently in-review change is highlighted as a testing candidate
 
 **Assertions:**
 - [ ] Context query is acknowledged in output ("Help topic: testing")
 - [ ] At least 3 testing-relevant skills are listed
-- [ ] General sprint skills (e.g., `/sprint-plan`) are not the primary suggestions
+- [ ] General change set skills (e.g., `/change set-plan`) are not the primary suggestions
 - [ ] Verdict is HELP COMPLETE
 
 ---
@@ -154,7 +154,7 @@ None. `/help` is a read-only navigation skill. No director gates apply.
 
 ## Protocol Compliance
 
-- [ ] Reads stage, sprint, and session state before generating suggestions
+- [ ] Reads stage, change set, and session state before generating suggestions
 - [ ] Suggestions are specific to the current project state (not generic)
 - [ ] Context query (if provided) narrows the suggestion set
 - [ ] Does not write any files
@@ -164,8 +164,8 @@ None. `/help` is a read-only navigation skill. No director gates apply.
 
 ## Coverage Notes
 
-- The case where the active sprint is complete (all stories Done) is not
-  separately tested; the skill would suggest `/sprint-plan` for the next sprint.
+- The case where the active change set is complete (all changes Done) is not
+  separately tested; the skill would suggest `/change set-plan` for the next change set.
 - The `/help` skill does not validate whether suggested skills are available —
   it assumes standard skill catalog availability.
 - Stage detection fallback (when stage.txt is absent) delegates to the same

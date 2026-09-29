@@ -75,7 +75,7 @@ If no version is provided, ask the user before proceeding.
 - Read the internal changelog at `production/releases/[version]/changelog.md` if it exists
 - Also check `docs/CHANGELOG.md` for the relevant version entry
 - Run `git log` between the previous release tag and current tag/HEAD as a fallback
-- Read sprint retrospectives in `production/sprints/` for context
+- Read change set retrospectives in `openspec/changes/` for context
 - Read any balance change documents in `design/balance/`
 - Read bug fix records from QA if available
 
@@ -212,7 +212,7 @@ Includes everything from Detailed, plus:
 Check the generated notes for:
 
 - No internal jargon (replace technical terms with player-friendly language)
-- No references to internal systems, tickets, or sprint numbers
+- No references to internal systems, tickets, or change set numbers
 - Balance changes include before/after values
 - Bug fixes describe the player experience, not the technical cause
 - Tone matches the game's voice (adjust formality based on game style)

@@ -55,9 +55,9 @@ chosen approach.]
 
 > **`Layer` is the ADR's own layer, not the referencing epic's — and it is a
 > different taxonomy from `Domain`.** Four sites branch on whether an ADR is
-> *critical (Foundation-layer)*: `/create-stories`, `/create-epics`,
+> *critical (Foundation-layer)*: `/create-changes`, `/design-system`,
 > `/architecture-decision`, and `gate-pre-production.md`. At `standard`,
-> `/create-stories` **stops** for a missing critical ADR and only **warns** for a
+> `/create-changes` **stops** for a missing critical ADR and only **warns** for a
 > non-critical one, so this row decides whether a run halts. Earlier revisions of
 > this template recorded no layer at all, leaving those four sites to infer one from
 > the referencing epic — which gives the wrong answer whenever a Foundation-layer

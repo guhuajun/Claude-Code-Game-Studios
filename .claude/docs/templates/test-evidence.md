@@ -33,7 +33,7 @@ List all captured evidence below. Store files in the same directory as this
 document or in `production/qa/evidence/[story-slug]/`.
 
 **The file must actually be on disk.** Visual/Feel and UI gates are BLOCKING by
-default, and `/story-done` and `/test-evidence-review` glob for the image — a
+default, and `/change-done` and `/test-evidence-review` glob for the image — a
 filename listed here with no file beside it does not satisfy the gate.
 
 | # | Filename | What It Shows | Acceptance Criterion |
@@ -69,7 +69,7 @@ If nothing notable: *No significant observations.*
 
 ## Sign-Off
 
-All roles must sign off before the story can be marked COMPLETE via `/story-done`.
+All roles must sign off before the story can be marked COMPLETE via `/change-done`.
 Visual/Feel stories require the designer or art-lead sign-off. UI stories require
 the UX lead or designer sign-off.
 

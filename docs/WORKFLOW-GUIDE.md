@@ -127,7 +127,7 @@ production/           # Sprint plans, milestones, releases
   sprints/
   milestones/
   releases/
-  epics/              # Epic and story files (from /create-epics + /create-stories)
+  epics/              # Epic and story files (from /design-system + /create-changes)
   playtests/          # Playtest reports
   session-state/      # Ephemeral session state (gitignored)
   session-logs/       # Session audit trail (gitignored)
@@ -566,21 +566,21 @@ Vertical Slice that proves the core loop is fun.
 ### Phase 4 Pipeline
 
 ```
-/ux-design  -->  /vertical-slice  -->  /create-epics  -->  /create-stories  -->  /sprint-plan
+/ux-design  -->  /vertical-slice  -->  /design-system  -->  /create-changes  -->  /create-changes
     |                   |                   |                   |                       |
     v                   v                   v                   v                       v
   UX specs       Production-quality   Epic files in       Story files in          First sprint with
   design/ux/     end-to-end build     production/         production/             prioritized stories
-                 in prototypes/       epics/*/EPIC.md     epics/*/story-*.md      production/sprints/
+                 in prototypes/       epics/*/EPIC.md     epics/*/story-*.md      openspec/changes/
                  PROCEED/PIVOT/KILL   (one per module)    (one per behaviour)     sprint-*.md
     |                                                          |
     v                                                          v
- /ux-review                                             /story-readiness
+ /ux-review                                             /change-readiness
  (validates specs                                       (validates each story
   before epics)                                          before pickup)
                                                                |
                                                                v
-                                                           /dev-story
+                                                           /dev-change
                                                          (implements the story,
                                                           routes to right agent)
 ```
@@ -660,28 +660,28 @@ in the full slice.
 ### Step 4.3: Create Epics and Stories From Design Artifacts
 
 ```
-/create-epics layer: foundation
-/create-stories [epic-slug]   # repeat for each epic
-/create-epics layer: core
-/create-stories [epic-slug]   # repeat for each core epic
+/design-system (foundation layer)
+/create-changes [epic-slug]   # repeat for each epic
+/design-system (core layer)
+/create-changes [epic-slug]   # repeat for each core epic
 ```
 
-`/create-epics` reads your GDDs, ADRs, and architecture to define epic scope —
-one epic per architectural module. Then `/create-stories` breaks each epic into
-implementable story files in `production/epics/[slug]/`. Each story embeds:
+`/design-system` reads your GDDs, ADRs, and architecture to define epic scope —
+one epic per architectural module. Then `/create-changes` breaks each epic into
+implementable story files in `openspec/specs/[slug]/`. Each story embeds:
 - GDD requirement references (TR-IDs, not quoted text -- stays fresh)
 - ADR references (only from Accepted ADRs; Proposed ADRs cause `Status: Blocked`)
 - Control manifest version date (for staleness detection)
 - Engine-specific implementation notes
 - Acceptance criteria from the GDD
 
-Once stories exist, run `/dev-story [story-path]` to implement one — it routes
+Once stories exist, run `/dev-change [story-path]` to implement one — it routes
 automatically to the correct programmer agent.
 
 ### Step 4.4: Validate Stories Before Pickup
 
 ```
-/story-readiness production/epics/combat/story-combat-damage-calc.md
+/change-readiness openspec/specs/combat/story-combat-damage-calc.md
 ```
 
 Checks: Design completeness, Architecture coverage, Scope clarity, Definition
@@ -690,7 +690,7 @@ of Done. Verdict: READY / NEEDS WORK / BLOCKED.
 ### Step 4.5: Effort Estimation
 
 ```
-/estimate production/epics/combat/story-combat-damage-calc.md
+/estimate openspec/specs/combat/story-combat-damage-calc.md
 ```
 
 Provides effort estimates with risk assessment.
@@ -698,15 +698,15 @@ Provides effort estimates with risk assessment.
 ### Step 4.6: Plan Your First Sprint
 
 ```
-/sprint-plan new
+/create-changes
 ```
 
 **What happens:** The `producer` agent collaborates on sprint planning:
 - Asks for sprint goal and available time
 - Breaks the goal into Must Have / Should Have / Nice to Have tasks
 - Identifies risks and blockers
-- Creates `production/sprints/sprint-01.md`
-- Populates `production/sprint-status.yaml` (machine-readable story tracking)
+- Creates `openspec/changes/sprint-01.md`
+- Populates `openspec status` (machine-readable story tracking)
 
 ### Step 4.7: Vertical Slice (Hard Gate)
 
@@ -731,7 +731,7 @@ played the build unguided.
 - At least 1 UX spec reviewed in `design/ux/`
 - UX review completed (APPROVED or NEEDS REVISION with documented risks)
 - At least 1 prototype with README
-- Story files exist in `production/epics/[epic-slug]/`
+- Story files exist in `openspec/specs/[epic-slug]/`
 - At least 1 sprint plan exists
 - At least 1 playtest report exists (Vertical Slice played in 3+ sessions)
 
@@ -749,17 +749,17 @@ is content-complete.
 ### Phase 5 Pipeline (Per Sprint)
 
 ```
-/sprint-plan new  -->  /story-readiness  -->  implement  -->  /story-done
+/create-changes  -->  /change-readiness  -->  implement  -->  /change-done
        |                     |                    |                |
        v                     v                    v                v
   Sprint created       Story validated      Code written     8-phase review:
-  sprint-status.yaml   READY verdict        Tests pass       verify criteria,
+  openspec status   READY verdict        Tests pass       verify criteria,
   populated                                                  check deviations,
                                                              update story status
        |
        |  (repeat per story until sprint complete)
        v
-  /sprint-status  (quick 30-line snapshot anytime)
+  openspec status  (quick 30-line snapshot anytime)
   /scope-check    (if scope is growing)
   /retrospective  (at sprint end)
 ```
@@ -769,13 +769,13 @@ is content-complete.
 The production phase centers on the **story lifecycle**:
 
 ```
-/story-readiness  -->  implement  -->  /story-done  -->  next story
+/change-readiness  -->  implement  -->  /change-done  -->  next story
 ```
 
 **1. Story Readiness:** Before picking up a story, validate it:
 
 ```
-/story-readiness production/epics/combat/story-combat-damage-calc.md
+/change-readiness openspec/specs/combat/story-combat-damage-calc.md
 ```
 
 This checks design completeness, architecture coverage, ADR status (blocks
@@ -798,7 +798,7 @@ implement.
 **3. Story Completion:** When a story is done:
 
 ```
-/story-done production/epics/combat/story-combat-damage-calc.md
+/change-done openspec/specs/combat/story-combat-damage-calc.md
 ```
 
 This runs an 8-phase completion review:
@@ -818,15 +818,15 @@ Tech debt discovered during review is logged to `docs/tech-debt-register.md`.
 Check progress anytime:
 
 ```
-/sprint-status
+openspec status
 ```
 
-Quick 30-line snapshot reading from `production/sprint-status.yaml`.
+Quick 30-line snapshot reading from `openspec status`.
 
 If scope is growing:
 
 ```
-/scope-check production/sprints/sprint-03.md
+/scope-check openspec/changes/sprint-03.md
 ```
 
 This compares current scope against the original plan and flags scope increase,
@@ -887,7 +887,7 @@ Analyzes planned vs. completed, velocity, blockers, and actionable improvements.
 Then plan the next sprint:
 
 ```
-/sprint-plan new
+/create-changes
 ```
 
 ### Step 5.7: Milestone Reviews
@@ -1278,10 +1278,10 @@ sections can be safely compacted.
 `active.md` automatically. The `pre-compact.sh` hook dumps state into the
 conversation before compaction.
 
-**Sprint status tracking:** `production/sprint-status.yaml` is the
-machine-readable story tracker. Written by `/sprint-plan` (init) and
-`/story-done` (status updates). Read by `/sprint-status`, `/help`, and
-`/story-done` (next story). Eliminates fragile markdown scanning.
+**Sprint status tracking:** `openspec status` is the
+machine-readable story tracker. Written by `/create-changes` (init) and
+`/change-done` (status updates). Read by `openspec status`, `/help`, and
+`/change-done` (next story). Eliminates fragile markdown scanning.
 
 ### Brownfield Adoption
 
@@ -1472,13 +1472,13 @@ conflicts go to `producer`.
 
 | Command | Purpose | Phase |
 |---------|---------|-------|
-| `/create-epics` | Translate GDDs + ADRs into epics (one per module) | 4 |
-| `/create-stories` | Break a single epic into story files | 4 |
-| `/dev-story` | Implement a story — routes to the correct programmer agent | 5 |
-| `/sprint-plan` | Create or manage sprint plans | 4-5 |
-| `/sprint-status` | Quick 30-line sprint snapshot | 5 |
-| `/story-readiness` | Validate story is implementation-ready | 4-5 |
-| `/story-done` | 8-phase story completion review | 5 |
+| `/design-system` | Translate GDDs + ADRs into epics (one per module) | 4 |
+| `/create-changes` | Break a single epic into story files | 4 |
+| `/dev-change` | Implement a story — routes to the correct programmer agent | 5 |
+| `/create-changes` | Create or manage sprint plans | 4-5 |
+| `openspec status` | Quick 30-line sprint snapshot | 5 |
+| `/change-readiness` | Validate story is implementation-ready | 4-5 |
+| `/change-done` | 8-phase story completion review | 5 |
 | `/estimate` | Effort estimation with risk assessment | 4-5 |
 
 #### Reviews and Analysis (13)
@@ -1584,9 +1584,9 @@ conflicts go to `producer`.
 5. /architecture-review
 6. /create-control-manifest
 7. /gate-check technical-setup
-8. /create-epics layer: foundation + /create-stories [slug] (define epics, break into stories)
-9. /sprint-plan new
-10. /story-readiness -> implement -> /story-done (story lifecycle)
+8. /design-system (foundation layer) + /create-changes [slug] (define epics, break into stories)
+9. /create-changes
+10. /change-readiness -> implement -> /change-done (story lifecycle)
 ```
 
 ### Workflow 3: "I need to add a complex feature mid-production"
@@ -1597,7 +1597,7 @@ conflicts go to `producer`.
 3. /propagate-design-change if modifying existing GDDs
 4. /estimate for effort and risk
 5. /team-combat, /team-narrative, /team-ui, etc. (appropriate team skill)
-6. /story-done when complete
+6. /change-done when complete
 7. /balance-check if it affects game balance
 ```
 
@@ -1627,12 +1627,12 @@ conflicts go to `producer`.
 
 ```
 1. /retrospective (review last sprint)
-2. /sprint-plan new (create next sprint)
+2. /create-changes (create next sprint)
 3. /scope-check (ensure scope is manageable)
-4. /story-readiness per story before pickup
+4. /change-readiness per story before pickup
 5. Implement stories
-6. /story-done per completed story
-7. /sprint-status for quick progress checks
+6. /change-done per completed story
+7. openspec status for quick progress checks
 ```
 
 ### Workflow 7: "Shipping the game"
@@ -1700,8 +1700,8 @@ conflicts go to `producer`.
 11. **Document decisions with ADRs.** Future-you will thank present-you for
     recording *why* things were built the way they were.
 
-12. **Use the story lifecycle religiously.** `/story-readiness` before pickup,
-    `/story-done` after completion. This catches deviations early and keeps
+12. **Use the story lifecycle religiously.** `/change-readiness` before pickup,
+    `/change-done` after completion. This catches deviations early and keeps
     the pipeline honest.
 
 13. **Write to files early and often.** Incremental section writing means your

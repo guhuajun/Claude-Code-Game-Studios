@@ -2,7 +2,7 @@
 
 ## Agent Summary
 **Domain owned:** Core loop design, progression systems, combat mechanics rules, economy design, player-facing rules and interactions.
-**Does NOT own:** Code implementation (lead-programmer / gameplay-programmer), visual art (art-director), narrative lore and story (narrative-director — coordinates with), balance formula math (systems-designer — collaborates with).
+**Does NOT own:** Code implementation (lead-programmer / gameplay-programmer), visual art (art-director), narrative lore and change (narrative-director — coordinates with), balance formula math (systems-designer — collaborates with).
 **Model tier:** Sonnet (individual system design authoring and review).
 **Gate IDs handled:** Design review verdicts on mechanic specs (no named gate ID prefix — uses APPROVED / NEEDS REVISION vocabulary).
 

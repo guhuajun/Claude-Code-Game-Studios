@@ -29,7 +29,7 @@ Skills and agents are assigned tiers by task complexity:
 | **Opus** | `claude-opus-5` | Multi-document synthesis, high-stakes phase gate verdicts, cross-system holistic review |
 
 Skills with `model: haiku` (5) — in `planning/`:
-`/help`, `/onboard`, `/project-stage-detect`, `/scope-check`, `/sprint-status`
+`/help`, `/onboard`, `/project-stage-detect`, `/scope-check`, `openspec status`
 
 > `/patch-notes` and `/changelog` are `sonnet`, not `haiku`: both produce
 > **player-facing** copy and need judgement the cheapest tier is defined as not

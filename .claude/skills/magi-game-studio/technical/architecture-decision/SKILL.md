@@ -51,7 +51,7 @@ Enter **retrofit mode**:
 
 1. Read the existing ADR file completely.
 2. Identify which template sections are present by scanning headings:
-   - `## Status` — **BLOCKING if missing**: `/story-readiness` cannot check ADR acceptance
+   - `## Status` — **BLOCKING if missing**: `/change-readiness` cannot check ADR acceptance
    - `## ADR Dependencies` — HIGH if missing: dependency ordering breaks
    - `## Engine Compatibility` — HIGH if missing: post-cutoff risk unknown
    - `## GDD Requirements Addressed` — MEDIUM if missing: traceability lost
@@ -65,7 +65,7 @@ Enter **retrofit mode**:
    ✓ [section]
 
    Missing sections to add:
-   ✗ Status — BLOCKING (stories cannot validate ADR acceptance without this)
+   ✗ Status — BLOCKING (changes cannot validate ADR acceptance without this)
    ✗ ADR Dependencies — HIGH
    ✗ Engine Compatibility — HIGH
    ```
@@ -74,7 +74,7 @@ Enter **retrofit mode**:
    - For **Status**: ask the user — "What is the current status of this decision?"
      Options: "Proposed", "Accepted", "Deprecated", "Superseded by ADR-XXXX"
    - For **ADR Dependencies**: ask — "Does this decision depend on any other ADR?
-     Does it enable or block any other ADR or epic?" Accept "None" for each field.
+     Does it enable or block any other ADR or capability?" Accept "None" for each field.
    - For **Engine Compatibility**: read the engine reference docs (same as Step 1 below)
      and ask the user to confirm the domain. Then generate the table with verified data.
    - For **GDD Requirements Addressed**: ask — "Which GDD systems motivated this decision?
@@ -91,7 +91,7 @@ Enter **retrofit mode**:
 Enter **acceptance mode**. This is the *only* path in the framework that moves an
 ADR from `Proposed` to `Accepted`. Authoring always produces `Proposed`
 (Step 5), while
-`/create-control-manifest`, `/create-epics`, `/create-stories` and `/gate-check`
+`/create-control-manifest`, `/design-system`, `/create-changes` and `/gate-check`
 all require `Accepted` — so without this mode the pipeline had a state it could
 enter and never leave.
 
@@ -125,32 +125,32 @@ enter and never leave.
 4. **Confirm with the user, always.** Per `CONTRACT.md`, acceptance authority is
    **the user, or `technical-director` on the user's explicit confirmation — no
    other agent, and never this skill on its own.** Use `AskUserQuestion`:
-   - Prompt: "Accept ADR-NNNN — [title]? This is what unblocks stories and epics
+   - Prompt: "Accept ADR-NNNN — [title]? This is what unblocks changes and capabilities
      that depend on it."
    - Options: `[A] Yes — accept it` / `[B] Not yet — leave it Proposed`
    **This prompt fires regardless of `modes.automation`, including `autonomous`.**
    Acceptance is the decision the whole architecture pipeline gates on; it is not
    a step to be inferred.
-5. **Find the stories this will unblock, BEFORE the prompt in step 4.** Grep
-   `production/epics/[epic-slug]/story-*.md` — the one place stories live — for
+5. **Find the changes this will unblock, BEFORE the prompt in step 4.** Grep
+   `openspec/changes/*/tasks.md` — the one place changes live — for
    files containing **both** `Status: Blocked` and this ADR's id.
-   > **Stories live only under `production/epics/`.** A flat top-level stories
+   > **Changes live only under `openspec/specs/`.** A flat top-level changes
    > directory does not exist and no skill creates one — never write or match a
-   > path outside `production/epics/`. `/dev-story` matches entries *by file
-   > path*, so a story recorded under any other path silently fails to match and
+   > path outside `openspec/specs/`. `/dev-change` matches entries *by file
+   > path*, so a change recorded under any other path silently fails to match and
    > never gets picked up. That pairing is what "blocked pending this
-   ADR" means — a story blocked for an unrelated reason will not name it. Feed the
-   count into step 4's prompt so it reads *"3 stories become Ready"* rather than a
+   ADR" means — a change blocked for an unrelated reason will not name it. Feed the
+   count into step 4's prompt so it reads *"3 changes become Ready"* rather than a
    generic claim: **the user is being asked to authorise an effect, and should be
-   shown the effect.** If none match, say "no stories are waiting on this" — that
+   shown the effect.** If none match, say "no changes are waiting on this" — that
    is useful information, not an empty result to omit.
 6. On confirmation, `Edit` the `## Status` line to `Accepted`. Set the date in the
    ADR's `## Date` section; **if that section is absent, add it** — retrofit mode
    already owns this shape, and acceptance must not fail on a template that
    predates the field.
-7. Then set each story found in step 5 from `Blocked` to `Ready`. Unblocking is a
+7. Then set each change found in step 5 from `Blocked` to `Ready`. Unblocking is a
    consequence of acceptance, never of authoring — see Step 6's note below.
-8. Report what moved: the ADR, its new date, and every story that became Ready.
+8. Report what moved: the ADR, its new date, and every change that became Ready.
 
 If NOT in retrofit or acceptance mode, proceed to Step 1 below (normal ADR authoring).
 
@@ -251,7 +251,7 @@ the conflict immediately:
 
 > "⚠️ Conflict: This ADR proposes [X], but ADR-[NNNN] established that [Y] is
 > the accepted pattern for this purpose. Proceeding without resolving this will
-> produce contradictory ADRs and inconsistent stories.
+> produce contradictory ADRs and inconsistent changes.
 > Options: (1) Align with the existing stance, (2) Supersede ADR-[NNNN] with
 > an explicit replacement, (3) Explain why this case is an exception."
 
@@ -302,7 +302,7 @@ a **confirm/adjust** prompt using `AskUserQuestion` — not open-ended questions
   `None`.** The two are not interchangeable: `None` asserts that nothing upstream
   constrains this decision, and a user confirming a prefilled list cannot tell an
   assertion from a guess. This field is load-bearing — `/architecture-review`
-  flags unaccepted dependencies, `/dev-story` reads it, and the acceptance route
+  flags unaccepted dependencies, `/dev-change` reads it, and the acceptance route
   in Phase 0 **refuses to accept an ADR whose dependencies are not themselves
   Accepted**. A dependency list that defaulted to empty makes that check pass
   while examining nothing. `UNKNOWN` must be resolved during the confirm/adjust
@@ -350,8 +350,8 @@ Decision: [specific unresolved point]
 
 **ADR Dependencies** — derive from existing ADRs, then confirm:
 - Does this decision depend on any other ADR not yet Accepted?
-- Does it unlock or unblock any other ADR or epic?
-- Does it block any specific epic from starting?
+- Does it unlock or unblock any other ADR or capability?
+- Does it block any specific capability from starting?
 
 Record answers in the **ADR Dependencies** section. Write "None" for each field if no constraints apply.
 
@@ -401,7 +401,7 @@ chosen approach.]
 |-------|-------|
 | **Depends On** | [ADR-NNNN (must be Accepted before this can be implemented), or "None"] |
 | **Enables** | [ADR-NNNN (this ADR unlocks that decision), or "None"] |
-| **Blocks** | [Epic/Story name — cannot start until this ADR is Accepted, or "None"] |
+| **Blocks** | [Capability/Change name — cannot start until this ADR is Accepted, or "None"] |
 | **Ordering Note** | [Any sequencing constraint that isn't captured above] |
 
 ## Context
@@ -433,7 +433,7 @@ to implement it.]
 
 ### Implementation Guidelines
 [Specific guidance for the programmer implementing this decision — the rules a
-`/create-control-manifest` or `/dev-story` run should follow. State mandates as
+`/create-control-manifest` or `/dev-change` run should follow. State mandates as
 "must / must never" so they extract cleanly.]
 
 ## Alternatives Considered
@@ -617,18 +617,18 @@ If there are no remaining priority ADRs and no undesigned GDD systems, offer onl
 > The reviewing agent must be independent of the authoring context to give an unbiased
 > assessment. Running it here would invalidate the review.
 
-**Do NOT unblock stories here.** This ADR is `Proposed` — Step 5 guarantees it,
-and a story blocked *pending this decision* is still pending it. Unblocking on
+**Do NOT unblock changes here.** This ADR is `Proposed` — Step 5 guarantees it,
+and a change blocked *pending this decision* is still pending it. Unblocking on
 authoring is how the deadlock stayed invisible: it defeated the guard at the
 moment the guard became relevant, so the pipeline appeared to flow while running
 on decisions nobody had accepted.
 
 Instead, tell the user what is now waiting on acceptance:
 
-> "ADR-NNNN is written and `Proposed`. [N] stories remain `Blocked` pending it.
+> "ADR-NNNN is written and `Proposed`. [N] changes remain `Blocked` pending it.
 > Run `/architecture-decision accept ADR-NNNN` when the decision is settled —
 > that is what moves them to `Ready`."
 
-List the blocked stories by path so the cost of leaving it Proposed is visible.
+List the blocked changes by path so the cost of leaving it Proposed is visible.
 (Acceptance has consequences enforced across many skills and an authority
 recorded in only a few, so the route between them must stay explicit.)

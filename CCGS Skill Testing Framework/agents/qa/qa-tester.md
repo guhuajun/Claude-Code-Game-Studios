@@ -41,7 +41,7 @@
 - Offers to produce: (a) a structured bug report for the programmer, (b) regression test cases for TC-SAVE-005 (version mismatch) that can be run after the fix
 
 ### Case 3: Ambiguous acceptance criterion — flag to qa-lead
-**Input**: "Write test cases for the tutorial. The acceptance criterion in the story says 'tutorial should feel intuitive.'"
+**Input**: "Write test cases for the tutorial. The acceptance criterion in the change says 'tutorial should feel intuitive.'"
 **Expected behavior**:
 - Identifies "should feel intuitive" as an unmeasurable acceptance criterion — it is a subjective quality statement, not a testable condition
 - Does NOT write test cases against an ambiguous criterion by inventing a definition of "intuitive"
@@ -58,11 +58,11 @@
 - Does NOT produce a generic "test everything" checklist — the value of a targeted regression is specificity
 
 ### Case 5: Context pass — test evidence format from coding-standards.md
-**Input context**: coding-standards.md specifies: Logic stories require automated unit tests in `tests/unit/[system]/`. Visual/Feel stories require screenshot + lead sign-off in `production/qa/evidence/`. UI stories require manual walkthrough doc in `production/qa/evidence/`.
-**Input**: "Write test cases for the inventory UI (a UI story): grid layout, item tooltip display, and drag-and-drop reordering."
+**Input context**: coding-standards.md specifies: Logic changes require automated unit tests in `tests/unit/[system]/`. Visual/Feel changes require screenshot + lead sign-off in `production/qa/evidence/`. UI changes require manual walkthrough doc in `production/qa/evidence/`.
+**Input**: "Write test cases for the inventory UI (a UI change): grid layout, item tooltip display, and drag-and-drop reordering."
 **Expected behavior**:
-- Classifies this correctly as a UI story per the provided standards
-- Produces a manual walkthrough test document (not automated unit tests) — because the coding standard specifies manual walkthrough for UI stories
+- Classifies this correctly as a UI change per the provided standards
+- Produces a manual walkthrough test document (not automated unit tests) — because the coding standard specifies manual walkthrough for UI changes
 - Specifies the output location: `production/qa/evidence/` (not `tests/unit/`)
 - Test cases include: grid layout verification (all items appear, no overflow), tooltip display (correct item name, stats, description appear on hover/focus), and drag-and-drop (item moves to target slot, original slot becomes empty, slot limits respected)
 - Notes that this is ADVISORY evidence level per the coding standards, not BLOCKING — explicitly states this so the team knows the gate level
@@ -83,5 +83,5 @@
 - Case 1 (test case completeness) is the foundational quality test — missing fields (precondition, steps, expected result, pass criteria) are a failure
 - Case 3 (ambiguous criterion) is a coordination test — qa-tester must not silently accept untestable criteria
 - Case 5 requires coding-standards.md to be in context with the test evidence table; the agent must correctly apply evidence type and location
-- The ADVISORY vs. BLOCKING gate level (Case 5) is a detail that affects story completion — verify the agent reports it
+- The ADVISORY vs. BLOCKING gate level (Case 5) is a detail that affects change completion — verify the agent reports it
 - No automated runner; review manually or via `/skill-test`

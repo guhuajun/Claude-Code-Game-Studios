@@ -44,7 +44,7 @@ every section you author.
 > and in the `## Dependency Map` layer notes. **Do not add a column to the
 > enumeration table** — it is a fixed contract in
 > `.claude/docs/templates/systems-index.md`, and its consumers
-> (`/design-system` §6 and §7, `/create-epics`) are written against the columns it
+> (`/design-system` §6 and §7, `/design-system`) are written against the columns it
 > defines. Widening it is a schema change, not a formatting choice.
 >
 > **How the consumers actually read it.** Nothing parses this table

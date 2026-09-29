@@ -3,6 +3,35 @@
 Indie game development managed through 49 coordinated Claude Code subagents.
 Each agent owns a specific domain, enforcing separation of concerns and quality.
 
+## Workflow — OpenSpec (read this first)
+
+Work is driven by **OpenSpec**, not by sprints or stories. The OpenSpec root is
+`openspec/`; it is authoritative for what exists and what is in flight.
+
+| Concept | Where it lives |
+|---|---|
+| **Capability** — a game system's design | `openspec/specs/<system>/spec.md` — this IS the GDD |
+| **Change** — a unit of implementable work | `openspec/changes/<change-id>/` (proposal, delta spec, tasks) |
+| **Completed work** | `openspec/changes/archive/`, merged into `specs/` |
+| **Lifecycle phase** | `project.stage` in `project.yaml` (Concept … Release) |
+
+- **An epic maps to a capability; a story maps to a change. A sprint has no
+  equivalent** — in-flight changes are the unit of work. Do not look for
+  `production/sprints/`, `production/epics/`, or `sprint-status.yaml`; they do
+  not exist in any project this template produces.
+- **Progress lives in the change's `tasks.md` checkbox markers**, read by
+  `openspec status`. Never write a status field into a capability spec.
+- The `ccgs-game` schema (`openspec/schemas/ccgs-game/`) adds the game-design
+  sections — Player Fantasy, Detailed Design, Formulas, Edge Cases, Tuning
+  Knobs, Dependencies — to the standard OpenSpec spec structure.
+- **Never let a change be the first thing that creates a capability's spec.**
+  `openspec archive` creates a missing spec skeleton containing only Purpose and
+  Requirements, silently discarding those GDD sections. Write the spec first via
+  `/design-system`, then archive changes against it. Verified against
+  openspec 1.13.1.
+- Useful commands: `openspec list` (in-flight changes), `openspec list --specs`
+  (capability inventory), `openspec status`, `openspec validate <change-id>`.
+
 ## Technology Stack
 
 - **Engine**: [CHOOSE: Godot 4 / Unity / Unreal Engine 5]

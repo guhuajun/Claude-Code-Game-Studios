@@ -6,7 +6,7 @@ Tests the skills and agents themselves — not any game built with them.
 **This ships as part of the template, and it is meant to.** CCGS is a template
 you are expected to customize — edit a skill, add your own, retune an agent. This
 folder is how you check that what you changed still holds up: `catalog.yaml`
-tracks all 74 skills and 49 agents, `quality-rubric.md` defines per-category
+tracks all 71 skills and 49 agents, `quality-rubric.md` defines per-category
 pass/fail metrics, and `templates/` gives you the spec format for anything new
 you write. Driven by `/skill-test` and `/skill-improve`.
 
@@ -33,7 +33,7 @@ you write. Driven by `/skill-test` and `/skill-improve`.
 CCGS Skill Testing Framework/
 ├── README.md              ← you are here
 ├── CLAUDE.md              ← tells Claude how to use this framework
-├── catalog.yaml           ← master registry: all 74 skills + 49 agents, coverage tracking
+├── catalog.yaml           ← master registry: all 71 skills + 49 agents, coverage tracking
 ├── quality-rubric.md      ← category-specific pass/fail metrics for /skill-test category
 │
 ├── skills/                ← behavioral spec files for skills (one per skill)
@@ -44,7 +44,7 @@ CCGS Skill Testing Framework/
 │   ├── pipeline/          ← pipeline category specs
 │   ├── analysis/          ← analysis category specs
 │   ├── team/              ← team category specs
-│   ├── sprint/            ← sprint category specs
+│   ├── cadence/           ← cadence category specs
 │   └── utility/           ← utility category specs
 │
 ├── agents/                ← behavioral spec files for agents (one per agent)
@@ -75,7 +75,7 @@ All testing is driven by two skills already in the framework:
 
 ```
 /skill-test static [skill-name]     # Check one skill (7 checks)
-/skill-test static all              # Check all 74 skills
+/skill-test static all              # Check all 71 skills
 ```
 
 ### Run a behavioral spec test
@@ -113,11 +113,11 @@ All testing is driven by two skills already in the framework:
 | `gate` | gate-check | Review mode read, full/lean/solo director panel, no auto-advance |
 | `review` | design-review, architecture-review, review-all-gdds | Read-only, 8-section check, correct verdicts |
 | `authoring` | design-system, quick-design, art-bible, create-architecture, … | Section-by-section May-I-write, skeleton-first |
-| `readiness` | story-readiness, story-done | Blockers surfaced, director gate in full mode |
-| `pipeline` | create-epics, create-stories, dev-story, map-systems, … | Upstream dependency check, handoff path clear |
+| `readiness` | change-readiness, change-done | Blockers surfaced, director gate in full mode |
+| `pipeline` | create-capabilities, create-changes, dev-change, map-systems, … | Upstream dependency check, handoff path clear |
 | `analysis` | consistency-check, balance-check, code-review, tech-debt, … | Read-only report, verdict keyword, no writes |
 | `team` | team-combat, team-narrative, team-audio, … | All required agents spawned, blocked surfaced |
-| `sprint` | sprint-plan, sprint-status, milestone-review, … | Reads sprint data, status keywords present |
+| `change set` | change set-plan, change set-status, milestone-review, … | Reads change set data, status keywords present |
 | `utility` | start, adopt, hotfix, localize, setup-engine, … | Passes static checks |
 
 ---

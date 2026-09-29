@@ -1,6 +1,6 @@
 ---
 name: quick-design
-description: "Lightweight spec for small changes — tuning adjustments, minor mechanics. Embeds directly into stories; skips full GDD."
+description: "Lightweight spec for small changes — tuning adjustments, minor mechanics. Embeds directly into changes; skips full GDD."
 argument-hint: "[brief description of the change]"
 user-invocable: true
 ---
@@ -269,8 +269,8 @@ Type: [Tuning / Tweak / Addition / New Small System]
 System: [system name]
 GDD update: [Required — pending approval / Applied / Not required]
 
-Next step: This spec is ready for `/story-readiness` validation before
-implementation. Reference this spec in the story's GDD Reference field.
+Next step: This spec is ready for `/change-readiness` validation before
+implementation. Reference this spec in the change's GDD Reference field.
 ```
 
 ### Pipeline Notes
@@ -296,6 +296,6 @@ using `/design-system` to author a full GDD for this."
 
 ## Recommended Next Steps
 
-- Run `/story-readiness [story-path]` to validate the story before implementation begins — reference this spec in the story's GDD Reference field
-- Run `/dev-story [story-path]` to implement once the story passes readiness checks
+- Run `/change-readiness [change-id]` to validate the change before implementation begins — reference this spec in the change's GDD Reference field
+- Run `/dev-change [change-id]` to implement once the change passes readiness checks
 - If the change is larger than expected, run `/design-system [system-name]` to author a full GDD instead

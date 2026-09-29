@@ -142,11 +142,23 @@ if [ -n "$STAGE_YAML" ] && [ -n "$STAGE_TXT" ] && [ "$STAGE_YAML" != "$STAGE_TXT
     echo "    hand-edit either file to silence this."
 fi
 
-# Current sprint (find most recent sprint file)
-LATEST_SPRINT=$(ls -t production/sprints/sprint-*.md 2>/dev/null | head -1)
-if [ -n "$LATEST_SPRINT" ]; then
-    echo ""
-    echo "Active sprint: $(basename "$LATEST_SPRINT" .md)"
+# In-flight changes (OpenSpec).
+#
+# There is no sprint: CCGS's sprint/story/epic execution layer was replaced by
+# OpenSpec's change/spec workflow. The previous version of this hook read
+# `production/sprints/sprint-*.md`, which no project this template produces
+# contains — so the banner silently printed nothing, and a session with
+# in-flight work looked identical to one with none.
+#
+# Keep it bounded and fail open: this hook has a 10s budget and must never
+# block session start on a CLI call.
+if [ -d "openspec/changes" ]; then
+    CHANGE_COUNT=$(find openspec/changes -mindepth 1 -maxdepth 1 -type d \
+                   ! -name archive 2>/dev/null | wc -l | tr -d ' ')
+    if [ "${CHANGE_COUNT:-0}" -gt 0 ]; then
+        echo ""
+        echo "In-flight changes: $CHANGE_COUNT (run 'openspec list' for detail)"
+    fi
 fi
 
 # Current milestone

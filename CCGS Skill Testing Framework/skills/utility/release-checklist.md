@@ -3,7 +3,7 @@
 ## Skill Summary
 
 `/release-checklist` generates an internal release readiness checklist covering:
-sprint story completion, open bug severity, QA sign-off status, build stability,
+change completion, open bug severity, QA sign-off status, build stability,
 and changelog readiness. It is an internal gate — not a platform/store checklist
 (that is `/launch-checklist`). When a previous release checklist exists, it shows
 a delta of resolved and newly introduced issues.
@@ -35,19 +35,19 @@ is managed by `/gate-check`.
 
 ## Test Cases
 
-### Case 1: Happy Path — All Sprint Stories Complete, QA Passed, RELEASE READY
+### Case 1: Happy Path — All Change Set Changes Complete, QA Passed, RELEASE READY
 
 **Fixture:**
-- `production/sprints/sprint-008.md` — all stories are `Status: Done`
+- `openspec/changes/change set-008.md` — all changes are `Status: Done`
 - No open bugs with severity HIGH or CRITICAL in `production/bugs/`
-- `production/qa/qa-plan-sprint-008.md` has QA sign-off annotation
+- `production/qa/qa-plan-change set-008.md` has QA sign-off annotation
 - Changelog entry for this version exists
 - `production/stage.txt` contains `Polish`
 
 **Input:** `/release-checklist`
 
 **Expected behavior:**
-1. Skill reads sprint-008: all stories Done
+1. Skill reads change set-008: all changes Done
 2. Skill reads bugs: no HIGH or CRITICAL open bugs
 3. Skill confirms QA plan has sign-off
 4. Skill confirms changelog entry exists
@@ -56,7 +56,7 @@ is managed by `/gate-check`.
 6. Report written; verdict is RELEASE READY
 
 **Assertions:**
-- [ ] All 4 check categories are evaluated (stories, bugs, QA, changelog)
+- [ ] All 4 check categories are evaluated (changes, bugs, QA, changelog)
 - [ ] All items appear with PASS markers
 - [ ] Verdict is RELEASE READY
 - [ ] "May I write" is asked before writing
@@ -66,13 +66,13 @@ is managed by `/gate-check`.
 ### Case 2: Open HIGH Severity Bugs — RELEASE BLOCKED
 
 **Fixture:**
-- All sprint stories are Done
+- All changes are Done
 - `production/bugs/` contains 2 open bugs with severity HIGH
 
 **Input:** `/release-checklist`
 
 **Expected behavior:**
-1. Skill reads sprint — stories complete
+1. Skill reads change set — changes complete
 2. Skill reads bugs — 2 HIGH severity bugs open
 3. Skill reports: "RELEASE BLOCKED — 2 open HIGH severity bugs must be resolved"
 4. Both bug filenames are listed in the report
@@ -88,8 +88,8 @@ is managed by `/gate-check`.
 ### Case 3: Changelog Not Generated — CONCERNS
 
 **Fixture:**
-- All stories Done, no HIGH/CRITICAL bugs
-- No changelog entry found for the current version/sprint
+- All changes Done, no HIGH/CRITICAL bugs
+- No changelog entry found for the current version/change set
 
 **Input:** `/release-checklist`
 
@@ -112,15 +112,15 @@ is managed by `/gate-check`.
 
 **Fixture:**
 - `production/releases/release-checklist-2026-03-20.md` exists
-- Previous: 1 story was incomplete, 1 HIGH bug open
-- Current: all stories Done, HIGH bug resolved, but now 1 MEDIUM bug appeared
+- Previous: 1 change was incomplete, 1 HIGH bug open
+- Current: all changes Done, HIGH bug resolved, but now 1 MEDIUM bug appeared
 
 **Input:** `/release-checklist`
 
 **Expected behavior:**
 1. Skill finds the previous checklist and loads it
 2. New checklist is generated and compared:
-   - Newly resolved: "Story [X] — was open, now Done"
+   - Newly resolved: "Change [X] — was open, now Done"
    - Newly resolved: "HIGH bug [filename] — was open, now closed"
    - New item: "1 MEDIUM bug appeared (advisory)"
 3. Delta section shows all changes prominently
@@ -137,7 +137,7 @@ is managed by `/gate-check`.
 ### Case 5: Director Gate Check — No gate; release-checklist is an internal audit
 
 **Fixture:**
-- Active sprint with stories and bug reports
+- Active change set with changes and bug reports
 
 **Input:** `/release-checklist`
 
@@ -155,7 +155,7 @@ is managed by `/gate-check`.
 
 ## Protocol Compliance
 
-- [ ] Checks sprint story completion status
+- [ ] Checks change completion status
 - [ ] Checks open bug severity (CRITICAL/HIGH = BLOCKED; MEDIUM/LOW = CONCERNS)
 - [ ] Checks QA plan sign-off status
 - [ ] Checks changelog existence
@@ -172,6 +172,6 @@ is managed by `/gate-check`.
   if CI integration is not configured.
 - CRITICAL bugs always result in RELEASE BLOCKED regardless of other items;
   this is equivalent to the HIGH severity case in Case 2.
-- Stories with `Status: In Review` (not Done) are treated as incomplete
+- Changes with `Status: In Review` (not Done) are treated as incomplete
   and result in RELEASE BLOCKED; this edge case follows the same pattern
   as the HIGH bug case.

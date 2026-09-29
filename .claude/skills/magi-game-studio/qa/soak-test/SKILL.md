@@ -67,7 +67,7 @@ Read:
   soak duration), core loop description
 - Most recent file in `production/qa/playtests/` — prior playtest findings
   (to avoid re-documenting known issues)
-- Most recent file in `production/qa/qa-plan-*.md` — current sprint test coverage
+- Most recent file in `production/qa/qa-plan-*.md` — current change set test coverage
   (to understand what has been formally tested vs. what the soak covers)
 
 Note any performance budget targets (`performance.*` from `project.yaml`, else `.claude/docs/technical-preferences.md`):
@@ -309,7 +309,7 @@ After writing:
 2. Record each checkpoint as you play
 3. Complete the Post-Session Analysis section when done
 4. File bugs from 'Issues Found' to `production/qa/bugs/`
-5. Run `/bug-triage sprint` after the session to integrate any S1/S2 issues
+5. Run `/bug-triage change set` after the session to integrate any S1/S2 issues
 
 If the verdict is FAIL, run `/smoke-check` again after fixing the issues."
 

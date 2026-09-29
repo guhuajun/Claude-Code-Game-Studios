@@ -173,10 +173,10 @@ Before I draft the design doc, could you clarify these points?
 > mechanic yields one row, not four.
 >
 > This matters more here than in a report, because the output of this skill is not
-> a report — it is a **design document**, and `/design-review`, `/create-epics` and
-> `/create-stories` will read it as a statement of authored intent. A fabricated
+> a report — it is a **design document**, and `/design-review`, `/design-system` and
+> `/create-changes` will read it as a statement of authored intent. A fabricated
 > formula in a GDD does not stay a documentation error; it becomes a requirement,
-> and then a story, and then code written to satisfy it.
+> and then a change, and then code written to satisfy it.
 
 Wait for user to clarify intent before drafting.
 
@@ -220,8 +220,8 @@ Based on type, use appropriate template:
 
 A document produced here lands at the same path, in the same format, as one a
 designer wrote by hand, and **every downstream consumer treats the two
-identically**. `/design-review` checks it for completeness, `/create-epics`
-derives epics from it, `/create-stories` turns its lines into acceptance
+identically**. `/design-review` checks it for completeness, `/design-system`
+derives capabilities from it, `/create-changes` turns its lines into acceptance
 criteria. Nothing anywhere asks where it came from.
 
 The difference is not cosmetic: an authored GDD states **intent**, and this one

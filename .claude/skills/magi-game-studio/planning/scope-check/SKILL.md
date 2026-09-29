@@ -1,7 +1,7 @@
 ---
 name: scope-check
 description: "Scope creep check — current scope versus the original plan. Flags additions, quantifies bloat, recommends cuts. 'Any scope creep?'"
-argument-hint: "[feature-name or sprint-N]"
+argument-hint: "[feature-name or change set-N]"
 user-invocable: true
 ---
 
@@ -12,7 +12,7 @@ This skill is read-only — it reports findings but writes no files.
 Compares original planned scope against current state to detect, quantify, and triage
 scope creep.
 
-**Argument:** `$ARGUMENTS[0]` — feature name, sprint number, or milestone name.
+**Argument:** `$ARGUMENTS[0]` — feature name, change set number, or milestone name.
 
 ---
 
@@ -20,8 +20,8 @@ scope creep.
 
 Locate the baseline scope document for the given argument:
 
-- **Feature name** → read `design/gdd/[feature].md` or matching file in `design/`
-- **Sprint number** (e.g., `sprint-3`) → read `production/sprints/sprint-03.md` or similar
+- **Feature name** → read `openspec/specs/<system>/spec.md`, or a matching file in `design/`
+- **Change id** (e.g., `add-combat-parry`) → read `openspec/changes/<id>/`
 - **Milestone** → read `production/milestones/[name].md`
 
 If the document is not found, report the missing file and stop. Do not proceed without
@@ -33,10 +33,10 @@ a baseline to compare against.
 
 Check what has actually been implemented or is in progress:
 
-- Scan the codebase for files related to the feature/sprint
+- Scan the codebase for files related to the feature/change set
 - Read git log for commits related to this work (`git log --oneline --since=[start-date]`)
 - Check for TODO/FIXME comments that indicate unfinished scope additions
-- Check active sprint plan if the feature is mid-sprint
+- Check active change list if the feature is mid-flight
 
 ---
 
@@ -45,7 +45,7 @@ Check what has actually been implemented or is in progress:
 Produce the comparison report:
 
 ```markdown
-## Scope Check: [Feature/Sprint Name]
+## Scope Check: [Feature/Change Set Name]
 Generated: [Date]
 
 ### Original Scope
@@ -85,7 +85,7 @@ Generated: [Date]
 
 ### Recommendations
 1. **Cut**: [Items that should be removed to stay on schedule]
-2. **Defer**: [Items that can move to a future sprint/version]
+2. **Defer**: [Items that can move to a future change set/version]
 3. **Keep**: [Additions that are genuinely necessary]
 4. **Flag**: [Items that need a decision from producer/creative-director]
 ```
@@ -140,8 +140,8 @@ After presenting the report, offer concrete follow-up:
   the baseline document, or point the skill at where the work actually lives).
   Do not offer a re-run against the same inputs — it will produce the same
   non-answer.
-- **CONCERNS** → offer to identify the 2–3 additions with best cut ratio. Reference `/sprint-plan update` to formally re-scope.
-- **FAIL** → recommend escalating to producer. Reference `/sprint-plan update` for re-planning or `/estimate` to re-baseline timeline.
+- **CONCERNS** → offer to identify the 2–3 additions with best cut ratio. Reference `/create-changes` to formally re-scope.
+- **FAIL** → recommend escalating to producer. Reference `/create-changes` for re-planning or `/estimate` to re-baseline timeline.
 
 Always end with:
 > "Run `/scope-check [name]` again after cuts are made to verify the verdict improves."

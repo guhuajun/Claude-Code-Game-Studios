@@ -186,7 +186,7 @@ Using the GDD **already loaded in Phase 1** — do not re-read it — identify e
 | Level layout, spawning, wave structure | `level-designer` |
 | Player progression, XP, unlocks | `economy-designer`, `game-designer` |
 | UI, HUD, menus, player-facing displays | `ux-designer`, `ui-programmer` |
-| Dialogue, quests, story, lore | `narrative-director` |
+| Dialogue, quests, change, lore | `narrative-director` |
 | Animation, feel, timing, juice | `gameplay-programmer` |
 | Multiplayer, sync, replication | `network-programmer` |
 | Audio cues, music triggers | `audio-director` |
@@ -287,7 +287,7 @@ systems touched, and whether new ADRs are required.
 - **M** — moderate complexity, 1-2 formulas, 3-6 dependencies
 - **L** — multi-system integration, 3+ formulas, may require new ADR
 - **XL** — cross-cutting concern, 5+ dependencies, multiple new ADRs likely
-Label clearly: "Rough scope signal: M (producer should verify before sprint planning)"
+Label clearly: "Rough scope signal: M (producer should verify before change planning)"
 
 ### Verdict: [APPROVED / NEEDS REVISION / MAJOR REVISION NEEDED / NOT ASSESSED]
 

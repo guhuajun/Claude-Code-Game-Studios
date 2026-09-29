@@ -17,7 +17,7 @@
 
 ## Input & Platform
 
-<!-- Written by /setup-engine. Read by /ux-design, /ux-review, /test-setup, /team-ui, and /dev-story -->
+<!-- Written by /setup-engine. Read by /ux-design, /ux-review, /test-setup, /team-ui, and /dev-change -->
 <!-- to scope interaction specs, test helpers, and implementation to the correct input methods. -->
 
 - **Target Platforms**: [TO BE CONFIGURED — e.g., PC, Console, Mobile, Web]

@@ -4,7 +4,7 @@
 
 `/day-one-patch` prepares a day-one patch plan for issues that are known at
 launch but deferred from the v1.0 release. It reads open bug reports in
-`production/bugs/`, deferred acceptance criteria from story files (stories
+`production/bugs/`, deferred acceptance criteria from change directorys (changes
 marked `Status: Done` but with noted deferred ACs), and produces a prioritized
 patch plan with estimated fix timelines per issue.
 
@@ -39,7 +39,7 @@ None. `/day-one-patch` is a release planning utility. No director gates apply.
 
 **Fixture:**
 - `production/bugs/` contains 3 open bugs with severities: 1 MEDIUM, 2 LOW
-- No deferred ACs in sprint stories
+- No deferred ACs in changes
 - All bugs have repro steps and system identifications
 
 **Input:** `/day-one-patch`
@@ -86,25 +86,25 @@ None. `/day-one-patch` is a release planning utility. No director gates apply.
 
 ---
 
-### Case 3: Deferred AC From Story-Done — Pulled Into Patch Plan Automatically
+### Case 3: Deferred AC From Change-Done — Pulled Into Patch Plan Automatically
 
 **Fixture:**
-- `production/sprints/sprint-008.md` has a story with `Status: Done` and a note:
+- `openspec/changes/change set-008.md` has a change with `Status: Done` and a note:
   "DEFERRED AC: Gamepad vibration on damage — deferred to post-launch patch"
 - No open bugs for the same system
 
 **Input:** `/day-one-patch`
 
 **Expected behavior:**
-1. Skill reads sprint stories and detects the deferred AC note
+1. Skill reads changes and detects the deferred AC note
 2. Deferred AC is automatically included in the patch plan as a work item
-3. Plan entry: "Deferred from sprint-008: Gamepad vibration on damage"
+3. Plan entry: "Deferred from change set-008: Gamepad vibration on damage"
 4. Fix estimate is assigned; patch plan written after "May I write" approval
 5. Verdict is COMPLETE
 
 **Assertions:**
-- [ ] Deferred ACs from story files are automatically pulled into the plan
-- [ ] Deferred items are labeled by their source story (sprint-008)
+- [ ] Deferred ACs from change directorys are automatically pulled into the plan
+- [ ] Deferred items are labeled by their source change (change set-008)
 - [ ] Deferred AC gets a fix estimate like bug entries
 - [ ] Verdict is COMPLETE
 
@@ -114,13 +114,13 @@ None. `/day-one-patch` is a release planning utility. No director gates apply.
 
 **Fixture:**
 - `production/bugs/` is empty
-- No stories have deferred ACs
+- No changes have deferred ACs
 
 **Input:** `/day-one-patch`
 
 **Expected behavior:**
 1. Skill reads bugs — none found
-2. Skill reads story deferred ACs — none found
+2. Skill reads change deferred ACs — none found
 3. Skill produces an empty patch plan with a note: "No known issues at launch"
 4. Template structure is preserved (headers intact) for future use
 5. Skill asks "May I write to `production/releases/day-one-patch.md`?"
@@ -156,7 +156,7 @@ None. `/day-one-patch` is a release planning utility. No director gates apply.
 ## Protocol Compliance
 
 - [ ] Reads open bugs from `production/bugs/` before generating the plan
-- [ ] Scans story files for deferred AC notes
+- [ ] Scans change directorys for deferred AC notes
 - [ ] Escalates CRITICAL (P0) bugs with explicit `/hotfix` guidance
 - [ ] Produces an empty plan with note when no issues exist (not an error)
 - [ ] Asks "May I write to `production/releases/day-one-patch.md`?" before writing

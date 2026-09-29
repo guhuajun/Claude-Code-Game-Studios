@@ -22,7 +22,7 @@ Identify files and modules that would need to change:
 - Assess complexity (size, dependency count, cyclomatic complexity)
 - Identify integration points with other systems
 - Check for existing test coverage in the affected areas
-- Read past sprint data from `production/sprints/` for similar completed tasks and historical velocity
+- Read past change set data from `openspec/changes/` for similar completed tasks and historical velocity
 
 ---
 
@@ -119,8 +119,8 @@ This skill is read-only — no files are written. Verdict: **COMPLETE** — esti
 ## Phase 5: Next Steps
 
 - If confidence is Low: recommend a time-boxed spike (`/prototype`) before committing.
-- If the task is > 10 days: recommend breaking it into smaller stories via `/create-stories`.
-- To schedule the task: run `/sprint-plan update` to add it to the next sprint.
+- If the task is > 10 days: recommend breaking it into smaller changes via `/create-changes`.
+- To schedule the task: run `/create-changes` to add it to the next change set.
 
 ### Guidelines
 

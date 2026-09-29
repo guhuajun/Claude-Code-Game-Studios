@@ -8,15 +8,15 @@ Agent: `producer` | Model tier: Opus | Domain: Scope, timeline, dependencies, pr
 
 **Context to pass**:
 - Target phase name
-- Sprint and milestone artifacts present
+- In-flight changes (`openspec list`) and milestone artifacts present
 - Team size and capacity
-- Current blocked story count
+- Current blocked change count
 
 **Prompt**:
 > "Review the current project state for [target phase] gate readiness from a
 > production perspective. Is the scope realistic for the stated timeline and team
 > size? Are dependencies properly ordered so the team can actually execute in
-> sequence? Are there milestone or sprint risks that could derail the phase within
-> the first two sprints? Return READY, CONCERNS [list], or NOT READY [blockers]."
+> sequence? Are there milestone or dependency risks that could derail the phase within
+> the first few changes? Return READY, CONCERNS [list], or NOT READY [blockers]."
 
 **Verdicts**: READY / CONCERNS / NOT READY

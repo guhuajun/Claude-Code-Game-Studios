@@ -120,9 +120,9 @@ before running `/gate-check pre-production`.
 
 **Next steps:**
 1. `/gate-check pre-production` — formally advance to Production
-2. `/create-epics layer:foundation` — plan Foundation layer epics
-3. `/create-epics layer:core` — plan Core layer epics
-4. `/sprint-plan` — use velocity data from this report in the estimate
+2. `/design-system layer:foundation` — plan Foundation layer epics
+3. `/design-system layer:core` — plan Core layer epics
+4. `/create-changes` — use velocity data from this report in the estimate
 
 ---
 

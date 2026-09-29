@@ -18,8 +18,8 @@
 # WRITTEN BY: /architecture-decision (Phase 5 — after ADR is approved)
 # READ BY:    /architecture-decision (Step 2 — before authoring begins)
 #             /architecture-review (Phase 4 — cross-ADR conflict baseline)
-#             /create-stories (to embed architectural constraints in stories)
-#             /dev-story (to check implementation against accepted stances)
+#             /create-changes (to embed architectural constraints in stories)
+#             /dev-change (to check implementation against accepted stances)
 #
 # SEARCH PATTERNS (for skills using Grep):
 #   All state owners:       Grep pattern="^  - state:" path="docs/registry/architecture.yaml"

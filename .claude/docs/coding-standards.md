@@ -55,7 +55,7 @@ All stories must have appropriate test evidence before they can be marked Done:
 The **Default Gate Level** applies when `testing.strict` is not set in
 `project.yaml`. A project may override it per test type: `testing.strict.logic`,
 `.integration`, `.visual`, `.ui`, and `.config` each take `true` (BLOCKING) or
-`false` (ADVISORY). `/story-done`, `/story-readiness`, `/dev-story`,
+`false` (ADVISORY). `/change-done`, `/change-readiness`, `/dev-change`,
 `/gate-check`, and `/smoke-check` resolve the effective level from that setting,
 falling back to the defaults above when it is absent.
 

@@ -20,9 +20,9 @@ Validates whether the project is ready to advance from one development phase to 
 | Concept → Systems Design | `design/gdd/game-concept.md`; pillars either inside it **or** in an optional `design/gdd/game-pillars.md` |
 | Systems Design → Technical Setup | `design/gdd/systems-index.md`, all MVP GDDs in `design/gdd/`, cross-GDD review report |
 | Technical Setup → Pre-Production | `docs/architecture/` ADRs (≥3), `docs/engine-reference/[engine]/deprecated-apis.md`, `docs/architecture/architecture.md`, `docs/architecture/requirements-traceability.md`, `design/accessibility-requirements.md`, `design/ux/interaction-patterns.md` |
-| Pre-Production → Production | `prototypes/` (≥1 concept REPORT.md), `production/sprints/` (first sprint plan), `docs/architecture/control-manifest.md`, `production/epics/` (Foundation + Core layer epics), `production/qa/playtests/` (≥3 sessions), `design/ux/hud.md`, `design/ux/` key screen specs |
-| Production → Polish | code-root subsystems (resolve per `.claude/docs/code-root-resolution.md`), `tests/unit/` + `tests/integration/` (all Logic stories covered), `production/qa/smoke-*.md` (PASS verdict), `production/qa/playtests/` (≥3 sessions) |
-| Polish → Release | Full story test evidence for all Must Have stories, QA sign-off report, localization check, `production/qa/` QA plan, release checklist output, changelog |
+| Pre-Production → Production | `prototypes/` (≥1 concept REPORT.md), `openspec/changes/` (first change list), `docs/architecture/control-manifest.md`, `openspec/specs/` (Foundation + Core layer capabilities), `production/qa/playtests/` (≥3 sessions), `design/ux/hud.md`, `design/ux/` key screen specs |
+| Production → Polish | code-root subsystems (resolve per `.claude/docs/code-root-resolution.md`), `tests/unit/` + `tests/integration/` (all Logic changes covered), `production/qa/smoke-*.md` (PASS verdict), `production/qa/playtests/` (≥3 sessions) |
+| Polish → Release | Full change test evidence for all Must Have changes, QA sign-off report, localization check, `production/qa/` QA plan, release checklist output, changelog |
 
 ### Preconditions
 - The target phase argument must be one of: `systems-design`, `technical-setup`, `pre-production`, `production`, `polish`, `release`; if omitted, auto-detects from `project.stage` in `project.yaml` (fallback `production/stage.txt`) and validates the next transition
@@ -42,9 +42,9 @@ Validates whether the project is ready to advance from one development phase to 
 - Any item that cannot be automatically verified is marked `MANUAL CHECK NEEDED` and the user is asked before the verdict is finalized
 
 ## Immutability Rules
-- READS but does NOT modify: all GDDs in `design/gdd/`, all ADRs in `docs/architecture/`, `docs/architecture/control-manifest.md`, `docs/architecture/tr-registry.yaml`, `.claude/docs/technical-preferences.md` (legacy fallback), `docs/engine-reference/[engine]/VERSION.md`, `docs/engine-reference/[engine]/deprecated-apis.md`, all story files in `production/epics/`, all sprint files in `production/sprints/`, all playtest files in `production/qa/playtests/`, source files in the code root (Grep only), test files in `tests/` (run via Bash)
+- READS but does NOT modify: all GDDs in `design/gdd/`, all ADRs in `docs/architecture/`, `docs/architecture/control-manifest.md`, `docs/architecture/tr-registry.yaml`, `.claude/docs/technical-preferences.md` (legacy fallback), `docs/engine-reference/[engine]/VERSION.md`, `docs/engine-reference/[engine]/deprecated-apis.md`, all change directorys in `openspec/specs/`, all change lists in `openspec/changes/`, all playtest files in `production/qa/playtests/`, source files in the code root (Grep only), test files in `tests/` (run via Bash)
 - MODIFIES: `project.yaml` (`project.stage` only) + legacy `production/stage.txt` (both on PASS + user confirmation only), `production/gate-checks/[report].md` (new file, with user approval)
-- Does NOT modify story files, ADRs, GDDs, or any source/test code
+- Does NOT modify change directorys, ADRs, GDDs, or any source/test code
 
 ## Hard Constraints (Never Violate)
 - Never writes stage (either `project.yaml` `project.stage` or legacy `production/stage.txt`) unless the verdict is PASS and the user has explicitly confirmed advancement
@@ -64,14 +64,14 @@ Validates whether the project is ready to advance from one development phase to 
 |-------------|-------------------------|
 | Concept → Systems Design | `/map-systems` |
 | Systems Design → Technical Setup | `/architecture-decision`, `/setup-engine` |
-| Technical Setup → Pre-Production | `/create-epics`, `/create-stories`, prototyping skills |
-| Pre-Production → Production | `/dev-story`, `/sprint-plan`, `/story-readiness` |
+| Technical Setup → Pre-Production | `/design-system`, `/create-changes`, prototyping skills |
+| Pre-Production → Production | `/dev-change`, `/create-changes`, `/change-readiness` |
 | Production → Polish | `/perf-profile`, `/playtest-report`, `/smoke-check` |
 | Polish → Release | `/launch-checklist`, `/release-checklist` |
 
 - Downstream skills read `project.stage` from `project.yaml` (fallback `production/stage.txt`) to confirm their phase is active before proceeding
-- `/dev-story` specifically checks that the project is in Production stage before implementing stories; if the resolved stage is still `Pre-Production`, stories may be blocked
-- `/create-epics` requires `docs/architecture/control-manifest.md` to exist (enforced by the Technical Setup → Pre-Production gate)
+- `/dev-change` specifically checks that the project is in Production stage before implementing changes; if the resolved stage is still `Pre-Production`, changes may be blocked
+- `/design-system` requires `docs/architecture/control-manifest.md` to exist (enforced by the Technical Setup → Pre-Production gate)
 
 ## Known Fragile Points
 - `project.stage` in `project.yaml` (with legacy `production/stage.txt` as fallback) is the authoritative stage indicator — if either is manually edited to a wrong value outside of `/gate-check`, auto-detection in future sessions will be incorrect; never edit them outside of a PASS gate

@@ -24,7 +24,7 @@ per-turn context (the same reason `context-management.md` was demoted).
 
 Almost every "what settings should I use?" question reduces to one choice:
 `modes.rigor` (`minimal` | `standard` | `full`, default `minimal`). It fronts six
-sub-knobs — `modes.workflow`, `docs.density`, `qa.level`, `modes.story_granularity`,
+sub-knobs — `modes.workflow`, `docs.density`, `qa.level`, `modes.change_granularity`,
 `modes.review_mode`, `team.size`. Recommend **rigor**, not the six; let the
 expansion do the rest. Full expansion table lives in `effects-map.md § modes.rigor`
 — do not restate it here.

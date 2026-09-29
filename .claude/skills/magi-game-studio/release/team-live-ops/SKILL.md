@@ -212,5 +212,5 @@ Verdict: **COMPLETE** — season plan produced and handed off for production.
 ## Next Steps
 
 - Run `/design-review` on the season design document for consistency validation.
-- Run `/sprint-plan` to schedule content creation work for the season.
+- Run `/create-changes` to schedule content creation work for the season.
 - Run `/team-release` when the season content is ready to deploy.

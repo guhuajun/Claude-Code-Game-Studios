@@ -55,9 +55,9 @@ Read the relevant agent definition from `.claude/agents/` if a specific role is 
 
 - For programmers: scan the code root (resolve per `.claude/docs/code-root-resolution.md`) for architecture, patterns, key files
 - For designers: scan `design/` for existing design documents
-- For narrative: scan `design/narrative/` for world-building and story docs
+- For narrative: scan `design/narrative/` for world-building and change docs
 - For QA: scan `tests/` for existing test coverage
-- For production: scan `production/` for current sprint and milestone
+- For production: scan `production/` for current change set and milestone
 
 Read recent changes (git log if available) to understand current momentum.
 
@@ -91,7 +91,7 @@ Read recent changes (git log if available) to understand current momentum.
 ## Current State of Your Area
 [What has been built, what is in progress, what is planned next]
 
-## Current Sprint Context
+## Current Change Set Context
 [What the team is working on now and what is expected of this role]
 
 ## Key Dependencies
@@ -128,5 +128,5 @@ If yes, write the file, creating the directory if needed.
 Verdict: **COMPLETE** — onboarding document generated.
 
 - Share the onboarding doc with the new contributor before their first session.
-- Run `/sprint-status` to show the new contributor current progress.
+- Run `openspec status` to show the new contributor current progress.
 - Run `/help` if the contributor needs guidance on what to work on next.

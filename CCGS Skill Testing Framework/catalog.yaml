@@ -24,8 +24,8 @@ skills:
     priority: critical
     category: review
 
-  - name: story-readiness
-    spec: CCGS Skill Testing Framework/skills/readiness/story-readiness.md
+  - name: change-readiness
+    spec: CCGS Skill Testing Framework/skills/readiness/change-readiness.md
     last_static: ""
     last_static_result: ""
     last_spec: ""
@@ -35,8 +35,8 @@ skills:
     priority: critical
     category: readiness
 
-  - name: story-done
-    spec: CCGS Skill Testing Framework/skills/readiness/story-done.md
+  - name: change-done
+    spec: CCGS Skill Testing Framework/skills/readiness/change-done.md
     last_static: ""
     last_static_result: ""
     last_spec: ""
@@ -69,8 +69,9 @@ skills:
     category: review
 
   # High — pipeline-critical skills
-  - name: create-epics
-    spec: CCGS Skill Testing Framework/skills/pipeline/create-epics.md
+
+  - name: create-changes
+    spec: CCGS Skill Testing Framework/skills/pipeline/create-changes.md
     last_static: ""
     last_static_result: ""
     last_spec: ""
@@ -80,19 +81,8 @@ skills:
     priority: high
     category: pipeline
 
-  - name: create-stories
-    spec: CCGS Skill Testing Framework/skills/pipeline/create-stories.md
-    last_static: ""
-    last_static_result: ""
-    last_spec: ""
-    last_spec_result: ""
-    last_category: ""
-    last_category_result: ""
-    priority: high
-    category: pipeline
-
-  - name: dev-story
-    spec: CCGS Skill Testing Framework/skills/pipeline/dev-story.md
+  - name: dev-change
+    spec: CCGS Skill Testing Framework/skills/pipeline/dev-change.md
     last_static: ""
     last_static_result: ""
     last_spec: ""
@@ -180,27 +170,7 @@ skills:
     category: analysis
 
   # Medium — team and sprint management skills
-  - name: sprint-plan
-    spec: CCGS Skill Testing Framework/skills/sprint/sprint-plan.md
-    last_static: ""
-    last_static_result: ""
-    last_spec: ""
-    last_spec_result: ""
-    last_category: ""
-    last_category_result: ""
-    priority: medium
-    category: sprint
 
-  - name: sprint-status
-    spec: CCGS Skill Testing Framework/skills/sprint/sprint-status.md
-    last_static: ""
-    last_static_result: ""
-    last_spec: ""
-    last_spec_result: ""
-    last_category: ""
-    last_category_result: ""
-    priority: medium
-    category: sprint
 
   - name: team-ui
     spec: CCGS Skill Testing Framework/skills/team/team-ui.md
@@ -611,7 +581,7 @@ skills:
     category: utility
 
   - name: milestone-review
-    spec: CCGS Skill Testing Framework/skills/sprint/milestone-review.md
+    spec: CCGS Skill Testing Framework/skills/cadence/milestone-review.md
     last_static: ""
     last_static_result: ""
     last_spec: ""
@@ -619,10 +589,10 @@ skills:
     last_category: ""
     last_category_result: ""
     priority: low
-    category: sprint
+    category: cadence
 
   - name: retrospective
-    spec: CCGS Skill Testing Framework/skills/sprint/retrospective.md
+    spec: CCGS Skill Testing Framework/skills/cadence/retrospective.md
     last_static: ""
     last_static_result: ""
     last_spec: ""
@@ -630,10 +600,10 @@ skills:
     last_category: ""
     last_category_result: ""
     priority: low
-    category: sprint
+    category: cadence
 
   - name: changelog
-    spec: CCGS Skill Testing Framework/skills/sprint/changelog.md
+    spec: CCGS Skill Testing Framework/skills/cadence/changelog.md
     last_static: ""
     last_static_result: ""
     last_spec: ""
@@ -641,10 +611,10 @@ skills:
     last_category: ""
     last_category_result: ""
     priority: low
-    category: sprint
+    category: cadence
 
   - name: patch-notes
-    spec: CCGS Skill Testing Framework/skills/sprint/patch-notes.md
+    spec: CCGS Skill Testing Framework/skills/cadence/patch-notes.md
     last_static: ""
     last_static_result: ""
     last_spec: ""
@@ -652,7 +622,7 @@ skills:
     last_category: ""
     last_category_result: ""
     priority: low
-    category: sprint
+    category: cadence
 
   - name: onboard
     spec: CCGS Skill Testing Framework/skills/utility/onboard.md

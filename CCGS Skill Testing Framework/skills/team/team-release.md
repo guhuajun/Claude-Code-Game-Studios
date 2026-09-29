@@ -38,7 +38,7 @@ NO-GO. Closes with a post-release monitoring plan.
 - No online features, no multiplayer, no player data collection
 - All CI builds are clean on the current branch
 - No open S1/S2 bugs
-- `production/sprints/` contains the completed sprint stories for this milestone
+- `openspec/changes/` contains the completed changes for this milestone
 
 **Input:** `/team-release v1.0.0`
 

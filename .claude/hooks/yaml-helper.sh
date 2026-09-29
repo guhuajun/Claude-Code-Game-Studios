@@ -462,6 +462,7 @@ modes.review_mode::full|lean|solo
 modes.rigor::minimal|standard|full
 modes.workflow::minimal|standard|full
 modes.automation::collaborative|guided|autonomous
+modes.change_granularity::coarse|balanced|fine
 modes.story_granularity::coarse|balanced|fine
 docs.density::terse|balanced|thorough
 qa.level::minimal|standard|full
@@ -485,7 +486,7 @@ workflow_overrides.art_bible_strict::true|false"
 # `resolve_setting` validates every hop and DROPS a value that fails, so a key
 # absent from this table accepts anything. Before they were listed,
 # `testing.strict.logic: maybe` in project.local.yaml passed validation and won
-# over an explicit `true` in project.yaml -- and `/story-done` treats the gate as
+# over an explicit `true` in project.yaml -- and `/change-done` treats the gate as
 # BLOCKING only when the value is `true`, so a typo silently downgraded a
 # blocking test gate to advisory with no error. `performance.enforce` was
 # already enumerated and correctly rejected garbage, which is exactly the
@@ -501,7 +502,7 @@ workflow_overrides.art_bible_strict::true|false"
 #     of the five type keys; the bare scalar is only a back-compat form. Its
 #     effects-map `**Values:**` line documents the map, so enumerating the parent
 #     as a scalar would force that line to misdescribe the real shape. The five
-#     leaves below carry the validation, which is where /story-done reads.
+#     leaves below carry the validation, which is where /change-done reads.
 #
 #   validate_local_scope [<file>]
 #     The location check the value checks above cannot do: names keys in
@@ -959,7 +960,7 @@ EOF
 # Terminal defaults. ONLY knobs whose default is uniform across every consumer.
 #
 # testing.strict.* is deliberately ABSENT: /smoke-check defaults it to blocking
-# (build-health gate) while /story-done and /dev-story default per story type.
+# (build-health gate) while /change-done and /dev-change default per story type.
 # Emitting one value here would silently pick a winner between them.
 #
 # The six knobs `rigor` fronts (modes.workflow, docs.density, qa.level,
@@ -1012,9 +1013,9 @@ performance.enforce::warn"
 # owns the only per-system override mechanism (workflow_overrides.system_
 # overrides), which continues to win over the rigor-derived value.
 _yaml_helper_rigor_expansion="\
-minimal::modes.workflow=minimal,docs.density=terse,qa.level=minimal,modes.story_granularity=coarse,modes.review_mode=solo,team.size=individual
-standard::modes.workflow=standard,docs.density=balanced,qa.level=standard,modes.story_granularity=balanced,modes.review_mode=lean,team.size=individual
-full::modes.workflow=full,docs.density=thorough,qa.level=full,modes.story_granularity=fine,modes.review_mode=full,team.size=studio"
+minimal::modes.workflow=minimal,docs.density=terse,qa.level=minimal,modes.change_granularity=coarse,modes.review_mode=solo,team.size=individual
+standard::modes.workflow=standard,docs.density=balanced,qa.level=standard,modes.change_granularity=balanced,modes.review_mode=lean,team.size=individual
+full::modes.workflow=full,docs.density=thorough,qa.level=full,modes.change_granularity=fine,modes.review_mode=full,team.size=studio"
 
 # Value for <path> implied by the project's rigor level, or '' if rigor does not
 # front that key. Never consulted for modes.rigor itself — that would recurse.
@@ -1124,6 +1125,45 @@ get_legacy_key() {
         if (length($0) > 0) { print; exit } }' "$file"
 }
 
+# Renamed keys — new name::old name. `resolve_setting` consults this when the new
+# key is absent from project.yaml, so a project written before the rename keeps
+# resolving instead of silently falling back to the rigor default. The old name
+# stays valid as INPUT (the enum table lists it); it is only ever READ as a
+# fallback, never written.
+_yaml_helper_key_aliases="\
+modes.change_granularity::modes.story_granularity"
+
+# Previous name for <path>, or '' if it was never renamed.
+_yaml_helper_aliased_from() {
+  local path="$1" line
+  [ -z "$path" ] && return 0
+  while IFS= read -r line; do
+    [ -z "$line" ] && continue
+    if [ "${line%%::*}" = "$path" ]; then printf '%s' "${line##*::}"; return 0; fi
+  done <<EOF
+$_yaml_helper_key_aliases
+EOF
+  return 0
+}
+
+# Canonical (current) name for <path>: maps an OLD name to its replacement, and
+# passes any other path through unchanged. The derived tiers — rigor expansion
+# and terminal default — are keyed on the CURRENT name only, so without this an
+# old name would resolve from project.yaml but come back EMPTY once the user's
+# explicit value was removed. Verified: `rigor: full` alone gave
+# change_granularity=fine but story_granularity=unset.
+_yaml_helper_canonical_key() {
+  local path="$1" line
+  [ -z "$path" ] && return 0
+  while IFS= read -r line; do
+    [ -z "$line" ] && continue
+    if [ "${line##*::}" = "$path" ]; then printf '%s' "${line%%::*}"; return 0; fi
+  done <<EOF
+$_yaml_helper_key_aliases
+EOF
+  printf '%s' "$path"
+}
+
 # Resolve one setting through the full chain.
 #   prints: "<value>\t<source>"
 #   source: project.local.yaml | project.yaml | <legacy path> | default | unset
@@ -1150,6 +1190,20 @@ resolve_setting() {
     [ -n "$val" ] && src="project.yaml"
   fi
 
+  # A renamed key still resolves under its OLD name — same tier as project.yaml,
+  # so an upgraded project behaves exactly as it did before the rename. Sits
+  # above the legacy-mirror and rigor tiers: an explicit old-name value is a
+  # genuine user choice and must beat a rigor-derived default.
+  if [ -z "$val" ] && [ -f "$_YH_ROOT/project.yaml" ]; then
+    local _alias
+    _alias=$(_yaml_helper_aliased_from "$path")
+    if [ -n "$_alias" ]; then
+      val=$(get_yaml_key "$_YH_ROOT/project.yaml" "$_alias")
+      if [ -n "$val" ] && ! validate_enum_value "$_alias" "$val" 2>/dev/null; then val=""; fi
+      [ -n "$val" ] && src="project.yaml (as $_alias)"
+    fi
+  fi
+
   if [ -z "$val" ]; then
     legacy=$(_yaml_helper_legacy_file_for "$path")
     if [ -n "$legacy" ] && [ -f "$legacy" ]; then
@@ -1162,13 +1216,17 @@ resolve_setting() {
   # Rigor expansion sits BELOW every explicit source and ABOVE the terminal
   # default. That ordering is the back-compat guarantee: a project.yaml that
   # already sets docs.density resolves exactly as it did before rigor existed.
+  #
+  # Resolved through the CANONICAL name: the expansion table is keyed on the
+  # current key, so an old-name lookup would otherwise return nothing here and
+  # an upgraded project would lose its rigor-derived value.
   if [ -z "$val" ]; then
-    val=$(_yaml_helper_rigor_value "$path")
+    val=$(_yaml_helper_rigor_value "$(_yaml_helper_canonical_key "$path")")
     [ -n "$val" ] && src="rigor:$(_yaml_helper_rigor_level)"
   fi
 
   if [ -z "$val" ]; then
-    val=$(get_yaml_default "$path")
+    val=$(get_yaml_default "$(_yaml_helper_canonical_key "$path")")
     [ -n "$val" ] && src="default"
   fi
 
@@ -1401,7 +1459,7 @@ resolve_config() {
               modes.automation:automation \
               modes.workflow:workflow \
               docs.density:docs.density \
-              modes.story_granularity:story_granularity \
+              modes.change_granularity:change_granularity \
               qa.level:qa.level \
               team.size:team.size \
               project.stage:project.stage; do

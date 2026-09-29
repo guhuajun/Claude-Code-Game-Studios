@@ -66,7 +66,7 @@ In `solo` mode: both gates are skipped with equivalent notes.
 - [ ] TD-ARCHITECTURE and LP-FEASIBILITY spawn in parallel (not sequentially)
 - [ ] Verdict is APPROVED when all sections are present and no conflicts exist
 - [ ] Skill does NOT write any files
-- [ ] Next-step handoff to `/create-control-manifest` or `/create-epics` is present
+- [ ] Next-step handoff to `/create-control-manifest` or `/design-system` is present
 
 ---
 

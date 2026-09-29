@@ -91,13 +91,14 @@ Silently ignoring it is how the above went unnoticed.
 
 Step 1 (the per-system override) applies to skills that act on a named system:
 - **Single-system, resolve once per run**: `design-system`, `design-review`,
-  `dev-story`, `story-done`, `create-stories` (one story/epic per invocation).
-- **Multi-system, resolve once per item**: `story-readiness` (per story across
-  `all`/`sprint` scope), `qa-plan` and `regression-suite` audit (per GDD/system).
+  `dev-change`, `change-done`, `create-changes` (one capability/change per
+  invocation).
+- **Multi-system, resolve once per item**: `change-readiness` (per change across
+  `all` scope), `qa-plan` and `regression-suite` audit (per spec/system).
   These do NOT freeze a single tier for the run — different systems in one run
   may resolve to different tiers.
 
-Skills that operate project-wide (`gate-check`, `create-epics`) use the
+Skills that operate project-wide (`gate-check`, `design-system`) use the
 project-level `workflow` plus consider per-system overrides where the tier table
 says so.
 
@@ -126,7 +127,7 @@ the expansion.) Per-system overrides read via
 |------|----------------|---------------------|----------|
 | `full` | High | All 8 GDD sections per system, full architecture, all ADRs, art bible, UX specs per screen | Teams, commercial titles, learning the full pipeline |
 | `standard` | Balanced | 5 GDD sections per system, one architecture doc, critical ADRs, game concept, systems index | Projects that outgrew a brief - several interacting systems, or a design someone else implements |
-| `minimal` | Low | One-page `design/game-brief.md` + engine choice (its build-order field is the plan — no separate sprint plan) | **Default.** Jam projects, small scope, design already in your head |
+| `minimal` | Low | One-page `design/game-brief.md` + engine choice (its build-order field is the plan — no separate change planning) | **Default.** Jam projects, small scope, design already in your head |
 
 **Default**: `minimal` (the rationale block above `_yaml_helper_defaults` in
 `.claude/hooks/yaml-helper.sh` carries the reasoning and the ordering
@@ -141,7 +142,7 @@ artifacts must exist on disk).
 
 > **`minimal` floor.** Even at minimal, engine choice and a filled
 > **`design/game-brief.md`** are required before code starts — the brief's
-> build-order field is the plan, so there is no separate `sprint-plan` step.
+> build-order field is the plan, so there is no separate `create-changes` step.
 > Everything else can be skipped.
 
 > **"Game brief" is a real artifact at `minimal`: `design/game-brief.md`.**
@@ -261,7 +262,7 @@ and `/gate-check` loads only the one gate it is running — that is the right
 place to look, not `effects-map.md`.
 
 **Planning/implementation** — adjust artifact prerequisites:
-`create-epics`, `create-stories`, `dev-story`, `story-readiness`, `story-done`,
+`design-system`, `create-changes`, `dev-change`, `change-readiness`, `change-done`,
 `qa-plan`, `regression-suite`.
 
 **Support** — adjust "what's missing" expectations so optional docs aren't
@@ -289,7 +290,7 @@ are what a skill needs at runtime; `effects-map.md` carries the exhaustive
 per-skill tables for spec authors, and is not worth loading to apply a knob.
 
 > **All four below are fronted by `modes.rigor`** (`docs.density`,
-> `modes.story_granularity`, `qa.level`, `team.size` — along with `workflow` itself,
+> `modes.change_granularity`, `qa.level`, `team.size` — along with `workflow` itself,
 > and `modes.review_mode`, for six fronted knobs total). One question at `/start`
 > sets all of them; setting any explicitly overrides just that one and leaves its
 > siblings on the rigor level. `team.size` and `modes.review_mode` are the two that
@@ -300,8 +301,8 @@ per-skill tables for spec authors, and is not worth loading to apply a knob.
   *which sections exist*; `density` controls *how deep each section goes*.
   `rigor` sets the two together; override `docs.density` alone to get
   `full` + `terse` = "all 8 sections, each compact."
-- **`modes.story_granularity`** (`coarse` | `balanced` | `fine`) — how big
-  each story is and how many per epic/sprint.
+- **`modes.change_granularity`** (`coarse` | `balanced` | `fine`) — how big
+  each change is and how many per capability.
 - **`qa.level`** (`minimal` | `standard` | `full`) — what test evidence is
   required to mark stories Done. Composes with `testing.strict`:
   `qa.level` = is evidence required; `testing.strict` = do failures block.

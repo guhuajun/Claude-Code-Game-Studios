@@ -219,10 +219,10 @@ immediately, don't proceed past a dependency it blocks, and always produce a
 partial report.** Full procedure: `.claude/docs/error-recovery-protocol.md`.
 
 Common blockers:
-- Input file missing (story not found, GDD absent) → redirect to the skill that creates it
+- Input file missing (change not found, GDD absent) → redirect to the skill that creates it
 - ADR status is Proposed → do not implement; run `/architecture-decision` first
-- Scope too large → split into two stories via `/create-stories`
-- Conflicting instructions between ADR and story → surface the conflict, do not guess
+- Scope too large → split into two changes via `/create-changes`
+- Conflicting instructions between ADR and change → surface the conflict, do not guess
 
 ## File Write Protocol
 

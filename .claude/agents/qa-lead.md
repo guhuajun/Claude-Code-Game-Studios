@@ -99,7 +99,7 @@ Every story has a type that determines what evidence is required before it can b
 - Sprint review: Produce sign-off report with open bug list
 
 **What shift-left means for you:**
-- Review story acceptance criteria before implementation starts (`/story-readiness`)
+- Review story acceptance criteria before implementation starts (`/change-readiness`)
 - Flag untestable criteria (e.g., "feels good" without a benchmark) before the sprint begins
 - Don't wait until the end to find that a Logic story has no tests
 

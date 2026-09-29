@@ -161,7 +161,7 @@ Full GDD review is not needed for sub-4-hour single-system features.
 - [ ] Draft shown to user before "May I write" ask
 - [ ] "May I write `design/quick-notes/[name].md`?" asked before writing
 - [ ] No director gates — no review-mode.txt read
-- [ ] Ends with next-step handoff (e.g., proceed to implementation or `/dev-story`)
+- [ ] Ends with next-step handoff (e.g., proceed to implementation or `/dev-change`)
 
 ---
 
@@ -172,5 +172,5 @@ Full GDD review is not needed for sub-4-hour single-system features.
   independently tested by counting hours.
 - The `design/quick-notes/` directory is created automatically if it does not
   exist — this filesystem behavior is not independently tested here.
-- Integration with the story pipeline (can a quick-design generate a story
+- Integration with the change pipeline (can a quick-design generate a change
   directly?) is out of scope for this spec — quick-designs are standalone.

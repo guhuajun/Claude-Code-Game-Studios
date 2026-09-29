@@ -15,7 +15,7 @@ defaults in `.claude/docs/config-resolution.md`.
 
 This skill produces `docs/architecture/architecture.md` — the master architecture
 document that translates all approved GDDs into a concrete technical blueprint.
-It sits between design and implementation, and must exist before sprint planning begins.
+It sits between design and implementation, and must exist before change planning begins.
 
 **Distinct from `/architecture-decision`**: ADRs record individual point decisions.
 This skill creates the whole-system blueprint that gives ADRs their context.
@@ -101,8 +101,8 @@ matter just as much:
 
 - **`systems-index.md` absent** — stop:
   > "No systems index found. Run `/map-systems` first. An architecture written
-  > without it invents layers for systems nobody mapped, and every ADR, epic and
-  > story downstream inherits that invention."
+  > without it invents layers for systems nobody mapped, and every ADR, capability and
+  > change downstream inherits that invention."
   At `minimal` the index is not required (§ tier note above) — say so and proceed
   from the brief instead.
 - **`game-concept.md` absent** — at `standard`/`full`, stop and point at

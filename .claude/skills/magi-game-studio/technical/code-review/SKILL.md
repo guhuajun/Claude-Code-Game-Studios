@@ -72,18 +72,18 @@ If no engine is configured (no `engine.name` in `project.yaml`, and `technical-p
 
 ## Phase 3: ADR Compliance Check
 
-**Argument:** `/code-review [file(s)]` may optionally include a story file path as the last argument (e.g., `/code-review src/combat/attack.gd production/epics/combat/story-001.md`). If a story path is provided, read it to extract the governing ADR reference.
+**Argument:** `/code-review [file(s)]` may optionally include a change directory path as the last argument (e.g., `/code-review src/combat/attack.gd openspec/specs/combat/change-001.md`). If a change id is provided, read it to extract the governing ADR reference.
 
 Search for ADR references in, in priority order:
-1. The story file (if provided as argument)
+1. The change directory (if provided as argument)
 2. Header comments at the top of the implementation files
 3. Commit messages referencing these files (`git log --oneline -- [file]`)
 
 Look for patterns like `ADR-NNN` or `docs/architecture/ADR-`.
 
-If no ADR references found, note: "No ADR references found — ADR compliance check skipped. For full ADR compliance review, provide the story path: `/code-review [files] [story-path]`."
+If no ADR references found, note: "No ADR references found — ADR compliance check skipped. For full ADR compliance review, provide the change id: `/code-review [files] [change-id]`."
 
-For each referenced ADR, load **only the sections this check needs — never an unbounded full read.** A substantial ADR exceeds the 25k-token `Read` cap, and a capped read's only recovery is paging the remainder — the most expensive way to read a file (measured ~103k vs ~54k tokens on a 34k-token ADR). Use the same pattern as `/dev-story` and `/create-stories`:
+For each referenced ADR, load **only the sections this check needs — never an unbounded full read.** A substantial ADR exceeds the 25k-token `Read` cap, and a capped read's only recovery is paging the remainder — the most expensive way to read a file (measured ~103k vs ~54k tokens on a 34k-token ADR). Use the same pattern as `/dev-change` and `/create-changes`:
 
 1. **Map the headings** (cheap — line numbers only): `Grep pattern="^## " path="[adr-file]" output_mode="content" -n`
 2. **Bounded-read only `## Decision` and `## Consequences`**, using the line numbers to set `Read(offset, limit)` spans that end where the next heading begins. If the heading map is empty (a nonstandard ADR predating the template), fall back to one full `Read`; if that truncates at the cap, grep for the decision/consequence content directly rather than paging the remainder.
@@ -173,19 +173,19 @@ Also spawn the **Primary Specialist** for any file touching engine architecture 
 
 ### QA Testability Review
 
-For Logic and Integration stories, also spawn `qa-tester` via `Agent` in parallel with the engine specialists. Pass:
+For Logic and Integration changes, also spawn `qa-tester` via `Agent` in parallel with the engine specialists. Pass:
 - The implementation files being reviewed
-- The story's `## QA Test Cases` section (the pre-written test specs from qa-lead)
-- The story's `## Acceptance Criteria`
+- The change's `## QA Test Cases` section (the pre-written test specs from qa-lead)
+- The change's `## Acceptance Criteria`
 
 Ask the qa-tester to evaluate:
 - [ ] Are all test hooks and interfaces exposed (not hidden behind private/internal access)?
-- [ ] Do the QA test cases from the story's `## QA Test Cases` section map to testable code paths?
+- [ ] Do the QA test cases from the change's `## QA Test Cases` section map to testable code paths?
 - [ ] Are any acceptance criteria untestable as implemented (e.g., hardcoded values, no seam for injection)?
 - [ ] Does the implementation introduce any new edge cases not covered by the existing QA test cases?
 - [ ] Are there any observable side effects that should have a test but don't?
 
-For Visual/Feel and UI stories: qa-tester reviews whether the manual verification steps in `## QA Test Cases` are achievable with the implementation as written — e.g., "is the state the manual checker needs to reach actually reachable?"
+For Visual/Feel and UI changes: qa-tester reviews whether the manual verification steps in `## QA Test Cases` are achievable with the implementation as written — e.g., "is the state the manual checker needs to reach actually reachable?"
 
 Collect all specialist findings before producing output.
 
@@ -199,7 +199,7 @@ Collect all specialist findings before producing output.
 ### Engine Specialist Findings: [N/A — no engine configured / CLEAN / ISSUES FOUND]
 [Findings from engine specialist(s), or "No engine configured." if skipped]
 
-### Testability: [N/A — Visual/Feel or Config story / TESTABLE / GAPS / BLOCKING]
+### Testability: [N/A — Visual/Feel or Config change / TESTABLE / GAPS / BLOCKING]
 [qa-tester findings: test hooks, coverage gaps, untestable paths, new edge cases]
 [If BLOCKING: implementation must expose [X] before tests in ## QA Test Cases can run]
 
@@ -240,11 +240,11 @@ Use `AskUserQuestion`:
 - Prompt: "Code review complete — verdict: [NOT ASSESSED / APPROVED / CHANGES REQUIRED / MAJOR REVISION]. How would you like to proceed?"
 - Options (adjust based on verdict):
   - If APPROVED:
-    - `[A] Run /story-done to mark the story complete`
+    - `[A] Run /change-done to mark the change complete`
     - `[B] Stop here`
   - If CHANGES REQUIRED or MAJOR REVISION:
     - `[A] Fix the issues and re-run /code-review`
-    - `[B] Run /story-done anyway with noted exceptions`
+    - `[B] Run /change-done anyway with noted exceptions`
     - `[C] Stop here`
 
 If an ARCHITECTURAL VIOLATION is found:

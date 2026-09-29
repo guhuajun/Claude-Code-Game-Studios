@@ -287,10 +287,11 @@ fi
 
 # --- Check 5: Production planning ---
 if [ "$SRC_FILES" -gt 100 ]; then
-  # For projects with substantial code, check for production planning
-  if [ ! -d "production/sprints" ] && [ ! -d "production/milestones" ]; then
-    echo "⚠️  GAP: Large codebase ($SRC_FILES files) but no production planning found"
-    echo "    Suggested action: /sprint-plan or create production/ directory"
+  # For projects with substantial code, check for production planning.
+  # Planning now lives in the OpenSpec root, not in production/sprints.
+  if [ ! -d "openspec/changes" ] && [ ! -d "openspec/specs" ] && [ ! -d "production/milestones" ]; then
+    echo "⚠️  GAP: Large codebase ($SRC_FILES files) but no OpenSpec specs or changes found"
+    echo "    Suggested action: /design-system (write the capability specs) or /opsx:propose"
   fi
 fi
 
@@ -313,11 +314,14 @@ fi
 ' | tr -d ' ')
 
 if [ -n "$STAGE" ]; then
-    STORY_COUNT=$(find production/epics -name "story-*.md" 2>/dev/null | wc -l | tr -d ' ')
+    # Count in-flight changes — the unit of work under OpenSpec. Replaces the
+    # old `production/epics/**/story-*.md` count, which no longer exists.
+    CHANGE_COUNT=$(find openspec/changes -mindepth 1 -maxdepth 1 -type d \
+                   ! -name archive 2>/dev/null | wc -l | tr -d ' ')
     case "$STAGE" in
       Concept|concept|Pre-Production|"Pre-Production")
-        if [ "$STORY_COUNT" -gt 0 ] && [ "$SRC_FILES" -gt 0 ]; then
-            echo "⚠️  GAP: project.stage says '$STAGE', but $STORY_COUNT stories and $SRC_FILES source files exist"
+        if [ "$CHANGE_COUNT" -gt 0 ] && [ "$SRC_FILES" -gt 0 ]; then
+            echo "⚠️  GAP: project.stage says '$STAGE', but $CHANGE_COUNT in-flight changes and $SRC_FILES source files exist"
             echo "    The stage only advances on a /gate-check PASS, and nothing on the"
             echo "    minimal path runs one -- so the status line can sit at '$STAGE' indefinitely."
             echo "    Suggested action: /gate-check  (it asks before advancing; this hook never writes the stage)"

@@ -41,17 +41,17 @@ Definition files below are in `.claude/docs/director-gates/`.
 | TD-MANIFEST | Control manifest review before it is written | td-manifest.md |
 | TD-CHANGE-IMPACT | Design-change impact assessment review | td-change-impact.md |
 | PR-SCOPE | Scope and timeline validation | pr-scope.md |
-| PR-SPRINT | Sprint plan feasibility review | pr-sprint.md |
+| PR-CHANGESET | Change-set feasibility review | pr-changeset.md |
 | PR-MILESTONE | Milestone risk assessment | pr-milestone.md |
-| PR-EPIC | Epic structure feasibility before story breakdown | pr-epic.md |
+| PR-CAPABILITY | Capability structure feasibility before change breakdown | pr-capability.md |
 | PR-PHASE-GATE | Production readiness at phase transition | pr-phase-gate.md |
 | AD-CONCEPT-VISUAL | Visual identity anchor after pillars lock | ad-concept-visual.md |
 | AD-ART-BIBLE | Art bible sign-off before asset production | ad-art-bible.md |
 | AD-PHASE-GATE | Visual readiness at phase transition | ad-phase-gate.md |
 | LP-FEASIBILITY | Implementation feasibility of the architecture | lp-feasibility.md |
 | LP-CODE-REVIEW | Code review of an implemented story | lp-code-review.md |
-| QL-STORY-READY | Acceptance-criteria testability before sprint | ql-story-ready.md |
-| QL-TEST-COVERAGE | Test coverage review before epic done / advance | ql-test-coverage.md |
+| QL-CHANGE-READY | Acceptance-criteria testability before implementation | ql-change-ready.md |
+| QL-TEST-COVERAGE | Test coverage review before capability done / advance | ql-test-coverage.md |
 | ND-CONSISTENCY | Narrative consistency of writer deliverables | nd-consistency.md |
 | AD-VISUAL | Visual consistency of art/tech-art decisions | ad-visual.md |
 
@@ -185,7 +185,7 @@ Collect all four verdicts, then apply escalation rules:
 | **Concept** | CD-PILLARS, AD-CONCEPT-VISUAL | TD-FEASIBILITY, PR-SCOPE |
 | **Systems Design** | TD-SYSTEM-BOUNDARY, CD-SYSTEMS, PR-SCOPE, CD-GDD-ALIGN (per GDD) | ND-CONSISTENCY, AD-VISUAL, TD-CHANGE-IMPACT (on GDD revision) |
 | **Technical Setup** | TD-ARCHITECTURE, TD-ADR (per ADR), TD-MANIFEST, LP-FEASIBILITY, AD-ART-BIBLE | TD-ENGINE-RISK |
-| **Pre-Production** | PR-EPIC, QL-STORY-READY (per story), PR-SPRINT, all four PHASE-GATEs (via gate-check) | CD-PLAYTEST |
-| **Production** | LP-CODE-REVIEW (per story), QL-STORY-READY, PR-SPRINT (per sprint), QL-TEST-COVERAGE (per sprint close-out) | PR-MILESTONE, AD-VISUAL, TD-CHANGE-IMPACT (on GDD revision) |
+| **Pre-Production** | PR-CAPABILITY, QL-CHANGE-READY (per change), PR-CHANGESET, all four PHASE-GATEs (via gate-check) | CD-PLAYTEST |
+| **Production** | LP-CODE-REVIEW (per change), QL-CHANGE-READY, PR-CHANGESET (per change set), QL-TEST-COVERAGE (per change-set close-out) | PR-MILESTONE, AD-VISUAL, TD-CHANGE-IMPACT (on spec revision) |
 | **Polish** | QL-TEST-COVERAGE, CD-PLAYTEST, PR-MILESTONE | AD-VISUAL |
 | **Release** | All four PHASE-GATEs (via gate-check) | QL-TEST-COVERAGE |

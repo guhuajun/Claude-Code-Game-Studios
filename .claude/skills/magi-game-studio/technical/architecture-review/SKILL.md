@@ -23,10 +23,10 @@ and Pre-Production.
 - **`engine`**: Engine compatibility audit only
 - **`single-gdd [path]`**: Review architecture coverage for one specific GDD
 - **`rtm`**: Requirements Traceability Matrix — extends the standard matrix
-  to include story file paths and test file paths; outputs
+  to include change directory paths and test file paths; outputs
   `docs/architecture/requirements-traceability.md` with the full
-  GDD requirement → ADR → Story → Test chain. Use in Production phase when
-  stories and tests exist.
+  GDD requirement → ADR → Change → Test chain. Use in Production phase when
+  changes and tests exist.
 
 ---
 
@@ -256,7 +256,7 @@ For each technical requirement extracted in Phase 2, search the ADRs:
 > status qualification, a requirement covered entirely by `Proposed` ADRs would
 > count as covered and this review could return **PASS: All requirements
 > covered** over an architecture nobody had accepted. Four skills downstream
-> (`create-control-manifest`, `create-epics`, `create-stories`, `gate-check`)
+> (`create-control-manifest`, `design-system`, `create-changes`, `gate-check`)
 > require `Accepted`, so a PASS on that basis sends work forward that every one
 > of them will refuse.
 >
@@ -281,32 +281,32 @@ Count the totals: X covered, Y partial, Z gaps.
 
 ---
 
-## Phase 3b: Story and Test Linkage (RTM mode only)
+## Phase 3b: Change and Test Linkage (RTM mode only)
 
-*Skip this phase unless the argument is `rtm` or `full` with stories present.*
+*Skip this phase unless the argument is `rtm` or `full` with changes present.*
 
-This phase extends the Phase 3 matrix to include the story that implements
+This phase extends the Phase 3 matrix to include the change that implements
 each requirement and the test that verifies it — producing the full
 Requirements Traceability Matrix (RTM).
 
-### Step 3b-1 — Load stories
+### Step 3b-1 — Load changes
 
-Glob `production/epics/**/*.md` (excluding EPIC.md index files) to establish the
+Glob `openspec/specs/**/*.md` (excluding spec.md index files) to establish the
 denominator. Then collect the fields with **targeted section greps, not a full
-read of each story** — the same two-grep form `/test-evidence-review` uses for
+read of each change** — the same two-grep form `/test-evidence-review` uses for
 this identical extraction:
 
 ```
-Grep pattern="## Test Evidence" glob="production/epics/**/story-*.md" output_mode="content" -A 8
-Grep pattern="TR-" glob="production/epics/**/story-*.md" output_mode="content"
+Grep pattern="## Test Evidence" glob="openspec/changes/**/tasks.md" output_mode="content" -A 8
+Grep pattern="TR-" glob="openspec/changes/**/tasks.md" output_mode="content"
 ```
 
 - **TR-ID** — from the second grep.
 - **Test file path** — under `## Test Evidence`, captured by the first grep's `-A 8`.
-- **Status** — from the story header; add `Grep pattern="^> \*\*Status\*\*"` if not already captured.
-- **Story path and title** — from the file name and path; no read at all.
+- **Status** — from the change header; add `Grep pattern="^> \*\*Status\*\*"` if not already captured.
+- **Change id and title** — from the file name and path; no read at all.
 
-Full-read a story only when its Test Evidence section is missing or ambiguous.
+Full-read a change only when its Test Evidence section is missing or ambiguous.
 
 ### Step 3b-2 — Load test files
 
@@ -319,28 +319,28 @@ actually exists. Note MISSING if the stated path does not exist.
 ### Step 3b-3 — Build the extended RTM
 
 For each TR-ID in the Phase 3 matrix, add:
-- **Story**: the story file path(s) that reference this TR-ID (may be multiple)
-- **Test File**: the test file path stated in the story's Test Evidence section
+- **Change**: the change directory path(s) that reference this TR-ID (may be multiple)
+- **Test File**: the test file path stated in the change's Test Evidence section
 - **Test Status**: COVERED (test file exists) / MISSING (path stated but not
-  found) / NONE (no test path stated, story type may be Visual/Feel/UI) /
-  NO STORY (requirement has no story yet — pre-production gap)
+  found) / NONE (no test path stated, change type may be Visual/Feel/UI) /
+  NO STORY (requirement has no change yet — pre-production gap)
 
 Extended matrix format:
 
 ```
 ## Requirements Traceability Matrix (RTM)
 
-| TR-ID | GDD | Requirement | ADR | Story | Test File | Test Status |
+| TR-ID | GDD | Requirement | ADR | Change | Test File | Test Status |
 |-------|-----|-------------|-----|-------|-----------|-------------|
-| TR-combat-001 | combat.md | Hitbox < 1 frame | ADR-0003 | story-001-hitbox.md | tests/unit/combat/hitbox_test.gd | COVERED |
-| TR-combat-002 | combat.md | Combo window | — | story-002-combo.md | — | NONE (Visual/Feel) |
+| TR-combat-001 | combat.md | Hitbox < 1 frame | ADR-0003 | change-001-hitbox.md | tests/unit/combat/hitbox_test.gd | COVERED |
+| TR-combat-002 | combat.md | Combo window | — | change-002-combo.md | — | NONE (Visual/Feel) |
 | TR-inventory-001 | inventory.md | Persistent storage | ADR-0005 | — | — | NO STORY |
 ```
 
 RTM coverage summary:
-- COVERED: [N] — requirements with ADR + story + passing test
-- MISSING test: [N] — story exists but test file not found
-- NO STORY: [N] — requirements with ADR but no story yet
+- COVERED: [N] — requirements with ADR + change + passing test
+- MISSING test: [N] — change exists but test file not found
+- NO STORY: [N] — requirements with ADR but no change yet
 - NO ADR: [N] — requirements without architectural coverage (from Phase 3 gaps)
 - Full chain complete (COVERED): [N/total] ([%])
 
@@ -655,7 +655,7 @@ RTM file format:
 
 > Last Updated: [date]
 > Mode: /architecture-review rtm
-> Coverage: [N]% full chain complete (GDD → ADR → Story → Test)
+> Coverage: [N]% full chain complete (GDD → ADR → Change → Test)
 
 ## How to read this matrix
 
@@ -664,13 +664,13 @@ RTM file format:
 | TR-ID | Stable requirement ID from tr-registry.yaml |
 | GDD | Source design document |
 | ADR | Architectural decision governing implementation |
-| Story | Story file that implements this requirement |
+| Change | Change directory that implements this requirement |
 | Test File | Automated test file path |
 | Test Status | COVERED / MISSING / NONE / NO STORY |
 
 ## Full Traceability Matrix
 
-| TR-ID | GDD | Requirement | ADR | Story | Test File | Status |
+| TR-ID | GDD | Requirement | ADR | Change | Test File | Status |
 |-------|-----|-------------|-----|-------|-----------|--------|
 [Full matrix rows from Phase 3b]
 
@@ -679,7 +679,7 @@ RTM file format:
 | Status | Count | % |
 |--------|-------|---|
 | COVERED — full chain complete | [N] | [%] |
-| MISSING test — story exists, no test | [N] | [%] |
+| MISSING test — change exists, no test | [N] | [%] |
 | NO STORY — ADR exists, not yet implemented | [N] | [%] |
 | NO ADR — architectural gap | [N] | [%] |
 | **Total requirements** | **[N]** | **100%** |
@@ -718,7 +718,7 @@ If yes:
 - **Never** renumber or delete existing entries
 - Update the `last_updated` and `version` fields at the top
 
-This ensures all future story files can reference stable TR-IDs that persist
+This ensures all future change directorys can reference stable TR-IDs that persist
 across every subsequent architecture review.
 
 ### Reflexion Log Update

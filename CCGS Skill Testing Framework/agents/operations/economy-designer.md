@@ -22,7 +22,7 @@
 ### Case 1: In-domain request — loot table design for a chest
 **Input**: "Design the loot table for a standard treasure chest in our dungeon game."
 **Expected behavior**:
-- Produces a probability table with distinct rarity tiers: Common, Uncommon, Rare, Epic, Legendary (or project-equivalent tiers)
+- Produces a probability table with distinct rarity tiers: Common, Uncommon, Rare, Capability, Legendary (or project-equivalent tiers)
 - Each tier has: probability percentage, example item categories, and expected gold equivalent value range
 - Probabilities sum to 100%
 - Includes a brief rationale for each tier's probability: why Common is set at its value, why Legendary is set at its value

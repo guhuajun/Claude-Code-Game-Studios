@@ -48,7 +48,7 @@ Check:
 - **Source code exists?** Resolve the code root from the `engine.name` read above (`src/` Godot, `Assets/` Unity, `Source/` Unreal; full order in `.claude/docs/code-root-resolution.md`), then Glob it for source files (`*.gd`, `*.cs`, `*.cpp`, `*.h`, `*.rs`, `*.py`, `*.js`, `*.ts`). **If the code root is unresolved, say so rather than concluding there is no code** — a Unity or Unreal project scanned as `src/` returns zero files and reads as greenfield.
 - **Prototypes exist?** Check for subdirectories in `prototypes/`.
 - **Design docs exist?** Count markdown files in `design/gdd/`.
-- **Production artifacts?** Check for files in `production/sprints/` or `production/milestones/`.
+- **Production artifacts?** Check for files in `openspec/changes/` or `production/milestones/`.
 
 Store these findings internally to validate the user's self-assessment and tailor recommendations.
 
@@ -126,7 +126,7 @@ The user needs creative exploration before anything else.
    - Recommend `/setup-engine` first if engine not configured
    - Then `/project-stage-detect` for a gap inventory
 
-   **Sub-case D2 — GDDs, ADRs, or stories already exist:**
+   **Sub-case D2 — GDDs, ADRs, or changes already exist:**
    - Explain: "Having files isn't the same as the template's skills being able to use them. GDDs might be missing required sections. `/adopt` checks this specifically."
    - Recommend:
      1. `/project-stage-detect` — understand what phase and what's missing entirely
@@ -221,9 +221,9 @@ convention); the other two follow in any order.
 - **Prompt**: "What best describes what you're building? This sets how much process
   the project carries — you can change it anytime with `/settings`."
 - **Options** (base labels — the recommended one also gets ` (Recommended)`):
-  - `Jam / prototype / first game` — Short docs, coarse stories, evidence optional. **~4 steps to your first line of code instead of ~18.** Shipping beats recording; design lives in your head. The trade: no GDDs, so design problems surface in code rather than before it.
-  - `Several systems that affect each other` — Balanced docs, normal story size, standard QA evidence. **Expect ~8 design documents and roughly an hour of design work before your first line of code.** Worth paying when systems interact and a design mistake is expensive to unpick once it is in code. **Intending to finish is not the test** — most small games ship faster on the jam path and can move up later with `/settings`.
-  - `Big systems-heavy or team project` — Thorough docs, fine-grained stories, evidence required everywhere. Many interacting systems (open-world, sim, RPG), a firm release date, or shared ownership.
+  - `Jam / prototype / first game` — Short docs, coarse changes, evidence optional. **~4 steps to your first line of code instead of ~18.** Shipping beats recording; design lives in your head. The trade: no GDDs, so design problems surface in code rather than before it.
+  - `Several systems that affect each other` — Balanced docs, normal change size, standard QA evidence. **Expect ~8 design documents and roughly an hour of design work before your first line of code.** Worth paying when systems interact and a design mistake is expensive to unpick once it is in code. **Intending to finish is not the test** — most small games ship faster on the jam path and can move up later with `/settings`.
+  - `Big systems-heavy or team project` — Thorough docs, fine-grained changes, evidence required everywhere. Many interacting systems (open-world, sim, RPG), a firm release date, or shared ownership.
 
 Value mapping (ignore any ` (Recommended)` suffix on the first option):
 `Jam / prototype / first game` → `minimal`, `Several systems that affect each other` → `standard`,
@@ -235,7 +235,7 @@ selection. Use the Edit tool to add it under the `modes:` block. There is **no
 legacy mirror file** for this setting, so this is a single write, not a dual-write.
 
 Then say: "Set `modes.rigor` to `[choice]`. That drives six settings —
-`modes.workflow`, `docs.density`, `qa.level`, `modes.story_granularity`,
+`modes.workflow`, `docs.density`, `qa.level`, `modes.change_granularity`,
 `modes.review_mode` (director-review depth), and `team.size` (how many agents are
 active on team tasks) — a lighter rigor means fewer reviews, a smaller active
 team, and fewer tokens. Run `/settings` to see the exact value each one takes, or
@@ -305,14 +305,14 @@ deserves more care, raise just that one with
 **If `minimal` — 4 steps to running code:**
 - `/setup-engine` — configure the engine
 - `/brainstorm` — produce the one-page `design/game-brief.md` (the lean-tier design artifact; it replaces the full concept doc, systems decomposition, and per-system GDDs)
-- `/create-stories` — turn the brief's MVP list into implementable stories (the epic is implicit — no separate `/create-epics` or `/sprint-plan`; the brief's build order is the plan)
-- `/dev-story` — **first line of game code**
+- `/create-changes` — turn the brief's MVP list into implementable changes (the capability is implicit — no separate `/design-system` or `/create-changes`; the brief's build order is the plan)
+- `/dev-change` — **first line of game code**
 
 **If `standard` (default) — the full pipeline:**
 - **Concept:** `/setup-engine` → `/brainstorm` → `/prototype` → `/art-bible` → `/map-systems` → `/design-system` (×N systems) → `/review-all-gdds` → `/gate-check`
 - **Architecture:** `/create-architecture` → `/architecture-decision` (×N) → `/create-control-manifest` → `/architecture-review`
-- **Pre-Production:** `/ux-design` → `/create-epics` → `/create-stories` → `/sprint-plan`
-- **Production:** `/dev-story`
+- **Pre-Production:** `/ux-design` → `/design-system` → `/create-changes` → `/create-changes`
+- **Production:** `/dev-change`
 
 **If `full` — the full pipeline plus validation builds:**
 - Everything in `standard`, plus `/vertical-slice` and `/playtest-report` (×1+)
@@ -352,7 +352,7 @@ Verdict: **COMPLETE** — user oriented and handed off to next step.
 
 - **User picks D but project is empty**: Gently redirect — "It looks like the project is a fresh template with no artifacts yet. Would Path A or B be a better fit?"
 - **User picks A but project has code**: Mention what you found — "I noticed there's already code in `[code root]`. Did you mean to pick D (existing work)?"
-- **User is returning (engine configured, concept exists)**: Skip onboarding entirely — "It looks like you're already set up! Your engine is [X] and you have a game concept at `design/gdd/game-concept.md` (or a game brief at `design/game-brief.md`). Review mode: `[resolve modes.review_mode — an explicit value if set, otherwise it follows modes.rigor: minimal→solo, standard→lean, full→full]`. Want to pick up where you left off? Try `/sprint-plan` or just tell me what you'd like to work on."
+- **User is returning (engine configured, concept exists)**: Skip onboarding entirely — "It looks like you're already set up! Your engine is [X] and you have a game concept at `design/gdd/game-concept.md` (or a game brief at `design/game-brief.md`). Review mode: `[resolve modes.review_mode — an explicit value if set, otherwise it follows modes.rigor: minimal→solo, standard→lean, full→full]`. Want to pick up where you left off? Try `/create-changes` or just tell me what you'd like to work on."
 - **User doesn't fit any option**: Let them describe their situation in their own words and adapt.
 
 ---

@@ -14,9 +14,9 @@
 #     the new TR-ID(s).
 #
 # WRITTEN BY: /architecture-review (appends new entries, never overwrites)
-# READ BY:    /create-stories (embed IDs in stories)
-#             /story-done (look up current requirement text at review time)
-#             /story-readiness (validate TR-ID exists and is active)
+# READ BY:    /create-changes (embed IDs in stories)
+#             /change-done (look up current requirement text at review time)
+#             /change-readiness (validate TR-ID exists and is active)
 #
 # ID FORMAT: TR-[system-slug]-[NNN]
 #   system-slug = short slug matching the GDD system name

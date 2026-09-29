@@ -60,34 +60,34 @@ argument is `current`, use the most recently modified milestone file.
 > **No skill writes `production/milestones/`** — definitions are authored by hand
 > from `.claude/docs/templates/milestone-definition.md`, so most projects have
 > none. When the directory is absent or empty, say so and review against the
-> sprint reports alone; do not fabricate a definition. Take care with `current`:
+> change set reports alone; do not fabricate a definition. Take care with `current`:
 > this skill writes its own output as `[milestone-name]-review.md`, so a
 > most-recently-modified match can be a previous *review* rather than a
 > definition. Skip files ending `-review.md` when selecting.
 
-Gather the sprint reports for sprints within this milestone from
-`production/sprints/`. Establish the denominator (glob them, count **N**), then
+Gather the change set reports for change sets within this milestone from
+`openspec/changes/`. Establish the denominator (glob them, count **N**), then
 scan the sections a milestone review actually aggregates rather than reading each
 report whole:
 
 ```
-Grep pattern="^## (Sprint Goal|Capacity|Tasks|Carryover|Risks|Progress|Burndown Assessment|Emerging Risks|Definition of Done)" glob="production/sprints/sprint-*.md" output_mode="content" -A 12
+Grep pattern="^## (Change Set Goal|Capacity|Tasks|Carryover|Risks|Progress|Burndown Assessment|Emerging Risks|Definition of Done)" glob="openspec/changes/*/tasks.md" output_mode="content" -A 12
 ```
 
-> **These alternates are copied from `/sprint-plan`'s emitted headings — keep
+> **These alternates are copied from `/create-changes`'s emitted headings — keep
 > them in sync with it, not with what a milestone review wishes existed.** The
 > previous pattern asked for `Summary|Goal|Velocity|Completed|Blockers|
-> Retrospective`, none of which `/sprint-plan` writes (it emits `## Sprint
+> Retrospective`, none of which `/create-changes` writes (it emits `## Change Set
 > Goal`, not `## Goal`). Only `Carryover` matched — and that was the trap: a
 > non-zero match count meant the zero-match escape hatch below could never
 > fire, so every milestone review silently aggregated carryover tables and
 > nothing else while reporting full coverage.
 
-Full-read a single sprint report when its scanned sections point outside
+Full-read a single change set report when its scanned sections point outside
 themselves, or when it matched nothing — a zero-match report predates the
 template and must be read, never silently dropped from the milestone's history.
-Report any sprint that contributed nothing: a milestone summary that quietly
-omits a sprint understates the work and the slippage both.
+Report any change set that contributed nothing: a milestone summary that quietly
+omits a change set understates the work and the slippage both.
 
 ---
 
@@ -107,7 +107,7 @@ omits a sprint understates the work and the slippage both.
 - **Target Date**: [Date]
 - **Current Date**: [Today]
 - **Days Remaining**: [N]
-- **Sprints Completed**: [X/Y]
+- **Change Sets Completed**: [X/Y]
 
 ## Feature Completeness
 
@@ -141,7 +141,7 @@ omits a sprint understates the work and the slippage both.
 |------|--------|-------------------|------------------|
 
 ## Velocity Analysis
-- **Planned vs Completed** (across all sprints): [X/Y tasks = Z%]
+- **Planned vs Completed** (across all change sets): [X/Y tasks = Z%]
 - **Trend**: [Improving / Stable / Declining]
 - **Adjusted estimate for remaining work**: [Days needed at current velocity]
 
@@ -181,7 +181,7 @@ omits a sprint understates the work and the slippage both.
 
 Before generating the Go/No-Go recommendation, spawn `producer` via `Agent` using gate **PR-MILESTONE** (`.claude/docs/director-gates/pr-milestone.md`).
 
-Pass: milestone name and target date, current completion percentage, blocked story count, velocity data from sprint reports (if available), list of cut candidates.
+Pass: milestone name and target date, current completion percentage, blocked change count, velocity data from change set reports (if available), list of cut candidates.
 
 Present the producer's assessment inline within the Go/No-Go section. The producer's verdict (ON TRACK / AT RISK / OFF TRACK) informs the overall recommendation.
 
@@ -218,4 +218,4 @@ If no, stop here. Verdict: **BLOCKED** — user declined write.
 ## Phase 5: Next Steps
 
 - Run `/gate-check` for a formal phase gate verdict if this milestone marks a development phase boundary.
-- Run `/sprint-plan` to adjust the next sprint based on the scope recommendations above.
+- Run `/create-changes` to adjust the next change set based on the scope recommendations above.

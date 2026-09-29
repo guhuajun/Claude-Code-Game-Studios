@@ -27,7 +27,7 @@ and known failure points. This skill maintains that list.
 **When to run:**
 - After fixing a bug (confirm a regression test was written or identify gap)
 - Before a release gate (`/gate-check polish` requires regression suite exists)
-- As part of sprint close to detect coverage drift
+- As part of change set close to detect coverage drift
 
 ---
 
@@ -56,16 +56,16 @@ critical-path *source*, not *whether* the suite runs). Do not enter Step 2c's
 `minimal` branch on account of `qa.level`.
 
 **Modes:**
-- `/regression-suite update` — scan new bug fixes this sprint and check
+- `/regression-suite update` — scan new bug fixes this change set and check
   for regression test presence; add new tests to the suite manifest
 - `/regression-suite audit` — full audit of all GDD critical paths vs.
   existing test coverage; flag paths with no regression test
 - `/regression-suite report` — read-only status report (no writes); suitable
-  for sprint reviews
-- No argument — if a sprint is clearly active (sprint plan exists with in-progress stories), run `update`. If ambiguous or no active sprint is detected, use `AskUserQuestion`:
+  for change set reviews
+- No argument — if a change set is clearly active (change list exists with in-progress changes), run `update`. If ambiguous or no active change set is detected, use `AskUserQuestion`:
   - Prompt: "No subcommand specified. Which mode do you want to run?"
   - Options:
-    - `[A] update — scan new bug fixes this sprint and add missing regression tests`
+    - `[A] update — scan new bug fixes this change set and add missing regression tests`
     - `[B] audit — full audit of all GDD critical paths vs. existing test coverage`
     - `[C] report — read-only status report (no writes)`
 
@@ -115,14 +115,14 @@ For each in-scope MVP-tier system's GDD, extract:
 - Formulas section (formulas must have regression tests)
 - Edge Cases section (known edge cases should have regression tests)
 
-For `update` mode: skip full GDD scan. Instead read the current sprint plan
-and story files to find stories with Status: Complete this sprint.
+For `update` mode: skip full GDD scan. Instead read the current change list
+and change directorys to find changes with Status: Complete this change set.
 
 ### Step 2d — Load closed bugs
 
 Glob `production/qa/bugs/*.md` and filter for bugs with a `Status: Closed`
 or `Status: Fixed` field. Note:
-- Which story or system the bug was in
+- Which change or system the bug was in
 - Whether a regression test was mentioned in the fix description
 
 ---
@@ -165,7 +165,7 @@ For each closed bug:
 For MISSING REGRESSION TEST items:
 - Flag them as regression gaps
 - Suggest the test file path: `tests/unit/[system]/[bug-slug]_regression_test.[ext]`
-- Note: "Without this test, this bug can silently return in a future sprint."
+- Note: "Without this test, this bug can silently return in a future change set."
 
 ---
 
@@ -174,12 +174,12 @@ For MISSING REGRESSION TEST items:
 Coverage drift occurs when the game grows but the regression suite doesn't.
 
 Check for drift indicators:
-- Stories completed this sprint with no corresponding test files in `tests/`
+- Changes completed this change set with no corresponding test files in `tests/`
 - New systems added to `systems-index.md` since the last regression-suite update
 - GDD sections added or revised since the regression suite was last updated
   (use Grep on GDD file modification hints if available, or ask the user)
 - `tests/regression-suite.md` last-updated date vs. current date — if gap >
-  2 sprints, flag as likely stale
+  2 change sets, flag as likely stale
 
 ---
 
@@ -209,7 +209,7 @@ Check for drift indicators:
 **Bugs without regression tests**: [N]
 
 ### Coverage Drift Indicators
-[List new systems or stories with no test coverage, or "None detected."]
+[List new systems or changes with no test coverage, or "None detected."]
 
 ### Recommended New Regression Tests
 | Priority | System | Suggested Test File | Covers |
@@ -292,11 +292,11 @@ For `report` mode: do not write anything.
 After writing (if approved):
 
 - For each HIGH priority gap: "Consider creating the missing regression test
-  before the next sprint. Run `/test-helpers` to scaffold the test file."
+  before the next change set. Run `/test-helpers` to scaffold the test file."
 - If bug regression gaps > 0: "These bugs can silently return without regression
-  tests. The next sprint should include a story to write the missing tests."
+  tests. The next change set should include a change to write the missing tests."
 - If coverage drift detected: "Regression suite may be drifting. Consider
-  running `/regression-suite audit` at the next sprint boundary."
+  running `/regression-suite audit` at the next change set boundary."
 
 Verdict: **COMPLETE** — regression suite updated. (If user declined write: Verdict: **BLOCKED**.)
 

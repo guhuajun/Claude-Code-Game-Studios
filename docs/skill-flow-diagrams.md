@@ -53,18 +53,18 @@ PHASE 4: PRE-PRODUCTION
   /playtest-report ────────────────────────────────────────────► production/playtests/
 
   [Stories + sprint plan — only after vertical slice PROCEEDS]
-  /create-epics [layer] ───────────────────────────────────────► production/epics/*/EPIC.md
-  /create-stories [epic-slug] ─────────────────────────────────► production/epics/*/story-*.md
-  /sprint-plan new ────────────────────────────────────────────► production/sprints/sprint-01.md
+  /design-system [layer] ───────────────────────────────────────► openspec/specs/*/spec.md
+  /create-changes [epic-slug] ─────────────────────────────────► openspec/changes/*/tasks.md
+  /create-changes ────────────────────────────────────────────► openspec/changes/sprint-01.md
   /gate-check ─────────────────────────────────────────────────► PASS → advance to production
         │
         ▼
 PHASE 5: PRODUCTION (repeating sprint loop)
-  /sprint-status ──────────────────────────────────────────────► sprint snapshot
-  /story-readiness [story] ────────────────────────────────────► story validated READY
+  openspec status ──────────────────────────────────────────────► sprint snapshot
+  /change-readiness [story] ────────────────────────────────────► story validated READY
         │
         ▼ (pick up and implement)
-  /dev-story [story] ──────────────────────────────────────────► routes to correct programmer agent
+  /dev-change [story] ──────────────────────────────────────────► routes to correct programmer agent
         │
         ▼ (during implementation, as needed)
   /code-review ────────────────────────────────────────────────► code review report
@@ -84,8 +84,8 @@ PHASE 5: PRODUCTION (repeating sprint loop)
   /test-flakiness ─────────────────────────────────────────────► flaky test report
         │
         ▼
-  /story-done [story] ─────────────────────────────────────────► story closed + next surfaced
-  /sprint-plan [next] ─────────────────────────────────────────► next sprint
+  /change-done [story] ─────────────────────────────────────────► story closed + next surfaced
+  /create-changes [next] ─────────────────────────────────────────► next sprint
         │
         ▼ (after Production milestone)
   /milestone-review ───────────────────────────────────────────► milestone report
@@ -170,7 +170,7 @@ design/player-journey.md (emotional arc, if authored)
         ▼
 /ux-review design/ux/
         │
-        ├── APPROVED → UX specs ready, proceed to /create-epics
+        ├── APPROVED → UX specs ready, proceed to /design-system
         ├── NEEDS REVISION → blocking issues listed → fix → re-run review
         └── MAJOR REVISION → fundamental UX problems → redesign before epics
                 │
@@ -194,14 +194,14 @@ Note: /ux-design and /ux-review belong in Phase 4 (Pre-Production).
 How a story moves from backlog to closed:
 
 ```
-/story-readiness [story]
+/change-readiness [story]
         │
         ├── READY → Status: ready-for-dev → pick up for implementation
         ├── NEEDS WORK → agent shows specific gaps → resolve → re-run readiness
         └── BLOCKED → ADR still Proposed, or upstream story incomplete
                 │
                 ▼ (after READY)
-        /dev-story [story]
+        /dev-change [story]
                 │
                 ├── Reads: story file, linked GDD requirement, ADR decisions, control manifest
                 ├── Routes to: gameplay-programmer / engine-programmer / ui-programmer / etc.
@@ -214,9 +214,9 @@ How a story moves from backlog to closed:
                 /test-evidence-review → validate test files and manual evidence quality
                         │
                         ▼
-                /story-done [story]
+                /change-done [story]
                         │
-                        ├── COMPLETE → Status: Complete, sprint-status.yaml updated, next story surfaced
+                        ├── COMPLETE → Status: Complete, openspec status updated, next story surfaced
                         ├── COMPLETE WITH NOTES → complete but some criteria deferred (logged)
                         └── BLOCKED → acceptance criteria cannot be verified → investigate blocker
 ```
@@ -228,20 +228,20 @@ How a story moves from backlog to closed:
 How a story gets from backlog to closed (summary view):
 
 ```
-/create-epics [layer]
+/design-system [layer]
         │
-        └── Output: production/epics/[slug]/EPIC.md
+        └── Output: openspec/specs/<system>/spec.md
                 │
                 ▼
-        /create-stories [epic-slug]
+        /create-changes [epic-slug]
                 │
-                └── Output: production/epics/[slug]/story-NNN-[slug].md
+                └── Output: openspec/specs/[slug]/story-NNN-[slug].md
                             (Status: Ready or Blocked if ADR is Proposed)
                 │
                 ▼
-        /story-readiness [story]
+        /change-readiness [story]
                 │
-                ├── READY → /dev-story → implement → /story-done
+                ├── READY → /dev-change → implement → /change-done
                 ├── NEEDS WORK → resolve gaps → re-run
                 └── BLOCKED → fix upstream dependency first
 ```
@@ -354,8 +354,8 @@ For projects with existing work (use `/start` option D or run directly):
 | In technical setup | `/create-architecture` → `/architecture-decision` |
 | Starting UX design | `/ux-design screen [name]` or `/ux-design hud` |
 | Scaffolding tests | `/test-setup` → `/test-helpers` |
-| Have stories, ready to code | `/story-readiness [story]` → `/dev-story [story]` |
-| Story done | `/story-done [story]` |
+| Have stories, ready to code | `/change-readiness [story]` → `/dev-change [story]` |
+| Story done | `/change-done [story]` |
 | Running QA for a sprint | `/qa-plan` → `/smoke-check` → `/regression-suite` |
 | Bug backlog needs sorting | `/bug-triage` |
 | Extended stability testing | `/soak-test` |

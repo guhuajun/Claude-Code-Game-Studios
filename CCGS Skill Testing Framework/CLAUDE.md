@@ -7,7 +7,7 @@ framework. It is self-contained and separate from any game project.
 
 | File | Purpose |
 |------|---------|
-| `catalog.yaml` | Master registry for all 74 skills and 49 agents. Contains category, spec path, and last-test tracking fields. Always read this first when running any test command. |
+| `catalog.yaml` | Master registry for all 71 skills and 49 agents. Contains category, spec path, and last-test tracking fields. Always read this first when running any test command. |
 | `quality-rubric.md` | Category-specific pass/fail metrics. Read the matching `###` section for the skill's category when running `/skill-test category`. |
 | `skills/[category]/[name].md` | Behavioral spec for a skill — 5 test cases + protocol compliance assertions. |
 | `agents/[tier]/[name].md` | Behavioral spec for an agent — 5 test cases + protocol compliance assertions. |
@@ -32,15 +32,15 @@ gate        → gate-check
 review      → design-review, architecture-review, review-all-gdds
 authoring   → design-system, quick-design, architecture-decision, art-bible,
               create-architecture, ux-design, ux-review
-readiness   → story-readiness, story-done
-pipeline    → create-epics, create-stories, dev-story, create-control-manifest,
+readiness   → change-readiness, change-done
+pipeline    → create-capabilities, create-changes, dev-change, create-control-manifest,
               propagate-design-change, map-systems, vertical-slice
 analysis    → consistency-check, balance-check, content-audit, code-review,
               tech-debt, scope-check, estimate, perf-profile, asset-audit,
               security-audit, test-evidence-review, test-flakiness
 team        → team-combat, team-narrative, team-audio, team-level, team-ui,
               team-qa, team-release, team-polish, team-live-ops
-sprint      → sprint-plan, sprint-status, milestone-review, retrospective,
+change set      → change set-plan, change set-status, milestone-review, retrospective,
               changelog, patch-notes
 utility     → all remaining skills
 ```

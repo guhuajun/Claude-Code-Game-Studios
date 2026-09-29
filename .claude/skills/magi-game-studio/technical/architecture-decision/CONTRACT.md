@@ -1,7 +1,7 @@
 # /architecture-decision — Handoff Contract
 
 ## Role in Pipeline
-Authors a new Architecture Decision Record (ADR) by guiding a collaborative design session, cross-referencing the engine reference library and existing architectural stances, and writing a fully-structured ADR file to `docs/architecture/` — which then unblocks stories and epics that depend on the decision.
+Authors a new Architecture Decision Record (ADR) by guiding a collaborative design session, cross-referencing the engine reference library and existing architectural stances, and writing a fully-structured ADR file to `docs/architecture/` — which then unblocks changes and capabilities that depend on the decision.
 
 Two checks inside the run emit `NOT ASSESSED` rather than passing silently, and
 a reader of the resulting ADR should expect them: **engine validation** when no
@@ -63,18 +63,18 @@ nothing is indistinguishable from a check that passed.
 - In retrofit mode: never modifies any existing section — only appends absent sections
 
 ## Downstream Skill Expects
-**Next skills:** `/create-epics`, `/create-stories`, `/dev-story`, `/architecture-review`
+**Next skills:** `/design-system`, `/create-changes`, `/dev-change`, `/architecture-review`
 
-### `/create-epics` reads ADRs expecting:
-- `## Status` field — value must be `Accepted` for epics to reference it
-- `## GDD Requirements Addressed` table — used to link epics to GDD traceability
+### `/design-system` reads ADRs expecting:
+- `## Status` field — value must be `Accepted` for capabilities to reference it
+- `## GDD Requirements Addressed` table — used to link capabilities to GDD traceability
 - `## Engine Compatibility` section — checked during the Technical Setup → Pre-Production gate
 
-### `/create-stories` reads ADRs expecting:
-- `## Implementation Guidelines` section — provides the concrete patterns programmer agents must follow (note: this section is generated during `/create-stories`, not by `/architecture-decision` itself; the ADR must have a Decision section detailed enough to derive these guidelines)
-- `## ADR Dependencies` table — stories referencing a `Depends On` ADR that is still `Proposed` are automatically set `Status: Blocked`
+### `/create-changes` reads ADRs expecting:
+- `## Implementation Guidelines` section — provides the concrete patterns programmer agents must follow (note: this section is generated during `/create-changes`, not by `/architecture-decision` itself; the ADR must have a Decision section detailed enough to derive these guidelines)
+- `## ADR Dependencies` table — changes referencing a `Depends On` ADR that is still `Proposed` are automatically set `Status: Blocked`
 
-### `/dev-story` reads ADRs expecting:
+### `/dev-change` reads ADRs expecting:
 - `## Decision` (full text, verbatim — not summarized)
 - `## Implementation Guidelines` (verbatim)
 - `## Engine Compatibility` (post-cutoff API risks, verification required)
@@ -87,8 +87,8 @@ nothing is indistinguishable from a check that passed.
 
 ## Known Fragile Points
 - If the ADR number scan misses a file (e.g., a file in a subdirectory of `docs/architecture/` or with a non-standard naming pattern), a duplicate number can be assigned — all ADR files must follow the `adr-NNNN-[slug].md` naming convention at the top level of `docs/architecture/`
-- Stories that were `Status: Blocked` pending this ADR must be manually updated to `Status: Ready` after the ADR reaches `Accepted` — the skill surfaces a reminder but does not automatically update story files
-- The `## GDD Requirements Addressed` table is populated based on what the user tells the skill during the collaborative session; if the user does not know which GDDs motivated the decision, this table may be incomplete — `/create-epics` and `/gate-check` both rely on this linkage for traceability
+- Changes that were `Status: Blocked` pending this ADR must be manually updated to `Status: Ready` after the ADR reaches `Accepted` — the skill surfaces a reminder but does not automatically update change directorys
+- The `## GDD Requirements Addressed` table is populated based on what the user tells the skill during the collaborative session; if the user does not know which GDDs motivated the decision, this table may be incomplete — `/design-system` and `/gate-check` both rely on this linkage for traceability
 - Engine specialist validation (Step 4.5) is skipped only when **both** sources are unset — `engine.name` absent or empty in `project.yaml` **and** `.claude/docs/technical-preferences.md` still reading `[TO BE CONFIGURED]`. A project configured solely via `project.yaml` **does** get specialist validation. When both are unset, post-cutoff engine API risks are not caught before the ADR is written
 - `docs/registry/architecture.yaml` is append-only by design; if a stance entry becomes permanently invalid (not superseded by another ADR), it must be manually removed — there is no cleanup mechanism
-- In retrofit mode, if the existing ADR has sections present but empty (e.g., a `## Status` heading with no value), the skill treats the section as present and does not fill it — an empty Status is effectively invisible to downstream skills like `/story-readiness`
+- In retrofit mode, if the existing ADR has sections present but empty (e.g., a `## Status` heading with no value), the skill treats the section as present and does not fill it — an empty Status is effectively invisible to downstream skills like `/change-readiness`

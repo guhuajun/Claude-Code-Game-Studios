@@ -47,7 +47,7 @@ config. Per-developer overrides live in `project.local.yaml` (gitignored). Prior
 chain across all settings: `project.local.yaml` → `project.yaml` → legacy mirror →
 `modes.rigor` expansion → hardcoded default. The expansion step applies only to the
 six knobs `rigor` fronts (`modes.workflow`, `docs.density`, `qa.level`,
-`modes.story_granularity`, `modes.review_mode`, `team.size`), which for that reason have **no** hardcoded default —
+`modes.change_granularity`, `modes.review_mode`, `team.size`), which for that reason have **no** hardcoded default —
 see the `modes.rigor` section.
 **Secrets do NOT belong in either file — use environment variables.** See the
 "Local Override Pattern" section below for full design including the whitelist of
@@ -140,7 +140,7 @@ The rule for deciding which side a setting belongs on:
 | `cadence.*` | Sprint/milestone length affects team coordination |
 | `modes.rigor` | Fronts the four below — locked for the same reason they are |
 | `modes.workflow` and `workflow_overrides` | Affects which sections are required in authored docs |
-| `modes.story_granularity` | Affects how big stories are in repo — team must be consistent |
+| `modes.change_granularity` | Affects how big stories are in repo — team must be consistent |
 | `docs.density` | Affects how deep authored docs are — team must produce consistent docs |
 | `qa.level` | Affects what test evidence stories must include on disk |
 | `qa.coverage_minimum` | Project quality bar |
@@ -266,8 +266,8 @@ divergence.
 If `qa.level` were locally overridable:
 
 - B sets `qa.level: minimal` locally. B's stories don't include test evidence.
-- B's `/story-done` accepts the story without evidence. Story marked Complete on disk.
-- A pulls. A's `qa.level: standard` requires evidence. A's `/story-done` would have rejected it.
+- B's `/change-done` accepts the story without evidence. Story marked Complete on disk.
+- A pulls. A's `qa.level: standard` requires evidence. A's `/change-done` would have rejected it.
 - A's next `/gate-check` fails because evidence is missing across multiple of B's "Complete" stories.
 
 This is the artifact divergence problem. To prevent it, `qa.level` is locked to
@@ -279,7 +279,7 @@ only their personal experience, never the team's standards.
 | Difference type | Outcome |
 |----------------|---------|
 | Different review depth (review_mode, team.size) | Stricter reviewer surfaces more findings — healthy. Artifacts unchanged. |
-| Different local strictness on failures (testing.strict.*, performance.enforce) | Stricter dev's local /story-done blocks earlier — they fix it locally. CI uses project.yaml defaults so team-wide quality bar stays. |
+| Different local strictness on failures (testing.strict.*, performance.enforce) | Stricter dev's local /change-done blocks earlier — they fix it locally. CI uses project.yaml defaults so team-wide quality bar stays. |
 | Different artifact requirements (workflow, qa.level, docs.density, etc.) | **Can't happen — these are locked.** Team agrees once in project.yaml. |
 
 ---
@@ -380,14 +380,14 @@ behavior: strict project defaults for CI, looser developer overrides for local w
 | **create-architecture** | TD self-review + LP-FEASIBILITY agent | Both skipped | Both skipped |
 | **brainstorm** | CD-PILLARS, AD-CONCEPT-VISUAL, TD-FEASIBILITY, PR-SCOPE | All skipped | All skipped |
 | **map-systems** | TD-SYSTEM-BOUNDARY, PR-SCOPE, CD-SYSTEMS | All skipped | All skipped |
-| **story-done** | QL-TEST-COVERAGE + LP-CODE-REVIEW | Both skipped | Both skipped |
-| **sprint-plan** | PR-SPRINT feasibility check | Skipped | Skipped |
-| **create-epics** | PR-EPIC scope check | Skipped | Skipped |
-| **create-stories** | QL-STORY-READY + test case specs | Skipped | Skipped |
+| **change-done** | QL-TEST-COVERAGE + LP-CODE-REVIEW | Both skipped | Both skipped |
+| **create-changes** | PR-SPRINT feasibility check | Skipped | Skipped |
+| **design-system** | PR-EPIC scope check | Skipped | Skipped |
+| **create-changes** | QL-CHANGE-READY + test case specs | Skipped | Skipped |
 | **prototype** | CD-PLAYTEST director override | Skipped — prototyper verdict is final | Skipped — prototyper verdict is final |
 | **milestone-review** | PR-MILESTONE feasibility check | Skipped — no producer verdict | Skipped — no producer verdict |
 | **playtest-report** | CD-PLAYTEST creative assessment | Skipped | Skipped |
-| **story-readiness** | QL-STORY-READY acceptance criteria check | Skipped | Skipped |
+| **change-readiness** | QL-CHANGE-READY acceptance criteria check | Skipped | Skipped |
 
 ---
 
@@ -397,7 +397,7 @@ behavior: strict project defaults for CI, looser developer overrides for local w
 |-------|------|------|------|
 | **review-all-gdds** | Phase 2 consistency pass + Phase 3 design theory pass (parallel) | Phase 2 consistency pass only, Phase 3 skipped | Phase 2 only, Phase 3 skipped |
 | **architecture-review** | Engine specialist + security-engineer (if online features) | Both skipped | Both skipped |
-| **dev-story** | Core programmer routing always runs + engine-specialist escalation on HIGH risk stories | Core programmer routing always runs, engine-specialist escalation skipped | Core programmer routing always runs, engine-specialist escalation skipped |
+| **dev-change** | Core programmer routing always runs + engine-specialist escalation on HIGH risk stories | Core programmer routing always runs, engine-specialist escalation skipped | Core programmer routing always runs, engine-specialist escalation skipped |
 | **code-review** | Language, shader, UI specialists + qa-tester | All optional specialists skipped | All optional specialists skipped |
 | **security-audit** | security-engineer spawned | Skipped | Skipped |
 | **create-control-manifest** | technical-director validation step | Skipped | Skipped |
@@ -445,7 +445,7 @@ the pipeline runs.
   input into one delegation (2–4, and 5–6). Unbatched, sections 5 and 6 spawn
   `art-director` twice with the identical `sections 1–4` brief. Every section is
   still specialist-authored; per-section approval and write-to-file are unchanged.
-- **dev-story** core programmer routing (gameplay-programmer, ui-programmer, etc.)
+- **dev-change** core programmer routing (gameplay-programmer, ui-programmer, etc.)
   always runs regardless of mode — only the optional engine-specialist escalation
   for HIGH risk stories is gated.
 - **hotfix** and **day-one-patch** are exempt — all agents always run.
@@ -468,7 +468,7 @@ times more to reach working code without producing a better result.
 **Priority chain:** `modes.rigor` in `project.yaml` → hardcoded default `minimal`
 (**locked** — not overridable from `project.local.yaml`, like the four *on-disk*
 knobs it fronts — `modes.workflow`, `docs.density`, `qa.level`,
-`modes.story_granularity` — because those five change what artifacts exist on
+`modes.change_granularity` — because those five change what artifacts exist on
 disk. The two personal-experience knobs it also fronts, `modes.review_mode` and
 `team.size`, stay locally overridable.)
 
@@ -476,7 +476,7 @@ disk. The two personal-experience knobs it also fronts, `modes.review_mode` and
 
 ### Expansion table
 
-| `modes.rigor` | `modes.workflow` | `docs.density` | `qa.level` | `modes.story_granularity` | `modes.review_mode` | `team.size` |
+| `modes.rigor` | `modes.workflow` | `docs.density` | `qa.level` | `modes.change_granularity` | `modes.review_mode` | `team.size` |
 |---|---|---|---|---|---|---|
 | `minimal` | `minimal` | `terse` | `minimal` | `coarse` | `solo` | `individual` |
 | `standard` *(default)* | `standard` | `balanced` | `standard` | `balanced` | `lean` | `individual` |
@@ -548,7 +548,7 @@ working code
 
 > **`minimal` floor:** Even in minimal mode, engine choice and a filled
 > **`design/game-brief.md`** are required before code starts — the brief's
-> build-order field is the plan, so there is no separate `sprint-plan` step.
+> build-order field is the plan, so there is no separate `create-changes` step.
 > Both take minutes and prevent real problems downstream. Everything else can
 > be skipped.
 
@@ -633,13 +633,13 @@ checklists differ per phase per mode.
 | Concept → Systems Design | game-concept.md, pillars, Visual Identity Anchor | game-concept.md only | `design/game-brief.md` only (content check, not section check) |
 | Systems Design → Technical Setup | systems-index, all MVP GDDs reviewed (8 sections), cross-GDD review | systems-index, 5-section GDDs reviewed, cross-GDD review optional | Not applicable — no gates between brief and code |
 | Technical Setup → Pre-Production | engine, art bible sections 1–4+, 3+ ADRs, architecture, UX specs started | engine, art bible only if visual assets, critical ADRs, architecture | engine configured (required floor) |
-| Pre-Production → Production | prototype, sprint plan, complete art bible, epics, 3+ playtests | prototype, sprint plan, epics, 1+ playtest | prototype (advisory); the brief's Build order is the plan — no separate sprint-plan floor |
+| Pre-Production → Production | prototype, sprint plan, complete art bible, epics, 3+ playtests | prototype, sprint plan, epics, 1+ playtest | prototype (advisory); the brief's Build order is the plan — no separate create-changes floor |
 <!-- gate-check reconciliation: the Vertical Slice / prototype keeps
      its long-standing "recommended, not blocking → CONCERNS if absent; FAIL if
      built-and-broken" status at ALL tiers — the tier table never upgrades it to
      a hard blocker. The genuinely-required floor item at this gate is the
      sprint plan at `standard`/`full`; at `minimal` (Option A) there is
-     no separate sprint-plan step — the brief's Build order is the plan, so the
+     no separate create-changes step — the brief's Build order is the plan, so the
      brief existing satisfies the floor. "prototype" above means "checked,
      advisory," not "blocks." -->
 
@@ -667,11 +667,11 @@ never softens a verdict — the strictest verdict from whoever ran still wins, a
 
 | Skill | full | standard | minimal |
 |-------|------|----------|---------|
-| **create-epics** | Requires all GDDs approved (8 sections) | Requires 5-section GDDs approved | **Skipped** (Option A) — no separate epic doc. `/create-stories` reads `design/game-brief.md` directly and synthesizes the implicit epic container itself. |
-| **create-stories** | Requires all ADRs on required list present | Requires critical ADRs present | No ADR requirement |
-| **dev-story** | Requires TR registry + governing ADR + control manifest — blocks without them | TR registry optional; critical ADR required where present | No TR registry, no ADR required — implements against `design/game-brief.md` |
-| **story-readiness** | Full TR registry + ADR + control manifest validation | TR registry optional; critical ADR check only | Acceptance criteria check only |
-| **story-done** | Full GDD traceability + ADR consistency check | 5-section GDD traceability check | Acceptance criteria check only |
+| **design-system** | Requires all GDDs approved (8 sections) | Requires 5-section GDDs approved | **Skipped** (Option A) — no separate epic doc. `/create-changes` reads `design/game-brief.md` directly and synthesizes the implicit epic container itself. |
+| **create-changes** | Requires all ADRs on required list present | Requires critical ADRs present | No ADR requirement |
+| **dev-change** | Requires TR registry + governing ADR + control manifest — blocks without them | TR registry optional; critical ADR required where present | No TR registry, no ADR required — implements against `design/game-brief.md` |
+| **change-readiness** | Full TR registry + ADR + control manifest validation | TR registry optional; critical ADR check only | Acceptance criteria check only |
+| **change-done** | Full GDD traceability + ADR consistency check | 5-section GDD traceability check | Acceptance criteria check only |
 | **qa-plan** | Full test plan derived from all 8 GDD sections | Test plan from 5 required sections | Test plan from acceptance criteria only |
 | **regression-suite** | Critical paths mapped from all sections including Edge Cases | Critical paths from required sections (including Edge Cases) | Smoke test coverage only |
 
@@ -872,15 +872,15 @@ recommend and proceed — the tradeoff between user control and speed
 `collaborative`. Drops to 2–3 in `guided`, zero in `autonomous`.
 
 `brainstorm`, `design-system`, `art-bible`, `create-architecture`, `ux-design`,
-`map-systems`, `architecture-decision`, `create-epics`, `create-stories`,
-`sprint-plan`, `prototype`
+`map-systems`, `architecture-decision`, `design-system`, `create-changes`,
+`create-changes`, `prototype`
 
 **Review skills — medium impact.** Pause after presenting findings to ask what
 to do next. In `guided` routing decisions proceed automatically. In `autonomous`
 the recommended path is taken and logged.
 
 `design-review`, `architecture-review`, `gate-check`, `review-all-gdds`,
-`story-readiness`, `story-done`, `milestone-review`, `playtest-report`
+`change-readiness`, `change-done`, `milestone-review`, `playtest-report`
 
 **Team orchestration skills — medium impact.** Pause between phases for
 check-in. In `guided` the pipeline advances automatically unless BLOCKED. In
@@ -893,14 +893,14 @@ check-in. In `guided` the pipeline advances automatically unless BLOCKED. In
 before writing code. In `guided` only genuinely ambiguous decisions stop. In
 `autonomous` the conventional approach is picked and logged.
 
-`dev-story`, `code-review`
+`dev-change`, `code-review`
 
 **Setup and utility skills — lowest impact.** Pause for initial configuration
 or routing questions. In `guided` defaults are applied automatically. In
 `autonomous` recommended defaults are taken without prompting.
 
 `start`, `adopt`, `setup-engine`, `retrospective`, `localize`, `propagate-design-change`,
-`asset-spec`, `smoke-check`, `qa-plan`, `story-readiness`
+`asset-spec`, `smoke-check`, `qa-plan`, `change-readiness`
 
 ---
 
@@ -974,30 +974,36 @@ The list is a YAML list of these strings. Skills check whether the current decis
 | **propagate-design-change** | `schema_changes`, `architecture_decisions` |
 | **architecture-decision** | `architecture_decisions` |
 | **setup-engine** | `version_bumps`, `schema_changes` |
-| **story-done** | `file_deletions` (when removing/replacing test files) |
+| **change-done** | `file_deletions` (when removing/replacing test files) |
 | **asset-spec** | `external_calls` (when calling external generators) |
 
 ---
 
-## modes.story_granularity
+## modes.change_granularity
 
-**Controls:** How big each story is and how many stories per epic/sprint
+**Controls:** How big each change is
 **Values:** `coarse` | `balanced` | `fine`
 **Default:** *none* — supplied by `modes.rigor` (`standard` yields `balanced`)
 **Set by:** `/start`, `/settings`
-**Read by:** `/create-epics`, `/create-stories`, `/dev-story`, `/sprint-plan`, `/story-done`, `/sprint-status`
+**Read by:** `/design-system`, `/create-changes`, `/dev-change`, `/change-done`
 
-**Priority chain:** `modes.story_granularity` in `project.yaml` → `modes.rigor` expansion → *(no hardcoded default)*
+**Priority chain:** `modes.change_granularity` in `project.yaml` → `modes.story_granularity` (previous name, still read) → `modes.rigor` expansion → *(no hardcoded default)*
+
+> **Renamed from `modes.story_granularity`.** The old name still resolves, at the
+> same tier as the new one, so an existing `project.yaml` behaves unchanged
+> after upgrading — `resolve_setting` reads it as a fallback and reports the
+> source as `project.yaml (as modes.story_granularity)`. Write the new name in
+> anything new.
 
 ---
 
 ### Value intent
 
-| Value | Story shape | Stories per sprint | Best for |
-|-------|-------------|-------------------|----------|
-| `coarse` | 1 story = 1 feature. 3–5 days work each. 5–10 ACs per story. | 2–4 | Solo devs, prototyping, "I know what I'm building" |
-| `balanced` | 1 story = 1 task. 1–2 days work each. 2–4 ACs per story. Current default behavior. | 6–10 | Most projects |
-| `fine` | 1 story = 1 AC. Hours of work each. Easy code review. Frequent /story-done. | 15–25 | Teams, learning, anything needing fine handoffs |
+| Value | Change shape | Best for |
+|-------|--------------|----------|
+| `coarse` | 1 change = 1 feature. 3–5 days work each. 5–10 acceptance criteria. | Solo devs, prototyping, "I know what I'm building" |
+| `balanced` | 1 change = 1 task. 1–2 days work each. 2–4 acceptance criteria. Current default behavior. | Most projects |
+| `fine` | 1 change = 1 criterion. Hours of work each. Easy code review. Frequent `/change-done`. | Teams, learning, anything needing fine handoffs |
 
 ---
 
@@ -1005,12 +1011,11 @@ The list is a YAML list of these strings. Skills check whether the current decis
 
 | Skill | coarse | balanced | fine |
 |-------|--------|----------|------|
-| **create-epics** | Generates 3–5 child stories per epic | Generates 5–10 child stories per epic | Generates 10–20 child stories per epic |
-| **create-stories** | Each story carries 5–10 ACs covering an entire feature | Each story carries 2–4 ACs covering one task | Each story carries 1 AC; story name = AC restatement |
-| **dev-story** | Routing prompt expects multi-day implementation cycle. Subagent given longer working context. | Standard 1–2 day expectation. | Each story implementable in hours; subagent given tighter context. |
-| **sprint-plan** | Allocates 2–4 stories per sprint based on velocity. | Allocates 6–10 stories per sprint. | Allocates 15–25 stories per sprint. |
-| **story-done** | Fires every 3–5 days on average. | Fires every 1–2 days on average. | Fires multiple times per day. |
-| **sprint-status** | Burn-down reads in feature-sized chunks. | Burn-down reads in task-sized chunks. | Burn-down reads in AC-sized chunks. |
+| **design-system** | Generates 3–5 requirements per capability | Generates 5–10 requirements per capability | Generates 10–20 requirements per capability |
+| **create-changes** | Each change carries 5–10 acceptance criteria covering an entire feature | Each change carries 2–4 acceptance criteria covering one task | Each change carries 1 criterion; change name = criterion restatement |
+| **dev-change** | Routing prompt expects multi-day implementation cycle. Subagent given longer working context. | Standard 1–2 day expectation. | Each change implementable in hours; subagent given tighter context. |
+| **change-done** | Fires every 3–5 days on average. | Fires every 1–2 days on average. | Fires multiple times per day. |
+| **openspec status** | Progress reads in feature-sized chunks. | Progress reads in task-sized chunks. | Progress reads in criterion-sized chunks. |
 
 ---
 
@@ -1073,7 +1078,7 @@ The list is a YAML list of these strings. Skills check whether the current decis
 **Values:** engine-specific (see table)
 **Default:** auto-populated by `/setup-engine` based on engine choice
 **Set by:** `/setup-engine`, `/settings`
-**Read by:** `/test-helpers` — the only skill that references it. `/qa-plan`, `/dev-story`, `/regression-suite`, `/test-setup` and `/smoke-check` do **not** name the key, despite being plausible readers.
+**Read by:** `/test-helpers` — the only skill that references it. `/qa-plan`, `/dev-change`, `/regression-suite`, `/test-setup` and `/smoke-check` do **not** name the key, despite being plausible readers.
   *(Derived by grep. A helper-based read such as `session_state_enabled()` would not show up, so treat this list as the verified floor, not a ceiling.)*
 
 **Priority chain:** `testing.framework` in `project.yaml` → engine default
@@ -1097,7 +1102,7 @@ The list is a YAML list of these strings. Skills check whether the current decis
 | Skill | How `testing.framework` is used |
 |-------|--------------------------------|
 | **qa-plan** | Test plan tailored to framework's idioms (assertion style, fixture pattern, parameterized tests) |
-| **dev-story** | Test framework name passed to programmer subagent in implementation brief |
+| **dev-change** | Test framework name passed to programmer subagent in implementation brief |
 | **regression-suite** | Test file naming and discovery patterns match framework conventions |
 | **test-setup** | Scaffolds the right test runner config (e.g. `gdunit4_runner.gd` for Godot vs Unity Test Framework Asset) |
 | **smoke-check** | Invokes framework-appropriate test runner |
@@ -1111,7 +1116,7 @@ closing, or produces a warning and lets work continue — per test type
 **Values:** map of `{logic, integration, visual, ui, config}` → `true | false`
 **Default:** `{logic: true, integration: true, visual: true, ui: true, config: false}`
 **Set by:** `/start`, `/settings`
-**Read by:** `story-done`, `story-readiness`, `gate-check`, `smoke-check`, `dev-story`
+**Read by:** `change-done`, `change-readiness`, `gate-check`, `smoke-check`, `dev-change`
 
 > **Per-type, not a single bool.** A global `testing.strict: true|false` forces
 > all-or-nothing: either all test failures block or none do. Per-type matches how
@@ -1140,16 +1145,16 @@ closing, or produces a warning and lets work continue — per test type
 
 | Skill | strict.[type]: true | strict.[type]: false |
 |-------|---------------------|----------------------|
-| **story-done** | Story of that type cannot close on test/evidence failure | Story can close; warning logged in story file |
-| **story-readiness** | Validates test requirements exist before implementation — blocks if absent | Validates but does not block — surfaces as warnings |
+| **change-done** | Story of that type cannot close on test/evidence failure | Story can close; warning logged in story file |
+| **change-readiness** | Validates test requirements exist before implementation — blocks if absent | Validates but does not block — surfaces as warnings |
 | **gate-check** | CI failures of that type block phase transition | CI failures of that type surfaced as concerns, not blockers |
 | **smoke-check** | Failing smoke (config strict) blocks QA handoff | Failing smoke flagged but handoff proceeds |
-| **dev-story** | References test requirements — flags story as unverifiable if absent | References test requirements — advisory only |
+| **dev-change** | References test requirements — flags story as unverifiable if absent | References test requirements — advisory only |
 
 > **Unset-key resolution.** Each skill reads `testing.strict.<type>`; if absent
 > it reads `testing.strict` as a plain boolean (legacy form); if still absent it
-> falls back to a hardcoded default. For `story-done`, `story-readiness`,
-> `gate-check`, and `dev-story` the hardcoded default is the per-type default map
+> falls back to a hardcoded default. For `change-done`, `change-readiness`,
+> `gate-check`, and `dev-change` the hardcoded default is the per-type default map
 > above (logic/integration/visual/ui strict, config advisory). **`smoke-check` is
 > the exception**: it is a build-health gate, so an unset `testing.strict.config`
 > defaults to *strict* (a FAIL blocks QA hand-off) — preserving its v1.0 behavior.
@@ -1163,7 +1168,7 @@ closing, or produces a warning and lets work continue — per test type
 **Values:** `minimal` | `standard` | `full`
 **Default:** *none* — supplied by `modes.rigor` (`standard` yields `standard`)
 **Set by:** `/start`, `/settings`
-**Read by:** `/story-done`, `/story-readiness`, `/dev-story`, `/smoke-check`, `/gate-check`, `/qa-plan`, `/regression-suite`
+**Read by:** `/change-done`, `/change-readiness`, `/dev-change`, `/smoke-check`, `/gate-check`, `/qa-plan`, `/regression-suite`
 
 **Priority chain:** `qa.level` in `project.yaml` → `modes.rigor` expansion → *(no hardcoded default)*
 
@@ -1182,9 +1187,9 @@ closing, or produces a warning and lets work continue — per test type
 | Visual stories | No evidence required | Screenshot required (strict.visual controls block) | Screenshot + lead sign-off required |
 | UI stories | No evidence required | Screenshot of each screen required (strict.ui controls block) | Screenshot + walkthrough doc + interaction test |
 | Config/Data stories | No evidence required | Smoke check advisory | Smoke check required |
-| /story-done test gate | Acceptance criteria only | Enforced per story type | Enforced for every story type |
+| /change-done test gate | Acceptance criteria only | Enforced per story type | Enforced for every story type |
 | /gate-check phase enforcement | No test gates | Logic + integration must pass | Full coverage + regression suite |
-| /dev-story routing prompt | No "Test required: ..." line | Per-type test requirement included | Per-type + coverage target included |
+| /dev-change routing prompt | No "Test required: ..." line | Per-type test requirement included | Per-type + coverage target included |
 | Regression suite required by | Never | Polish stage | Production stage |
 | Best for | Jam games, throwaway prototypes, fast iteration | Most projects | Commercial, console cert, learning, paranoid teams |
 
@@ -1194,9 +1199,9 @@ closing, or produces a warning and lets work continue — per test type
 
 | Skill | minimal | standard | full |
 |-------|---------|----------|------|
-| **story-done** | Acceptance criteria check only — no evidence required | Per-type evidence required; strictness from `testing.strict` | All types require evidence; strictness from `testing.strict` |
-| **story-readiness** | No test requirement validated | Test requirement per story type validated | Test requirement + coverage target validated |
-| **dev-story** | Routing prompt has no "Test required" line | Per-type test requirement passed to programmer agent | Coverage target passed to programmer agent |
+| **change-done** | Acceptance criteria check only — no evidence required | Per-type evidence required; strictness from `testing.strict` | All types require evidence; strictness from `testing.strict` |
+| **change-readiness** | No test requirement validated | Test requirement per story type validated | Test requirement + coverage target validated |
+| **dev-change** | Routing prompt has no "Test required" line | Per-type test requirement passed to programmer agent | Coverage target passed to programmer agent |
 | **smoke-check** | Optional | Required before phase transition | Required before every commit |
 | **gate-check** | No test enforcement at phase transitions | Logic + integration tests must pass | Full coverage check + regression suite |
 | **qa-plan** | Skipped entirely or minimal smoke plan | Full plan per story type | Full plan + coverage targets per system |
@@ -1210,7 +1215,7 @@ closing, or produces a warning and lets work continue — per test type
 **Values:** integer 0–100, or `null` for unset
 **Default:** `null`
 **Set by:** `/settings`
-**Read by:** `/gate-check` only. `/story-done` does not reference the key, and no CI runner reads it.
+**Read by:** `/gate-check` only. `/change-done` does not reference the key, and no CI runner reads it.
   *(Derived by grep. A helper-based read such as `session_state_enabled()` would not show up, so treat this list as the verified floor, not a ceiling.)*
 
 **Priority chain:** `qa.coverage_minimum` in `project.yaml` → no enforcement if `null`
@@ -1332,7 +1337,7 @@ which specialists are routed and which architecture sections are required
 **Values:** `true` | `false`  
 **Default:** `false`  
 **Set by:** `/setup-engine`, `/settings`  
-**Read by:** `dev-story`, `create-architecture`, `security-audit`, `team-release`, `gate-check`
+**Read by:** `dev-change`, `create-architecture`, `security-audit`, `team-release`, `gate-check`
 
 **Priority chain:** `platform.multiplayer` in `project.yaml` → hardcoded default of `false`
 
@@ -1360,7 +1365,7 @@ which specialists are routed and which architecture sections are required
 
 | Skill | multiplayer: true | multiplayer: false |
 |-------|------------------|-------------------|
-| **dev-story** | `network-programmer` included in routing table for networking stories | `network-programmer` excluded — networking stories flagged as out of scope |
+| **dev-change** | `network-programmer` included in routing table for networking stories | `network-programmer` excluded — networking stories flagged as out of scope |
 | **create-architecture** | Networking layer section required in architecture doc | Networking section omitted entirely |
 | **security-audit** | Includes netcode review — authentication, replication, cheat vectors | Netcode review skipped |
 | **team-release** | `network-programmer` included in release sign-off pipeline | `network-programmer` excluded |
@@ -1374,7 +1379,7 @@ which specialists are routed and which architecture sections are required
 **Values:** `true` | `false`
 **Default:** `false`
 **Set by:** `/setup-engine`, `/settings`
-**Read by:** `dev-story`, `create-architecture`, `security-audit`, `team-live-ops`, `gate-check`
+**Read by:** `dev-change`, `create-architecture`, `security-audit`, `team-live-ops`, `gate-check`
 
 **Priority chain:** `platform.online` in `project.yaml` → hardcoded default of `false`
 
@@ -1399,7 +1404,7 @@ which specialists are routed and which architecture sections are required
 |-------|--------------|---------------|
 | **create-architecture** | Data layer must include online service integration (cloud save sync, leaderboard auth, telemetry buffering) | Data layer is local storage only |
 | **security-audit** | Includes data-transit review — TLS, save data integrity, leaderboard tampering | Local-only review (save file tampering, save data privacy) |
-| **dev-story** | `analytics-engineer` routed for telemetry stories | analytics-engineer not routed |
+| **dev-change** | `analytics-engineer` routed for telemetry stories | analytics-engineer not routed |
 | **team-live-ops** | Skill is available (live-ops-designer routes meaningfully) | Skill emits "no online features — live ops scope is empty" |
 | **gate-check** | Technical Setup gate checks for online architecture decisions in critical ADRs | No online ADR requirement |
 
@@ -1502,19 +1507,22 @@ which specialists are routed and which architecture sections are required
 >
 > No reference anywhere outside this file.
 
-**Controls:** Default sprint and milestone durations for planning
+> **Superseded by OpenSpec.** CCGS no longer has sprints — OpenSpec's in-flight
+> changes are the unit of work and there are no time-box boundaries to
+> configure. `cadence.sprint_length` therefore has no successor setting and
+> should be removed rather than implemented; only `cadence.milestone_length`
+> remains meaningful, as milestones still exist in `production/milestones/`.
+
+**Controls:** Default milestone duration for planning
 **Values:**
-- `sprint_length`: `1w` | `2w` | `3w` | `4w` | `none`
+
 - `milestone_length`: `4w` | `6w` | `8w` | `12w`
-**Defaults:** `sprint_length: 2w`, `milestone_length: 8w`
+**Defaults:** `milestone_length: 8w`
 **Set by:** `/start`, `/settings`
-**Read by:** `/sprint-plan`, `/milestone-review`, `/sprint-status`, future velocity tracking
+**Read by:** `/milestone-review`
 
 **Priority chain:** `cadence.*` in `project.yaml` → hardcoded defaults
 
-> **`none` for `sprint_length`** means continuous-flow / kanban-style — no sprint boundaries.
-> `/sprint-plan` becomes `/work-plan` and is invoked manually as needed. Velocity tracking
-> is per-week rather than per-sprint.
 
 ---
 
@@ -1522,10 +1530,9 @@ which specialists are routed and which architecture sections are required
 
 | Skill | What changes |
 |-------|--------------|
-| **sprint-plan** | Capacity calculated as `sprint_length × team.size velocity baseline`. `none` makes the skill emit a continuous-flow plan instead. |
+| **create-changes** | Selects the next batch of changes against the capability specs. There is no capacity × sprint-length calculation — OpenSpec has no sprints. |
 | **milestone-review** | Milestone window for retrospective scope = `milestone_length`. |
-| **sprint-status** | Burn-down chart x-axis spans `sprint_length`. |
-| **retrospective** | Sprint retro fires at `sprint_length` cadence (or weekly when sprint_length is `none`). |
+| **retrospective** | Fires at the end of a change set or milestone, not on a sprint cadence. |
 
 ---
 
@@ -1593,7 +1600,7 @@ validates and what artifacts are expected to exist
 **Values:** `Concept` | `Systems Design` | `Technical Setup` | `Pre-Production` | `Production` | `Polish` | `Release`  
 **Default:** `Concept`  
 **Set by:** `/gate-check` on PASS verdict only — never set manually  
-**Read by:** `gate-check`, `project-stage-detect`, `help`, `sprint-status`, `day-one-patch`
+**Read by:** `gate-check`, `project-stage-detect`, `help`, `openspec status`, `day-one-patch`
 
 > **Stage count:** This document uses the
 > 7-stage reality implemented by gate-check:
@@ -1638,7 +1645,7 @@ required at `standard` and `minimal` levels.
 | **gate-check** | Reads current stage to determine which gate to validate. Writes next stage on PASS. |
 | **project-stage-detect** | Reads `project.stage` first — if set, uses it as authoritative. Falls back to heuristic detection only if absent. |
 | **help** | Uses stage to determine "where are you in the pipeline" and surfaces the correct next steps. |
-| **sprint-status** | Displays current stage in status summary. |
+| **openspec status** | Displays current stage in status summary. |
 | **day-one-patch** | Validates that stage is `Release` before proceeding — refuses to run if project is not at release stage. |
 
 ---
@@ -1693,7 +1700,7 @@ implementation, review, and architecture validation
 **Values:** `Godot` | `Unity` | `Unreal`  
 **Default:** `[UNSET]` — must be configured via `/setup-engine`  
 **Set by:** `/setup-engine`  
-**Read by:** `dev-story`, `code-review`, `architecture-decision`, `create-architecture`, all `team-*` skills
+**Read by:** `dev-change`, `code-review`, `architecture-decision`, `create-architecture`, all `team-*` skills
 
 > **Currently stored in `technical-preferences.md`**, not `project.yaml`. After
 > YAML expansion, `engine.name` and the specialist routing table move to
@@ -1721,7 +1728,7 @@ implementation, review, and architecture validation
 
 | Skill | How engine.name is used |
 |-------|------------------------|
-| **dev-story** | Routes code stories to language specialist. Spawns engine specialist alongside for HIGH engine-risk stories or engine-specific API usage. |
+| **dev-change** | Routes code stories to language specialist. Spawns engine specialist alongside for HIGH engine-risk stories or engine-specific API usage. |
 | **code-review** | Routes review to language, shader, or UI specialist based on file type being reviewed. |
 | **architecture-decision** | Loads `docs/engine-reference/[engine]/VERSION.md` before authoring. Spawns engine specialist to validate ADR for API correctness and post-cutoff compatibility. |
 | **create-architecture** | Includes engine-specific constraints and patterns in architecture doc based on engine choice. |
@@ -1734,7 +1741,7 @@ implementation, review, and architecture validation
 > **Live since the run-and-observe step.** This block was RESERVED — written by
 > `/setup-engine`, read by nothing — through most of v1.1. `test`, `smoke` and
 > `build` gained readers as the parse-check and smoke gates landed; `run` gained
-> its reader last, when `/dev-story` Phase 6 step 4 started launching the game to
+> its reader last, when `/dev-change` Phase 6 step 4 started launching the game to
 > look at it. The per-skill table at the bottom is now current behaviour, not
 > intent. `validate-push.sh` was once named as a reader and never was.
 
@@ -1742,7 +1749,7 @@ implementation, review, and architecture validation
 **Values:** strings — shell-executable commands
 **Default:** `[UNSET]` — populated by `/setup-engine` with engine-typical defaults
 **Set by:** `/setup-engine`, `/settings`
-**Written by:** `/setup-engine`, `/settings`. **Read by:** `test` — `/dev-story` (Phase 6 parse check), `/smoke-check`, `project-coherence.sh`; `smoke` — `/dev-story`; `build` — `/smoke-check`, `project-coherence.sh`; `run` — `/dev-story` (Phase 6 step 4, the run-and-observe step). `/launch-checklist` and `/regression-suite` name these commands but cannot execute them — their `allowed-tools` has no `Bash`.
+**Written by:** `/setup-engine`, `/settings`. **Read by:** `test` — `/dev-change` (Phase 6 parse check), `/smoke-check`, `project-coherence.sh`; `smoke` — `/dev-change`; `build` — `/smoke-check`, `project-coherence.sh`; `run` — `/dev-change` (Phase 6 step 4, the run-and-observe step). `/launch-checklist` and `/regression-suite` name these commands but cannot execute them — their `allowed-tools` has no `Bash`.
   *(Derived by grep. A helper-based read would not show up, so treat this list as the verified floor, not a ceiling.)*
 
 **Priority chain:** `commands.*` in `project.yaml` → engine-typical default → no command available
@@ -1799,7 +1806,7 @@ keys are inside the locked file, not a local override).
 |-------|---------|
 | `build` | Full project build for CI or release. Used by `/launch-checklist`, CI hooks. |
 | `test` | Run the full test suite. Used by `/smoke-check`, `/regression-suite`, CI hooks. |
-| `run` | Launch the **game** windowed at a fixed resolution — not the editor. Used by `/dev-story` Phase 6 step 4 to observe the feature and retain a screenshot; see `.claude/docs/run-and-observe.md` for the per-engine capture flags that are appended to it. |
+| `run` | Launch the **game** windowed at a fixed resolution — not the editor. Used by `/dev-change` Phase 6 step 4 to observe the feature and retain a screenshot; see `.claude/docs/run-and-observe.md` for the per-engine capture flags that are appended to it. |
 | `smoke` | Minimal "does it boot?" check. Named by `/smoke-check` in its prose. Should complete in < 5 seconds. |
 
 ---
@@ -1839,7 +1846,7 @@ Users override per-project as needed via `/settings commands.<field>=<value>` or
 | **smoke-check** | Invokes `commands.smoke` (or `commands.test` for full pass). Critical path for QA hand-off. |
 | **launch-checklist** | Emits a checklist **item** asking whether the build produces a valid artifact. It does **not** run `commands.build` — its `allowed-tools` has no `Bash`. The verification is a human step. |
 | **validate-push.sh** | Does **not** read `commands.*`. It warns on pushes to protected branches (`develop`/`main`/`master`) and runs no build or smoke command — the block path in it is commented out, so it never fails a push. |
-| **dev-story** | Phase 6 step 2 runs `commands.test` or `commands.smoke` as the parse check. Phase 6 step 4 runs `commands.run` — the windowed game launch — to observe the feature and retain a screenshot (`.claude/docs/run-and-observe.md`). |
+| **dev-change** | Phase 6 step 2 runs `commands.test` or `commands.smoke` as the parse check. Phase 6 step 4 runs `commands.run` — the windowed game launch — to observe the feature and retain a screenshot (`.claude/docs/run-and-observe.md`). |
 | **regression-suite** | Maps coverage by **globbing test filenames**. It does **not** invoke `commands.test` — its `allowed-tools` has no `Bash`, so coverage here means "a test file exists", never "a test passed". |
 
 ---
@@ -1851,7 +1858,7 @@ Users override per-project as needed via `/settings commands.<field>=<value>` or
 **Default:** engine-specific (auto-populated by `/setup-engine`)
 **Set by:** `/setup-engine`, `/settings`
 **Read by:** `/adopt`, `/architecture-review`, `/asset-spec`,
-`/create-architecture`, `/create-control-manifest`, `/dev-story`,
+`/create-architecture`, `/create-control-manifest`, `/dev-change`,
 `/vertical-slice` — each reads `naming.*` from `project.yaml` and feeds the
 conventions into a brief, manifest or spec. **NOT by `/code-review` and NOT by
 `validate-commit.sh`**.
@@ -1901,7 +1908,7 @@ conventions into a brief, manifest or spec. **NOT by `/code-review` and NOT by
 
 | Skill | How naming is used |
 |-------|--------------------|
-| **dev-story** | Passes the naming conventions to the programmer subagent as part of the implementation context |
+| **dev-change** | Passes the naming conventions to the programmer subagent as part of the implementation context |
 | **create-control-manifest** | Emits the conventions as manifest rows (classes, variables, signals/events, files, constants) |
 | **asset-spec** | Specifies asset naming per the configured convention |
 | **create-architecture** / **architecture-review** | Read as project config alongside `performance.*` |
@@ -2032,8 +2039,8 @@ and resumes at the first `incomplete` section. No active.yaml needed.
 | **art-bible** | `design/art/art-bible.md` | Before section 1 discussion |
 | **create-architecture** | `docs/architecture/architecture.md` | Before layer discussion |
 | **ux-design** | `design/ux/[screen].md` | Before screen discussion |
-| **create-stories** | `production/epics/[epic-slug]/story-NNN-[slug].md` | Before story authoring loop |
-| **create-epics** | `production/epics/[epic-slug]/EPIC.md` | Before epic authoring loop |
+| **create-changes** | `openspec/changes/<change-id>/tasks.md` | Before story authoring loop |
+| **design-system** | `openspec/specs/<system>/spec.md` | Before epic authoring loop |
 | **map-systems** | `design/gdd/systems-index.md` | Before system enumeration |
 | **brainstorm** | `design/gdd/game-concept.md` (`standard`/`full`) · `design/game-brief.md` (`minimal`) | Before concept discussion |
 
@@ -2081,8 +2088,8 @@ the user rather than fail silently.
 
 | Skill | What it infers from active.yaml | Fallback when `off` |
 |-------|----------------------------------|---------------------|
-| **dev-story** | Active story path (when no arg given) | Prompt user for story path |
-| **story-done** | In-progress story path (when no arg given) | Prompt user for story path |
+| **dev-change** | Active story path (when no arg given) | Prompt user for story path |
+| **change-done** | In-progress story path (when no arg given) | Prompt user for story path |
 | **team-release** | Target version (when no arg given) | Prompt user for version |
 | **team-qa** | Active sprint (when no arg given) | Prompt user for sprint file |
 | **help** | Current task and STATUS block for context-aware suggestions | Responds without session context — surfaces next steps from sprint/epics only |
@@ -2094,8 +2101,8 @@ When `off`, they skip this write entirely.
 
 | Skill | What it writes to active.yaml |
 |-------|-------------------------------|
-| **dev-story** | Story path, files changed, test written, blockers, next steps |
-| **story-done** | Verdict, story path, tech debt count, next recommended story |
+| **dev-change** | Story path, files changed, test written, blockers, next steps |
+| **change-done** | Verdict, story path, tech debt count, next recommended story |
 | **architecture-review** | Verdict, TR coverage counts, new TR-IDs, GDD flags, ADR gaps, report path |
 | **prototype** | Prototype scope, current phase, key decisions |
 | **vertical-slice** | Slice concept, current phase, blocked items |
@@ -2320,7 +2327,7 @@ modes:
     - scope_changes
     - file_deletions
     - schema_changes
-  story_granularity: balanced  # coarse | balanced | fine
+  change_granularity: balanced  # coarse | balanced | fine
 
 # TOP-LEVEL, not nested under `modes:` — resolve_config reads
 # `workflow_overrides.system_overrides.*` from the document root

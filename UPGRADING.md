@@ -14,6 +14,7 @@ Or check `README.md` for the version badge.
 ## Table of Contents
 
 - [Upgrade Strategies](#upgrade-strategies)
+- [**v1.1.1 → v1.2 (OpenSpec workflow)**](#v111--v12-openspec-workflow)
 - [v1.1.0 → v1.1.1](#v110--v111)
 - [v1.0 → v1.1](#v10--v11)
 - [v1.0.0-beta → v1.0](#v100-beta--v10)
@@ -22,6 +23,85 @@ Or check `README.md` for the version badge.
 - [v0.3.0 → v0.4.0](#v030--v040)
 - [v0.2.0 → v0.3.0](#v020--v030)
 - [v0.1.0 → v0.2.0](#v010--v020)
+
+---
+
+## v1.1.1 → v1.2 (OpenSpec workflow)
+
+**The breaking change: sprint/story/epic was replaced by OpenSpec's
+change/spec workflow.** This is a large migration — read it before pulling.
+
+### What changed
+
+| Before | After |
+|---|---|
+| GDD at `design/gdd/<system>.md` | Capability spec at `openspec/specs/<system>/spec.md` |
+| Epic → `production/epics/<slug>/EPIC.md` | Capability (an entry under `openspec/specs/`) |
+| Story → `production/epics/<slug>/story-NNN-*.md` | Change → `openspec/changes/<change-id>/` |
+| Sprint → `production/sprints/sprint-N.md` | **Retired** — in-flight changes are the unit of work |
+| `production/sprint-status.yaml` | `openspec status` (reads `tasks.md` checkboxes) |
+| Skills `/create-epics`, `/sprint-plan`, `/sprint-status` | Removed |
+| Skills `/dev-story`, `/story-done`, `/story-readiness`, `/create-stories` | Renamed `/dev-change`, `/change-done`, `/change-readiness`, `/create-changes` |
+
+### Steps
+
+1. **Install OpenSpec** (requires Node):
+   ```bash
+   npm install -g @fission-ai/openspec
+   openspec --version
+   ```
+2. **Initialise the OpenSpec root** in your project:
+   ```bash
+   openspec init --tools claude .
+   ```
+   This creates `openspec/{config.yaml,specs/,changes/}` and adds the
+   `/opsx:*` commands and skills.
+3. **Install the `ccgs-game` schema** so capability specs carry the game-design
+   sections (Player Fantasy, Formulas, Tuning Knobs, …):
+   ```bash
+   openspec schema fork spec-driven ccgs-game
+   ```
+   Then copy this repo's `openspec/schemas/ccgs-game/` over the fork, and set
+   `schema: ccgs-game` in `openspec/config.yaml`.
+4. **Migrate each GDD to a capability spec**: move `design/gdd/<system>.md` to
+   `openspec/specs/<system>/spec.md`. The GDD's sections stay as they are — the
+   `ccgs-game` schema accepts them alongside the required `## Purpose`,
+   `### Requirement:` and `#### Scenario:` structure.
+5. **Convert each story to a change directory** under `openspec/changes/<id>/`
+   with `proposal.md`, `specs/<system>/spec.md` (the delta) and `tasks.md`.
+   `/create-changes` in the upgraded template does this for you.
+6. **Rename the config key** in `project.yaml`:
+   ```yaml
+   modes:
+     change_granularity: balanced   # was story_granularity
+   ```
+   The old name still resolves (see below), so this is safe to defer.
+
+### Compatibility guarantees
+
+- **`modes.story_granularity` still works.** The resolver reads it as a
+  fallback at the same precedence as the new `modes.change_granularity`, and
+  reports the source as `project.yaml (as modes.story_granularity)`. An existing
+  config keeps resolving through the rigor expansion exactly as before.
+- **`production/session-state/active.md` is unchanged** — OpenSpec has no
+  session concept. Its `STATUS` block fields were renamed `Epic/Feature/Task` →
+  `Change/Capability/Task`; `pre-compact.sh` still matches the old names so an
+  existing file is not blanked on the first session after upgrading.
+- **ADRs, `tr-registry.yaml` and the control manifest are unchanged.** They are
+  architecture artifacts, not execution-layer ones, and OpenSpec has no
+  equivalent — changes reference them from `proposal.md`/`design.md`.
+
+### The one trap worth knowing
+
+`openspec archive` merges a change's delta into the main spec — but when the
+main spec does **not yet exist**, it creates a skeleton containing only
+`## Purpose` and `## Requirements`, silently discarding Player Fantasy,
+Formulas, Tuning Knobs and every other hand-written section. Verified against
+openspec 1.13.1.
+
+**Always write the capability spec (`/design-system`) before archiving a change
+against it.** If you already lost sections, recover them from
+`openspec/changes/archive/<date>-<id>/specs/`.
 
 ---
 
@@ -422,7 +502,7 @@ None — all changes are to infrastructure files with no user content.
 | **New skill** | `/vertical-slice` — Pre-Production gate that validates the full game loop with a production-quality end-to-end build before Production. Pairs with the overhauled `/prototype` (concept validation right after `/brainstorm`). |
 | **New flow** | Entity inventory step in `/map-systems` — surfaces all named entities up front for cleaner downstream GDD authoring. |
 | **UX polish** | Added missing `AskUserQuestion` widgets to 7 skills; comprehensive skill audit for consistency, prompts, and flow gaps; exposed `--review` flag in `argument-hints` for all `team-*` skills. |
-| **Bug fixes** | log-agent hooks logged "unknown" `agent_type`; missing `allowed-tools` in `/architecture-decision` and `/story-done`; `rg --type gdscript` is invalid (now uses `--glob *.gd`); session-start preview showed oldest state instead of newest; duplicate `## 0.` heading and broken step numbering in `/architecture-decision`. |
+| **Bug fixes** | log-agent hooks logged "unknown" `agent_type`; missing `allowed-tools` in `/architecture-decision` and `/change-done`; `rg --type gdscript` is invalid (now uses `--glob *.gd`); session-start preview showed oldest state instead of newest; duplicate `## 0.` heading and broken step numbering in `/architecture-decision`. |
 | **Project docs** | Added `CONTRIBUTING.md` (framework contribution guidelines) and `SECURITY.md` (coordinated disclosure policy). |
 | **Counts/refs** | Synced agent/skill/hook counts across `WORKFLOW-GUIDE.md`, `README.md`, and agent rosters; fixed stale agent names and skill model-tier fields. |
 
@@ -487,12 +567,12 @@ None — all changes are to infrastructure files with no user content.
 .claude/skills/magi-game-studio/technical/architecture-decision/SKILL.md
 .claude/skills/magi-game-studio/technical/create-architecture/SKILL.md
 .claude/skills/magi-game-studio/planning/create-epics/SKILL.md
-.claude/skills/magi-game-studio/planning/create-stories/SKILL.md
+.claude/skills/magi-game-studio/planning/create-changes/SKILL.md
 .claude/skills/magi-game-studio/planning/sprint-plan/SKILL.md
 .claude/skills/magi-game-studio/planning/milestone-review/SKILL.md
 .claude/skills/magi-game-studio/qa/playtest-report/SKILL.md
 .claude/skills/magi-game-studio/creative/prototype/SKILL.md
-.claude/skills/magi-game-studio/planning/story-done/SKILL.md
+.claude/skills/magi-game-studio/planning/change-done/SKILL.md
 .claude/skills/magi-game-studio/release/gate-check/SKILL.md
 .claude/skills/magi-game-studio/planning/start/SKILL.md
 .claude/skills/magi-game-studio/creative/quick-design/SKILL.md
@@ -587,7 +667,7 @@ individual run with `--review [mode]` on any gate-using skill:
 .claude/skills/team-qa/SKILL.md          ← no-arg guard, verdict keywords, gate improvements
 .claude/skills/magi-game-studio/creative/map-systems/SKILL.md      ← verdict keywords
 .claude/skills/magi-game-studio/planning/create-epics/SKILL.md     ← "May I write" protocol fix, verdict keywords
-.claude/skills/magi-game-studio/planning/create-stories/SKILL.md   ← verdict keywords
+.claude/skills/magi-game-studio/planning/create-changes/SKILL.md   ← verdict keywords
 .claude/agents/game-designer.md          ← genre-agnostic language
 .claude/agents/systems-designer.md       ← genre-agnostic language
 .claude/agents/economy-designer.md       ← genre-agnostic language
@@ -620,14 +700,14 @@ No files require manual merging in this release. All changes are to infrastructu
 
 | Category | Changes |
 |----------|---------|
-| **New skills (17)** | `/ux-design`, `/ux-review`, `/help`, `/quick-design`, `/review-all-gdds`, `/story-readiness`, `/story-done`, `/sprint-status`, `/adopt`, `/create-architecture`, `/create-control-manifest`, `/create-epics`, `/create-stories`, `/dev-story`, `/propagate-design-change`, `/content-audit`, `/architecture-review` |
+| **New skills (17)** | `/ux-design`, `/ux-review`, `/help`, `/quick-design`, `/review-all-gdds`, `/change-readiness`, `/change-done`, `/sprint-status`, `/adopt`, `/create-architecture`, `/create-control-manifest`, `/create-epics`, `/create-changes`, `/dev-change`, `/propagate-design-change`, `/content-audit`, `/architecture-review` |
 | **New skills QA (12)** | `/qa-plan`, `/smoke-check`, `/soak-test`, `/regression-suite`, `/test-setup`, `/test-helpers`, `/test-evidence-review`, `/test-flakiness`, `/skill-test`, `/bug-triage`, `/team-live-ops`, `/team-qa` |
 | **New hooks (4)** | `log-agent-stop.sh` — agent audit trail stop; `notify.sh` — Windows toast notifications; `post-compact.sh` — session recovery reminder after compaction; `validate-skill-change.sh` — advises `/skill-test` after skill edits |
 | **New templates (8)** | `ux-spec.md`, `hud-design.md`, `accessibility-requirements.md`, `interaction-pattern-library.md`, `player-journey.md`, `difficulty-curve.md`, and 2 adoption plan templates |
 | **New infrastructure** | `workflow-catalog.yaml` (7-phase pipeline, read by `/help`), `docs/architecture/tr-registry.yaml` (stable TR-IDs), `production/sprint-status.yaml` schema |
 | **Skill updates** | `/gate-check` — 3 gates now require UX artifacts; Pre-Production gate requires vertical slice (HARD gate) |
 | **Skill updates** | `/sprint-plan` — writes `sprint-status.yaml`; `/sprint-status` reads it |
-| **Skill updates** | `/story-done` — 8-phase completion review, updates story file, surfaces next ready story |
+| **Skill updates** | `/change-done` — 8-phase completion review, updates story file, surfaces next ready story |
 | **Skill updates** | `/design-review` — removed architecture gap check (wrong stage) |
 | **Skill updates** | `/team-ui` — full UX pipeline (ux-design → ux-review → team phases) |
 | **Agent updates** | 14 specialist agents — `memory: project` added |
@@ -648,15 +728,15 @@ No files require manual merging in this release. All changes are to infrastructu
 .claude/skills/help/SKILL.md
 .claude/skills/magi-game-studio/creative/quick-design/SKILL.md
 .claude/skills/review-all-gdds/SKILL.md
-.claude/skills/story-readiness/SKILL.md
-.claude/skills/magi-game-studio/planning/story-done/SKILL.md
+.claude/skills/change-readiness/SKILL.md
+.claude/skills/magi-game-studio/planning/change-done/SKILL.md
 .claude/skills/sprint-status/SKILL.md
 .claude/skills/adopt/SKILL.md
 .claude/skills/magi-game-studio/technical/create-architecture/SKILL.md
 .claude/skills/create-control-manifest/SKILL.md
 .claude/skills/magi-game-studio/planning/create-epics/SKILL.md
-.claude/skills/magi-game-studio/planning/create-stories/SKILL.md
-.claude/skills/dev-story/SKILL.md
+.claude/skills/magi-game-studio/planning/create-changes/SKILL.md
+.claude/skills/dev-change/SKILL.md
 .claude/skills/propagate-design-change/SKILL.md
 .claude/skills/content-audit/SKILL.md
 .claude/skills/architecture-review/SKILL.md
@@ -695,8 +775,8 @@ docs/CLAUDE.md
 .claude/skills/sprint-status/SKILL.md
 .claude/skills/design-review/SKILL.md
 .claude/skills/team-ui/SKILL.md
-.claude/skills/story-readiness/SKILL.md
-.claude/skills/magi-game-studio/planning/story-done/SKILL.md
+.claude/skills/change-readiness/SKILL.md
+.claude/skills/magi-game-studio/planning/change-done/SKILL.md
 .claude/docs/templates/game-design-document.md    ← adds Game Feel section
 README.md
 docs/WORKFLOW-GUIDE.md
@@ -746,10 +826,10 @@ If you've added project-specific knowledge to agent `.md` files, do a diff and m
 
 Stories now have a formal lifecycle enforced by two skills:
 
-- **`/story-readiness`** — validates a story is implementation-ready before a developer picks it up. Checks Design (GDD req linked), Architecture (ADR accepted), Scope (criteria testable), and DoD (manifest version current). Verdict: READY / NEEDS WORK / BLOCKED.
-- **`/story-done`** — 8-phase completion review after implementation. Verifies each acceptance criterion, checks for GDD/ADR deviations, prompts code review, updates the story file to `Status: Complete`, and surfaces the next ready story.
+- **`/change-readiness`** — validates a story is implementation-ready before a developer picks it up. Checks Design (GDD req linked), Architecture (ADR accepted), Scope (criteria testable), and DoD (manifest version current). Verdict: READY / NEEDS WORK / BLOCKED.
+- **`/change-done`** — 8-phase completion review after implementation. Verifies each acceptance criterion, checks for GDD/ADR deviations, prompts code review, updates the story file to `Status: Complete`, and surfaces the next ready story.
 
-Flow: `/story-readiness` → implement → `/story-done` → next story
+Flow: `/change-readiness` → implement → `/change-done` → next story
 
 #### Full UX/UI Pipeline
 
@@ -768,7 +848,7 @@ Also: `/design-system retrofit [path]` and `/architecture-decision retrofit [pat
 #### Sprint Tracking YAML
 
 `production/sprint-status.yaml` is now the authoritative story tracking format:
-- Written by `/sprint-plan` (initializes all stories) and `/story-done` (sets status to `done`)
+- Written by `/sprint-plan` (initializes all stories) and `/change-done` (sets status to `done`)
 - Read by `/sprint-status` (fast snapshot) and `/help` (per-story status in production phase)
 - Status values: `backlog | ready-for-dev | in-progress | review | done | blocked`
 - Falls back gracefully to markdown scanning if file doesn't exist

@@ -1,0 +1,90 @@
+schema: ccgs-game
+
+# Project context — shown to the AI when creating OpenSpec artifacts.
+#
+# This is the Claude Code Game Studios template. Read it as a *studio harness*,
+# not as a game: the specs and changes it produces describe whatever game the
+# user is building, not the framework itself.
+context: |
+  This project is Claude Code Game Studios (CCGS): a game-development studio
+  harness driven by Claude Code. The framework supplies 49 specialist agents,
+  a tiered skill library, path-scoped rules and validation hooks. It does not
+  itself contain a game.
+
+  Terminology mapping — CCGS concepts onto OpenSpec artifacts:
+
+  | CCGS concept        | OpenSpec artifact                                  |
+  |---------------------|----------------------------------------------------|
+  | GDD (game design doc) | `openspec/specs/<system>/spec.md` — one capability per game system |
+  | Epic                | a capability group: several `specs/<system>/` under one layer |
+  | Story               | a change under `openspec/changes/<id>/`            |
+  | Sprint              | retired — in-flight changes are the unit of work   |
+
+  A CCGS capability is a game system (combat, inventory, save-load). Its spec
+  is a GDD *plus* a behavior contract: the `ccgs-game` schema adds Player
+  Fantasy, Detailed Design, Formulas, Edge Cases, Tuning Knobs and Dependencies
+  sections to the standard Purpose + Requirements + Scenarios structure.
+
+  ARCHIVE BEHAVIOUR — load-bearing, verified against openspec 1.13.1:
+  `openspec archive` writes the main spec through `buildSpecSkeleton()`, which
+  emits ONLY `# <name> Specification` + `## Purpose` + `## Requirements`. The
+  two cases therefore differ sharply, and this is not documented upstream:
+
+    - Archiving a change whose target spec ALREADY EXISTS merges the delta into
+      the existing file and PRESERVES every hand-written section (Player
+      Fantasy, Formulas, Tuning Knobs, ...). Verified.
+    - Archiving a change that CREATES the spec DISCARDS every section outside
+      Purpose and Requirements — the GDD content is silently lost. Verified.
+
+  Consequence, which the workflow must obey: never let a change be the first
+  thing that creates a capability's spec. Write the main spec (the GDD) first —
+  `/design-system` does this — and let changes be increments against it. If a
+  spec is first created by archiving a change, recover the lost design sections
+  from the archive under `openspec/changes/archive/<date>-<id>/specs/`.
+
+  Game-design rules carried into every artifact:
+  - Gameplay values MUST be data-driven (external config), never hardcoded.
+  - Every formula carries a variable table: Type, Range, Source, Description.
+  - Normative requirements use SHALL/MUST, never should/may.
+  - Architecture decisions live in `docs/architecture/` as ADRs and are
+    referenced from a change's `design.md` — ADRs are NOT specs, because they
+    record an internal technical choice that can change without changing
+    externally visible behavior.
+  - Requirement traceability is `docs/architecture/tr-registry.yaml`.
+  - The code root is engine-specific (`src/` Godot, `Assets/` Unity,
+    `Source/<Module>/` Unreal). Resolve it from `engine.name` in
+    `project.yaml`; never assume `src/`.
+
+# Per-artifact rules.
+rules:
+  proposal:
+    - Keep proposals to 1-2 pages.
+    - State which game system (capability) this change affects.
+    - Mark any breaking change to an existing spec with **BREAKING**.
+  specs:
+    - A spec IS the GDD for its system — do not create a parallel `design/gdd/` file.
+    - Include Player Fantasy, Detailed Design, Formulas, Edge Cases, Tuning Knobs
+      and Dependencies for a NEW capability.
+    - Every requirement needs at least one scenario, and scenarios MUST use
+      exactly four hashtags (`#### Scenario:`).
+    - Omit Formulas only when the system defines no numeric rules.
+  design:
+    - Reference governing ADRs by ID (`ADR-NNNN`) and state each one's version.
+    - Record the resolved code root and any engine-version risk.
+  tasks:
+    - Each task states how to verify completion.
+    - Tasks that change something player-observable must be verified by
+      launching and observing the game, with a retained screenshot under
+      `production/qa/evidence/` per `.claude/docs/run-and-observe.md`.
+
+operations:
+  apply:
+    guidance:
+      - Route implementation to the specialist agent that owns the changed
+        system, not to a generalist.
+      - Write the test in the same change that writes the behaviour.
+      - Do not mark a task complete on a parse check alone.
+  archive:
+    guidance:
+      - Summarize what capability changed and which requirements moved.
+      - Note any spec whose Purpose still carries a TBD placeholder.

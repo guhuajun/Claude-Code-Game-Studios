@@ -76,6 +76,6 @@ No gate IDs assigned.
 ---
 
 ## Coverage Notes
-- HUD audit (Case 1) should produce findings trackable as accessibility stories in the sprint backlog
+- HUD audit (Case 1) should produce findings trackable as accessibility changes in the open change backlog
 - Colorblind conflict (Case 3) confirms the agent respects art-director's authority over the palette
 - WCAG criteria (Case 5) verifies the agent uses standards precisely, not generically

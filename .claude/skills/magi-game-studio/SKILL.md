@@ -1,7 +1,7 @@
 ---
 name: magi-creative-director
 description: "Hub skill — interprets your intent and routes to the right skill automatically. Start here when you don't know which command to use."
-argument-hint: "[describe what you want to do, e.g. 'design a combat system' or 'review my sprint']"
+argument-hint: "[describe what you want to do, e.g. 'design a combat system' or 'review my open changes']"
 user-invocable: true
 ---
 
@@ -19,10 +19,30 @@ intent is genuinely ambiguous, then route.
 
 ## Step 1 — Read project state
 
-Read `production/session-state/active.md` (first 5 lines), the latest file under
-`production/sprints/`, and `project.yaml` (field `project.stage`) to understand
-the current stage and sprint. Use this context to bias routing — e.g. if stage is
-`Concept`, design skills are more relevant than sprint skills.
+This project is driven by **OpenSpec**. Read state from the OpenSpec root first —
+it is authoritative — then fall back to `project.yaml` for engine and stage:
+
+1. `openspec list` — in-flight changes, i.e. work currently in progress.
+2. `openspec list --specs` — the capability inventory, i.e. which game systems
+   are already designed. l capability IS a system's GDD
+   (`openspec/specs/<system>/spec.md`).
+3. `project.yaml` — read `engine.name` and `project.stage`. `project.stage` is
+   the lifecycle phase (`Concept`, `Systems-Design`, ...), **not** a sprint. It
+   is written by `/start` and only `/gate-check` on a PASS may advance it.
+4. `production/session-state/active.md` — an ephemeral checkpoint, if one
+   exists. It is gitignored and legitimately absent on a fresh clone; a missing
+   file is normal, not an error. Only read it when it is present.
+
+Use this context to bias routing — e.g. if stage is `Concept`, design skills are
+more relevant than QA skills; if there are in-flight changes, OpenSpec's
+`/opsx:apply` and the review skills outrank new design work.
+
+> **There is no sprint.** CCGS's sprint/story/epic execution layer was replaced by
+> OpenSpec's change/spec workflow: an **epic** maps to a **capability**
+> (`openspec/specs/<system>/`), a **story** maps to a **change**
+> (`openspec/changes/<id>/`), and a **sprint** has no OpenSpec equivalent —
+> in-flight changes are the unit of work. Do not look for `openspec/changes/`,
+> `openspec/specs/` or `openspec status`; they do not exist.
 
 ---
 
@@ -69,15 +89,16 @@ concise question** to narrow it down — do not ask multiple questions at once.
 
 | Intent signals | Route to |
 |---|---|
+| "propose a change", "I want to add X", "spec this out" | `/opsx:propose` |
+| "continue", "keep working on the change", "implement the tasks" | `/opsx:apply` |
+| "update the change", "revise the proposal" | `/opsx:update` |
+| "archive the change", "it's done, close it out" | `/opsx:archive` |
+| "reconcile specs", "sync the specs" | `/opsx:sync` |
+| "what's in flight", "open changes", "where is the project" | `/opsx:explore` |
 | "what should I do next", "stuck", "lost", "don't know" | `/help` |
 | "where am I", "project status", "phase" | `/project-stage-detect` |
-| "sprint plan", "plan the sprint", "this week" | `/sprint-plan` |
-| "sprint status", "how is the sprint going" | `/sprint-status` |
-| "create epics", "break down the work" | `/create-epics` |
-| "create stories", "break epic into tasks" | `/create-stories` |
-| "is this story ready", "story readiness" | `/story-readiness` |
-| "implement story", "work on a story" | `/dev-story` |
-| "story done", "mark story complete" | `/story-done` |
+| "create a capability", "new game system", "map the systems" | `/map-systems` |
+| "is this change ready", "readiness check" | `/change-readiness` |
 | "estimate", "how long will X take" | `/estimate` |
 | "milestone review" | `/milestone-review` |
 | "scope creep", "are we on track" | `/scope-check` |

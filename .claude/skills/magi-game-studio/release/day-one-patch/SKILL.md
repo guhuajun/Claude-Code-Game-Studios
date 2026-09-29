@@ -1,6 +1,6 @@
 ---
 name: day-one-patch
-description: "Day-one launch patch — focused fix for known issues found after gold master. Mini-sprint with QA gate and rollback."
+description: "Day-one launch patch — focused fix for known issues found after gold master. Mini-change set with QA gate and rollback."
 argument-hint: "[scope: known-bugs | cert-feedback | all]"
 user-invocable: true
 disable-model-invocation: true
@@ -11,7 +11,7 @@ disable-model-invocation: true
 Every shipped game has a day-one patch. Planning it before launch day prevents
 chaos. This skill scopes the patch to only what is safe and necessary, gates it
 through a lightweight QA pass, and ensures a rollback plan exists before anything
-ships. It is a mini-sprint — not a hotfix, not a full sprint.
+ships. It is a mini-change set — not a hotfix, not a full change set.
 
 **When to run:**
 - After the gold master build is locked (cert approved or launch candidate tagged)
@@ -35,7 +35,7 @@ Read:
 - `project.stage` in `project.yaml` (fallback `production/stage.txt`) — confirm project is in Release stage
 - The most recent file in `production/gate-checks/` — read the release gate verdict
 - `production/qa/bugs/*.md` — load all bugs with Status: Open or Fixed — Pending Verification
-- `production/sprints/` most recent — understand what shipped
+- `openspec/changes/` most recent — understand what shipped
 - `production/security/security-audit-*.md` most recent — check for any open security items
 
 If the resolved stage (project.yaml → stage.txt) is not `Release` or `Polish`:

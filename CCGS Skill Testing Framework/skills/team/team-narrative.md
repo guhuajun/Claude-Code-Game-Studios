@@ -22,7 +22,7 @@ is unresolved.
 - [ ] Contains "File Write Protocol" section
 - [ ] File writes are delegated to sub-agents — orchestrator does not write files directly
 - [ ] Sub-agents enforce "May I write to [path]?" before any write
-- [ ] Has a next-step handoff at the end (references `/design-review`, `/localize extract`, `/dev-story`)
+- [ ] Has a next-step handoff at the end (references `/design-review`, `/localize extract`, `/dev-change`)
 - [ ] Error Recovery Protocol section is present
 - [ ] `AskUserQuestion` is used at phase transitions before proceeding
 - [ ] Phase 2 explicitly spawns world-builder and writer in parallel
@@ -190,7 +190,7 @@ is unresolved.
 - [ ] BLOCKED status from any agent is surfaced immediately — not silently skipped
 - [ ] A partial report is always produced when some agents complete and others block
 - [ ] Verdict is exactly COMPLETE or BLOCKED — no other verdict values used
-- [ ] Next Steps handoff references `/design-review`, `/localize extract`, and `/dev-story`
+- [ ] Next Steps handoff references `/design-review`, `/localize extract`, and `/dev-change`
 
 ---
 

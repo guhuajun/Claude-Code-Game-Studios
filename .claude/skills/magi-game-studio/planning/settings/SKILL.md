@@ -117,7 +117,7 @@ legitimate; storing it *silently* is the defect.
    the set of leaves to display.
 
    **Then append the rigor family** — `modes.rigor`, `modes.workflow`,
-   `docs.density`, `qa.level`, `modes.story_granularity`, `modes.review_mode`,
+   `docs.density`, `qa.level`, `modes.change_granularity`, `modes.review_mode`,
    `team.size` — for any of the seven the merged list does not already
    contain. These are normally leaves of neither file: `modes.rigor` has a
    terminal default and the other six are supplied by the rigor expansion
@@ -190,7 +190,7 @@ modes:
   automation: autonomous    (LOCAL OVERRIDE — yaml has: collaborative)
   rigor: full               (project.yaml, locked)
   workflow: full            (derived from rigor: full, locked)
-  story_granularity: fine   (derived from rigor: full, locked)
+  change_granularity: fine   (derived from rigor: full, locked)
 
 docs:
   density: terse            (project.yaml, locked)
@@ -363,7 +363,7 @@ When the effective value is empty (key not set anywhere), print just:
      modes.workflow: full            (derived from rigor: full)
      docs.density: terse             (project.yaml — explicit, unchanged)
      qa.level: full                  (derived from rigor: full)
-     modes.story_granularity: fine   (derived from rigor: full)
+     modes.change_granularity: fine   (derived from rigor: full)
      modes.review_mode: full         (derived from rigor: full)
      team.size: studio               (derived from rigor: full)
    ```
@@ -439,7 +439,7 @@ Examples:
   (`is_locally_overridable` function). To extend it, edit the
   `_yaml_helper_locally_overridable` constant — do not duplicate the list here.
 - **Derived values are not stored anywhere.** `modes.workflow`, `docs.density`,
-  `qa.level`, `modes.story_granularity`, `modes.review_mode` and `team.size` have no
+  `qa.level`, `modes.change_granularity`, `modes.review_mode` and `team.size` have no
   terminal default; when no file sets them their value comes from the `modes.rigor`
   expansion in `yaml-helper.sh`
   (`_yaml_helper_rigor_expansion`). Report them via `resolve_setting` — a

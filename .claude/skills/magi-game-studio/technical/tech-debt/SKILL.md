@@ -111,7 +111,7 @@ Read the debt register at `docs/tech-debt-register.md`.
 
 Score each item by: `(impact_if_unfixed × frequency_of_encounter) / fix_effort`
 
-Re-sort the register by priority score and recommend which items to include in the next sprint.
+Re-sort the register by priority score and recommend which items to include in the next change set.
 
 Present the re-prioritized register to the user.
 
@@ -132,7 +132,7 @@ Read the debt register. Generate summary statistics:
 - Items added vs resolved since last report
 - Trending direction (growing / stable / shrinking)
 
-Flag any items that have been in the register for more than 3 sprints.
+Flag any items that have been in the register for more than 3 change sets.
 
 Output the report to the user. This mode is read-only — no files are written. Verdict: **COMPLETE** — debt report generated.
 
@@ -140,8 +140,8 @@ Output the report to the user. This mode is read-only — no files are written. 
 
 ## Phase 3: Next Steps
 
-- Run `/sprint-plan` to schedule high-priority debt items into the next sprint.
-- Run `/tech-debt report` at the start of each sprint to track debt trends over time.
+- Run `/create-changes` to schedule high-priority debt items into the next change set.
+- Run `/tech-debt report` at the start of each change set to track debt trends over time.
 
 ### Debt Register Format
 
@@ -150,13 +150,13 @@ Output the report to the user. This mode is read-only — no files are written. 
 Last updated: [Date]
 Total items: [N] | Estimated total effort: [T-shirt sizes summed]
 
-| ID | Category | Description | Files | Effort | Impact | Priority | Added | Sprint |
+| ID | Category | Description | Files | Effort | Impact | Priority | Added | Change Set |
 |----|----------|-------------|-------|--------|--------|----------|-------|--------|
-| TD-001 | [Cat] | [Description] | [files] | [S/M/L/XL] | [Low/Med/High/Critical] | [Score] | [Date] | [Sprint to fix or "Backlog"] |
+| TD-001 | [Cat] | [Description] | [files] | [S/M/L/XL] | [Low/Med/High/Critical] | [Score] | [Date] | [Change Set to fix or "Backlog"] |
 ```
 
 ### Rules
 - Tech debt is not inherently bad — it is a tool. The register tracks conscious decisions.
 - Every debt entry must explain WHY it was accepted (deadline, prototype, missing info)
-- "Scan" should run at least once per sprint to catch new debt
-- Items older than 3 sprints without action should either be fixed or consciously accepted with a documented reason
+- "Scan" should run at least once per change set to catch new debt
+- Items older than 3 change sets without action should either be fixed or consciously accepted with a documented reason

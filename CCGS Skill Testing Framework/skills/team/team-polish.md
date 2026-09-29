@@ -21,7 +21,7 @@ identifies engine-level root causes. Verdict is READY FOR RELEASE or NEEDS MORE 
 - [ ] Contains "File Write Protocol" section
 - [ ] File writes are delegated to sub-agents — orchestrator does not write files directly
 - [ ] Sub-agents enforce "May I write to [path]?" before any write
-- [ ] Has a next-step handoff at the end (references `/release-checklist`, `/sprint-plan update`, `/gate-check`)
+- [ ] Has a next-step handoff at the end (references `/release-checklist`, `/change set-plan update`, `/gate-check`)
 - [ ] Error Recovery Protocol section is present
 - [ ] `AskUserQuestion` is used at phase transitions before proceeding
 - [ ] Phase 3 (visual polish) and Phase 4 (audio polish) are explicitly run in parallel with Phase 2
@@ -89,14 +89,14 @@ identifies engine-level root causes. Verdict is READY FOR RELEASE or NEEDS MORE 
 6. Phase 6: orchestrator collects results; frame budget violation (9ms vs 6ms budget) remains unresolved
 7. Verdict: NEEDS MORE WORK
 8. Report lists the specific unresolved issue: "particle-storm frame cost (9ms) exceeds budget (6ms) by 3ms — requires design scope reduction or budget renegotiation"
-9. Next Steps: schedule the remaining issue in `/sprint-plan update`; re-run `/team-polish` after fix
+9. Next Steps: schedule the remaining issue in `/change set-plan update`; re-run `/team-polish` after fix
 
 **Assertions:**
 - [ ] Frame budget violation is flagged in Phase 1 with specific numbers (actual vs. budget)
 - [ ] Phase 2 reports the post-optimization metric explicitly (9ms achieved, 3ms still over)
 - [ ] Verdict is NEEDS MORE WORK (not READY FOR RELEASE) when a budget violation remains
 - [ ] The specific unresolved issue is listed by name with the remaining gap quantified
-- [ ] Next Steps references `/sprint-plan update` for scheduling the remaining fix
+- [ ] Next Steps references `/change set-plan update` for scheduling the remaining fix
 - [ ] Phases 3 and 4 still run (polish work is not abandoned due to a Phase 2 partial resolution)
 - [ ] Phase 5 qa-tester still runs (regression testing is independent of the performance outcome)
 
@@ -171,7 +171,7 @@ identifies engine-level root causes. Verdict is READY FOR RELEASE or NEEDS MORE 
 7. `AskUserQuestion` presents the regression with options:
    - Revert the shader optimization and find an alternative approach
    - Fix the shader optimization to preserve the glow effect
-   - Accept the regression and schedule a fix in the next sprint
+   - Accept the regression and schedule a fix in the next change set
 8. Verdict: NEEDS MORE WORK (regression present regardless of user's chosen resolution path, unless fix is applied within the current session)
 
 **Assertions:**
@@ -197,7 +197,7 @@ identifies engine-level root causes. Verdict is READY FOR RELEASE or NEEDS MORE 
 - [ ] A partial report is always produced when some agents complete and others block
 - [ ] Verdict is exactly READY FOR RELEASE or NEEDS MORE WORK — no other verdict values used
 - [ ] NEEDS MORE WORK verdict always lists specific remaining issues with severity
-- [ ] Next Steps handoff references `/release-checklist` (on success) and `/sprint-plan update` + `/gate-check` (on failure)
+- [ ] Next Steps handoff references `/release-checklist` (on success) and `/change set-plan update` + `/gate-check` (on failure)
 
 ---
 

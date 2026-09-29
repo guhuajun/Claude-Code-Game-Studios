@@ -1,7 +1,7 @@
 ---
 name: smoke-check
 description: "Critical-path smoke gate before QA hand-off — runs the automated suite. A failed check means the build is not QA-ready."
-argument-hint: "[sprint | quick | --platform pc|console|mobile|all]"
+argument-hint: "[change set | quick | --platform pc|console|mobile|all]"
 user-invocable: true
 ---
 
@@ -35,10 +35,10 @@ gates). Distinct axis from `workflow`.
 
 ## Parse Arguments
 
-Arguments can be combined: `/smoke-check sprint --platform console`
+Arguments can be combined: `/smoke-check --platform console`
 
-**Base mode** (first argument, default: `sprint`):
-- `sprint` — full smoke check against the current sprint's stories
+**Base mode** (first argument, default: `change set`):
+- `change set` — full smoke check against the current change set's changes
 - `quick` — skip coverage scan (Phase 3) and Batch 3; use for rapid re-checks
 
 **Platform flag** (`--platform`, default: none):
@@ -111,7 +111,7 @@ Before running anything, understand the environment:
 5. **QA plan check**: glob `production/qa/qa-plan-*.md` and take the most
    recently modified file. If found, note the path — it will be used in
    Phase 3 and Phase 4. If not found, note: "No QA plan found. Run
-   `/qa-plan sprint` before smoke-checking for best results."
+   `/qa-plan change set` before smoke-checking for best results."
 
 Report findings before proceeding: "Environment: [engine]. Test directory:
 [found / not found]. CI configured: [yes / no]. QA plan: [path / not found]."
@@ -195,37 +195,37 @@ Parse runner output and extract:
 
 ## Phase 3: Check Test Coverage
 
-Draw the story list from, in priority order:
+Draw the change list from, in priority order:
 1. The QA plan found in Phase 1 (its Test Summary table lists expected test
-   file paths per story)
-2. The current sprint plan from `production/sprints/` (most recently modified
+   file paths per change)
+2. The current change list from `openspec/changes/` (most recently modified
    file)
 3. If the `quick` argument was passed, skip this phase entirely and note:
-   "Coverage scan skipped — run `/smoke-check sprint` for full coverage
+   "Coverage scan skipped — run `/smoke-check` for full coverage
    analysis."
 
-For each story in scope:
+For each change in scope:
 
-1. Extract the system slug from the story's file path
-   (e.g., `production/epics/combat/story-001.md` → `combat`)
+1. Extract the system slug from the change's file path
+   (e.g., `openspec/specs/combat/change-001.md` → `combat`)
 2. Glob `tests/unit/[system]/` and `tests/integration/[system]/` for files
-   whose name contains the story slug or a closely related term
-3. Check the story file itself for a `Test file:` header field or a
+   whose name contains the change slug or a closely related term
+3. Check the change directory itself for a `Test file:` header field or a
    "Test Evidence" section
 
-Assign a coverage status to each story:
+Assign a coverage status to each change:
 
 | Status | Meaning |
 |--------|---------|
-| **COVERED** | A test file was found matching this story's system and scope |
-| **MANUAL** | Story type is Visual/Feel or UI; a test evidence document was found |
-| **MISSING** | Logic or Integration story with no matching test file |
-| **EXPECTED** | Config/Data story — no test file required; spot-check is sufficient |
-| **UNKNOWN** | Story file missing or unreadable |
+| **COVERED** | A test file was found matching this change's system and scope |
+| **MANUAL** | Change type is Visual/Feel or UI; a test evidence document was found |
+| **MISSING** | Logic or Integration change with no matching test file |
+| **EXPECTED** | Config/Data change — no test file required; spot-check is sufficient |
+| **UNKNOWN** | Change directory missing or unreadable |
 
 MISSING entries are advisory gaps. They do not cause a FAIL verdict but must
-appear prominently in the report and must be resolved before `/story-done` can
-fully close those stories.
+appear prominently in the report and must be resolved before `/change-done` can
+fully close those changes.
 
 ---
 
@@ -246,9 +246,9 @@ project's own smoke definitions were indistinguishable. `/gate-check` now
 validates a smoke report's claims against the repo, and it cannot weigh them
 without knowing what the checklist was drawn from.
 
-Tailor batches 2 and 3 to the actual systems identified from the sprint or QA
+Tailor batches 2 and 3 to the actual systems identified from the change set or QA
 plan. Replace bracketed placeholders with real mechanic names from the current
-sprint's stories.
+change set's changes.
 
 Use `AskUserQuestion` to batch-verify. Keep to at most 3 calls.
 
@@ -265,14 +265,14 @@ options:
 
 For any selected item, ask the user to briefly describe what failed before generating the report.
 
-**Batch 2 — Sprint changes and regression (always run):**
+**Batch 2 — Changes and regression (always run):**
 ```
-question: "Sprint changes and regression — select any items that FAILED (leave all unselected if everything passed):"
+question: "Changes and regression — select any items that FAILED (leave all unselected if everything passed):"
 multiSelect: true
 options:
-  - "[Primary mechanic this sprint] — FAILED"
-  - "[Second notable change this sprint, if any] — FAILED"
-  - "Regression in a previous sprint's feature — FAILED"
+  - "[Primary mechanic this change set] — FAILED"
+  - "[Second notable change this change set, if any] — FAILED"
+  - "Regression in a previous change set's feature — FAILED"
   - "Other unexpected breakage observed — FAILED"
 ```
 
@@ -343,10 +343,10 @@ Assemble the full smoke check report:
 ````markdown
 ## Smoke Check Report
 **Date**: [date]
-**Sprint**: [sprint name / number, or "Not identified"]
+**Change Set**: [change set name / number, or "Not identified"]
 **Engine**: [engine]
 **QA Plan**: [path, or "Not found — run /qa-plan first"]
-**Argument**: [sprint | quick | blank]
+**Argument**: [change set | quick | blank]
 
 ---
 
@@ -366,7 +366,7 @@ will determine whether the automated test row contributes to a FAIL verdict."
 
 ### Test Coverage
 
-| Story | Type | Test File | Coverage Status |
+| Change | Type | Test File | Coverage Status |
 |-------|------|-----------|----------------|
 | [title] | Logic | `tests/unit/[system]/[slug]_test.[ext]` | COVERED |
 | [title] | Visual/Feel | `production/qa/evidence/[slug]-screenshots.md` | MANUAL |
@@ -390,13 +390,13 @@ will determine whether the automated test row contributes to a FAIL verdict."
 
 ### Missing Test Evidence
 
-Stories that must have test evidence before they can be marked COMPLETE via
-`/story-done`:
+Changes that must have test evidence before they can be marked COMPLETE via
+`/change-done`:
 
-- **[story title]** (`[path]`) — Logic story has no test file.
-  Expected location: `tests/unit/[system]/[story-slug]_test.[ext]`
+- **[change title]** (`[path]`) — Logic change has no test file.
+  Expected location: `tests/unit/[system]/[change-slug]_test.[ext]`
 
-[If none:] "All Logic and Integration stories have test coverage."
+[If none:] "All Logic and Integration changes have test coverage."
 
 ---
 
@@ -421,14 +421,14 @@ Any platform with one or more FAIL checks contributes to the overall FAIL verdic
 **FAIL** if ANY of:
 - Automated test suite ran and reported one or more test failures
 - Any Batch 1 (core stability) check returned FAIL
-- Any Batch 2 (primary sprint mechanic or regression check) returned FAIL
+- Any Batch 2 (primary change set mechanic or regression check) returned FAIL
 
 **NOT ASSESSED** if ANY of:
 - The automated suite is **unconfirmed NOT RUN** — nobody has reported a result
 - A Batch 1 or Batch 2 check could not be executed (no build, engine not
   configured, platform unavailable) as opposed to executing and failing
-- **Any story's coverage row is `UNKNOWN`** (Phase 3: story file missing or
-  unreadable). A story nobody could read is not a story with no gaps — without
+- **Any change's coverage row is `UNKNOWN`** (Phase 3: change directory missing or
+  unreadable). A change nobody could read is not a change with no gaps — without
   this line, a run where *every* row is UNKNOWN and the suite passes matches
   **PASS**, because PASS only requires "no MISSING entries"
 - **Batch 3 was offered and skipped** ("Performance not checked this session").
@@ -439,7 +439,7 @@ Any platform with one or more FAIL checks contributes to the overall FAIL verdic
 - Automated tests PASS, or NOT RUN **and the developer has confirmed the result
   from their local IDE or CI**
 - All Batch 1 and Batch 2 smoke checks PASS
-- One or more Logic/Integration stories have MISSING test evidence
+- One or more Logic/Integration changes have MISSING test evidence
 
 **PASS** if ALL of:
 - Automated tests PASS
@@ -489,8 +489,8 @@ developer's local override is silently ignored):
    smoke-check's FAIL gate blocking (behavior unchanged from before this setting
    existed). Smoke check is a build-health gate, so its unset default is strict
    even though the `config` test type defaults to advisory elsewhere. The
-   reciprocal carve-out is recorded in `.claude/skills/story-done/SKILL.md` and
-   `.claude/docs/coding-standards.md`, which own the per-story evidence table.
+   reciprocal carve-out is recorded in `.claude/skills/change-done/SKILL.md` and
+   `.claude/docs/coding-standards.md`, which own the per-change evidence table.
 
 Only `true` and `false` (case-insensitive) are recognized at steps 1–2. A key
 that is present but holds any other value — `maybe`, `1`, `yes`, etc. — is
@@ -515,7 +515,7 @@ hand-off is not blocked. Resolve these before release:
 
 [List each failing automated test or smoke check with a one-line description]
 
-QA hand-off: share `production/qa/qa-plan-[sprint].md` with the qa-tester
+QA hand-off: share `production/qa/qa-plan-[change set].md` with the qa-tester
 agent to begin manual verification. Re-run `/smoke-check` once the failures
 are fixed."
 
@@ -543,17 +543,17 @@ their behalf.
 
 "Smoke check passed with warnings. The build is ready for manual QA.
 
-Advisory items to resolve before running `/story-done` on affected stories:
+Advisory items to resolve before running `/change-done` on affected changes:
 [list MISSING test evidence entries]
 
-QA hand-off: share `production/qa/qa-plan-[sprint].md` with the qa-tester
+QA hand-off: share `production/qa/qa-plan-[change set].md` with the qa-tester
 agent to begin manual verification."
 
 **If verdict is PASS:**
 
 "Smoke check passed cleanly. The build is ready for manual QA.
 
-QA hand-off: share `production/qa/qa-plan-[sprint].md` with the qa-tester
+QA hand-off: share `production/qa/qa-plan-[change set].md` with the qa-tester
 agent to begin manual verification."
 
 ---
@@ -571,7 +571,7 @@ describe what collaborative mode requires, not universal behavior.
 - **Never auto-fix failures** — report them and state what must be resolved.
   Do not attempt to edit source code or test files.
 - **PASS WITH WARNINGS does not block QA hand-off** — it records advisory
-  gaps for `/story-done` to follow up on.
+  gaps for `/change-done` to follow up on.
 - **`quick` argument** skips Phase 3 (coverage scan) and Phase 4 Batch 3.
   Use it for rapid re-checks after fixing a specific failure.
 - Use `AskUserQuestion` for all manual smoke check verification.

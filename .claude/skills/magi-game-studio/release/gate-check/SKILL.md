@@ -27,7 +27,7 @@ The project progresses through these stages:
 2. **Systems Design** — Mapping systems, writing GDDs
 3. **Technical Setup** — Engine config, architecture decisions
 4. **Pre-Production** — Prototyping, vertical slice validation
-5. **Production** — Feature development (Epic/Feature/Task tracking active)
+5. **Production** — Feature development (Capability/Feature/Task tracking active)
 6. **Polish** — Performance, playtesting, bug fixing
 7. **Release** — Launch prep, certification
 
@@ -122,10 +122,10 @@ across all of them:
 > them); the Section 3 `testing.strict` check is then a no-op.
 >
 > **The smoke check is excluded from that relaxation, and is the floor.**
-> `qa.level` relaxes *per-story test evidence*; a smoke check is **build health**,
-> not story evidence, and the two are already held apart on exactly this basis in
+> `qa.level` relaxes *per-change test evidence*; a smoke check is **build health**,
+> not change evidence, and the two are already held apart on exactly this basis in
 > `.claude/docs/coding-standards.md` ("`/smoke-check` is a build-health gate, not
-> a per-story evidence gate ... This divergence is intentional"). So a gate file
+> a per-change evidence gate ... This divergence is intentional"). So a gate file
 > that requires a smoke report keeps requiring it at every `qa.level`.
 >
 > Without that exclusion the Production → Polish gate had **zero required
@@ -184,10 +184,10 @@ a documented escape hatch silently stops working.
 
 > **This is the one site that performs the check.** `workflow-modes.md:72` says
 > *"a key that matches no system is an error, not a no-op"*, and this is the only
-> skill that implements it — the three story skills resolve only in the
+> skill that implements it — the three change skills resolve only in the
 > system → override direction, so an orphan key is never looked up and
 > never noticed. `/gate-check` is the right home: it already resolves the whole
-> block, and it is the project-wide audit rather than a per-story one.
+> block, and it is the project-wide audit rather than a per-change one.
 
 Validate each GDD against its own effective tier's section count:
 
@@ -205,7 +205,7 @@ Validate each GDD against its own effective tier's section count:
 > **Additive overrides (the only things that make the gate stricter).**
 > - `workflow_overrides.art_bible_strict: true` forces the complete (9-section)
 >   art bible at the Technical Setup → Pre-Production and Pre-Production →
->   Production gates regardless of tier or whether visual-asset stories exist.
+>   Production gates regardless of tier or whether visual-asset changes exist.
 > - `workflow_overrides.edge_cases: true` and `workflow_overrides.tuning_knobs:
 >   true` force those GDD sections required when validating GDD completeness,
 >   additive on top of the resolved tier (e.g. at `standard`, `tuning_knobs: true`
@@ -354,7 +354,7 @@ and must be resolved before advancing.
 ### Cross-Reference Checks
 - Compare `design/gdd/` documents against implementations in the **code root**
 - Check that every system referenced in architecture docs has corresponding code
-- Verify sprint plans reference real work items
+- Verify change lists reference real work items
 
 ---
 
@@ -456,7 +456,7 @@ Art Director:       [READY / CONCERNS / NOT READY]
 ### Required Artifacts: [X/Y present]
 - [x] design/gdd/game-concept.md — exists, 2.4KB
 - [ ] docs/architecture/ — MISSING (no ADRs found)
-- [x] production/sprints/ — exists, 1 sprint plan
+- [x] openspec/changes/ — exists, 1 change list
 
 ### Quality Checks: [X/Y passing]
 - [x] GDD has 8/8 required sections
@@ -689,7 +689,7 @@ For **technical-setup PASS**:
 ```
 Gate passed. What would you like to do next?
 [A] Run /create-control-manifest — generate the layer rules manifest from your Accepted ADRs (do this first)
-[B] Run /vertical-slice — build the Vertical Slice (do this before writing epics — validate fun first)
+[B] Run /vertical-slice — build the Vertical Slice (do this before writing capabilities — validate fun first)
 [C] Write more ADRs first — run /architecture-decision [next-system]
 [D] Stop here for this session
 ```
@@ -697,16 +697,16 @@ Gate passed. What would you like to do next?
 > **Note for technical-setup PASS**: The Pre-Production sequence is deliberately ordered
 > to validate fun before committing to detailed planning:
 >
-> 1. `/create-control-manifest` — extract technical rules from Accepted ADRs (required before epics)
-> 2. `/vertical-slice` — build the Vertical Slice **FIRST**, before writing epics or stories
+> 1. `/create-control-manifest` — extract technical rules from Accepted ADRs (required before capabilities)
+> 2. `/vertical-slice` — build the Vertical Slice **FIRST**, before writing capabilities or changes
 > 3. Playtest → `/playtest-report` — at least 1 session required to pass the Pre-Production gate; 3+ recommended before committing the full team
 > 4. `/ux-design [screen]` — UX specs for main menu, core HUD, pause menu (if not done)
-> 5. `/create-epics layer:foundation` then `/create-epics layer:core` — plan after fun is validated
-> 6. `/create-stories [epic-slug]` for each epic
-> 7. `/sprint-plan new`
+> 5. `/design-system layer:foundation` then `/design-system layer:core` — plan after fun is validated
+> 6. `/create-changes [capability-slug]` for each capability
+> 7. `/create-changes`
 >
-> **Why prototype before epics?** If the prototype reveals the core loop needs to change,
-> epics written before that discovery will be partially wrong. Validate fun cheaply first,
+> **Why prototype before capabilities?** If the prototype reveals the core loop needs to change,
+> capabilities written before that discovery will be partially wrong. Validate fun cheaply first,
 > then plan in detail. This is the #1 lesson from GDC postmortem data.
 
 For all other gates, offer the two most logical next steps for that phase plus "Stop here".
@@ -730,15 +730,15 @@ Based on the verdict, suggest specific next steps:
 - **GDDs not cross-reviewed?** → `/review-all-gdds` (run after all MVP GDDs are individually approved)
 - **Cross-GDD consistency issues?** → fix flagged GDDs, then re-run `/review-all-gdds`
 - **No test framework?** → `/test-setup` to scaffold the framework for your engine
-- **No QA plan for current sprint?** → `/qa-plan sprint` to generate one before implementation begins
+- **No QA plan for current change set?** → `/qa-plan change set` to generate one before implementation begins
 - **Missing ADRs?** → `/architecture-decision` for individual decisions
 - **No master architecture doc?** → `/create-architecture` for the full blueprint
 - **ADRs missing engine compatibility sections?** → Re-run `/architecture-decision`
   or manually add Engine Compatibility sections to existing ADRs
 - **Missing control manifest?** → `/create-control-manifest` (requires Accepted ADRs)
-- **Missing epics?** → `/create-epics layer: foundation` then `/create-epics layer: core` (requires control manifest)
-- **Missing stories for an epic?** → `/create-stories [epic-slug]` (run after each epic is created)
-- **Stories not implementation-ready?** → `/story-readiness` to validate stories before developers pick them up
+- **Missing capabilities?** → `/design-system layer: foundation` then `/design-system layer: core` (requires control manifest)
+- **Missing changes for an capability?** → `/create-changes [capability-slug]` (run after each capability is created)
+- **Changes not implementation-ready?** → `/change-readiness` to validate changes before developers pick them up
 - **Tests failing?** → delegate to `lead-programmer` or `qa-tester`
 - **No playtest data?** → `/playtest-report`
 - **No playtest sessions beyond the minimum?** → Additional sessions give more reliable signal. 3+ total is recommended before committing the full team. Use `/playtest-report` to structure findings.
@@ -752,7 +752,7 @@ Based on the verdict, suggest specific next steps:
 > `design/quick-specs/[name]-[date].md` and would leave this gate still failing.
 > Both docs are hand-authored from their templates; say so plainly rather than
 > naming a skill that cannot produce them.
-- **Need a quick sprint check?** → `/sprint-status` for current sprint progress snapshot
+- **Need a quick change set check?** → `openspec status` for current change set progress snapshot
 - **Performance unknown?** → `/perf-profile`
 - **Not localized?** → `/localize`
 - **Ready for release?** → `/launch-checklist`

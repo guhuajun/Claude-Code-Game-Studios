@@ -29,8 +29,8 @@
 -->
 
 <!-- STATUS -->
-Epic:
-Feature:
+Change:
+Capability:
 Task:
 <!-- /STATUS -->
 
@@ -56,11 +56,16 @@ or agent picking this up cold.]
   FIELD NOTES
 
   STATUS block
-    Drives the status-line breadcrumb (`Combat System > Melee > Hitboxes`), and
-    only at Production / Polish / Release stage. All three fields are optional —
+    Drives the status-line breadcrumb (`combat > damage-calc > 2.1`), and only
+    at Production / Polish / Release stage. All three fields are optional —
     leave a field blank when it does not apply, and blank all three when there is
     no active focus. Do not delete the markers themselves — `statusline.sh`
     expects them to exist.
+
+    `Change:` holds the OpenSpec change id (`openspec/changes/<id>/`),
+    `Capability:` the game system it touches (`openspec/specs/<system>/`), and
+    `Task:` the task number from that change's `tasks.md`. The older
+    Epic/Feature/Task naming described the retired sprint/story execution layer.
 
   CHECKPOINT block
     The recovery payload. `session-start.sh` shows it when a previous session

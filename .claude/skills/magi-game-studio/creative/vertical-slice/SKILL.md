@@ -223,7 +223,7 @@ Track velocity throughout the build. Log:
 - etc.
 
 This is the most honest data you will ever have about your production rate. Do not
-skip it. It feeds directly into sprint planning.
+skip it. It feeds directly into change planning.
 
 Read `.claude/docs/templates/vertical-slice-report.md` to get the report structure.
 If the template file is not found, use this fallback structure:
@@ -253,7 +253,7 @@ If yes, write the file. Then update `prototypes/index.md` (create if it does not
 exist) — append one row to the vertical slice table: concept name, date, verdict,
 and a link to the REPORT.md. Note whether this was a first-run slice or a re-run
 after a PIVOT. The velocity log in this report is some of the most valuable data in
-the project — cross-reference it with sprint estimates.
+the project — cross-reference it with change set estimates.
 
 ---
 
@@ -284,10 +284,10 @@ Your vertical slice validated the full game loop. The project is ready for
 Production.
 
 Recommended next steps:
-- `/create-epics layer:foundation` — plan Foundation layer epics
-- `/create-epics layer:core` — plan Core layer epics
-- `/create-stories [epic-slug]` — break each epic into implementable stories
-- `/sprint-plan` — plan the first sprint using velocity data from the slice
+- `/design-system layer:foundation` — plan Foundation layer capabilities
+- `/design-system layer:core` — plan Core layer capabilities
+- `/create-changes [capability-slug]` — break each capability into implementable changes
+- `/create-changes` — plan the first change set using velocity data from the slice
 - `/gate-check pre-production` — formally advance the stage to Production
 
 **Playtest note:** `/gate-check` will look for documented playtest evidence.

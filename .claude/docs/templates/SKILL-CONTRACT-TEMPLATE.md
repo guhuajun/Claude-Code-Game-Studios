@@ -17,7 +17,7 @@
 > The seven shipped contracts use a simpler shape than this template:
 > `Inputs Consumed` / `Files That Must Exist` / `Preconditions` /
 > `Outputs Produced` / `Output Guarantees` / `Immutability Rules`. Match an
-> existing contract (e.g. `.claude/skills/magi-game-studio/planning/dev-story/CONTRACT.md`) rather than
+> existing contract (e.g. `.claude/skills/magi-game-studio/planning/dev-change/CONTRACT.md`) rather than
 > this template's schema-heavy form until the two are reconciled.
 
 **Purpose:** Define formal handoff contract for a skill. Create as `.claude/skills/magi-game-studio/<skill-name>/CONTRACT.md`.
@@ -56,7 +56,7 @@ Story Author — Decomposes game design epics into atomic, testable user stories
 - `production/session-state/` (context from previous skills)
 
 **Can Write:**
-- `production/epics/[epic-slug]/` (creates new story markdown files)
+- `openspec/specs/[epic-slug]/` (creates new story markdown files)
 - `production/qa/evidence/` (creates test evidence stubs)
 
 **Cannot Touch:**
@@ -70,7 +70,7 @@ Story Author — Decomposes game design epics into atomic, testable user stories
 
 ### What This Skill Receives
 
-**Source Skill:** [PREVIOUS_SKILL_NAME] (e.g., `/create-epics`)
+**Source Skill:** [PREVIOUS_SKILL_NAME] (e.g., `/design-system`)
 **Format:** Markdown with structured frontmatter
 **Transport:** Session context or file reference
 
@@ -176,9 +176,9 @@ estimated_story_count: 12
 
 ### What This Skill Produces
 
-**Destination Skill:** [NEXT_SKILL_NAME] (e.g., `/dev-story`)
+**Destination Skill:** [NEXT_SKILL_NAME] (e.g., `/dev-change`)
 **Format:** Markdown with structured headers
-**Location:** Typically written to `production/epics/[epic-slug]/story-NNN-[slug].md`
+**Location:** Typically written to `openspec/changes/<change-id>/tasks.md`
 
 ### Output Structure
 
@@ -356,7 +356,7 @@ Violations warn and attempt recovery; don't block.
 ## Handoff Configuration
 
 ### Receives From
-**Upstream Skill:** `/create-epics` (or equivalent epic-generation skill)
+**Upstream Skill:** `/design-system` (or equivalent epic-generation skill)
 
 **How Data Arrives:**
 - Option 1: Epic content passed as context string
@@ -369,10 +369,10 @@ Violations warn and attempt recovery; don't block.
 - Epic ID — read-only, referenced in story IDs
 
 ### Delivers To
-**Downstream Skill:** `/dev-story` (or equivalent story-to-task skill)
+**Downstream Skill:** `/dev-change` (or equivalent story-to-task skill)
 
 **How Data Handed Off:**
-- Option 1: Story markdown written to `production/epics/[epic-slug]/story-NNN-[slug].md`
+- Option 1: Story markdown written to `openspec/changes/<change-id>/tasks.md`
 - Option 2: Story content passed as context string to next skill
 - Option 3: Story metadata indexed in central registry
 
@@ -388,7 +388,7 @@ Violations warn and attempt recovery; don't block.
 
 ### Rollback Procedure
 
-If downstream skill (`/dev-story`) fails to consume stories:
+If downstream skill (`/dev-change`) fails to consume stories:
 
 1. **Fail Signal:** Downstream returns error (e.g., "story validation failed")
 2. **Rollback Action:** Discard any partial work in downstream; return to this skill's output
@@ -427,7 +427,7 @@ Every story skill output must pass this test suite before handoff:
 **Test File:** `tests/behavioral-tests/format-stability.sh`
 
 ### T4: Handoff Integration (Integration)
-- [ ] Downstream skill (`/dev-story`) accepts this output
+- [ ] Downstream skill (`/dev-change`) accepts this output
 - [ ] No schema validation errors from downstream
 - [ ] Downstream produces valid task output
 - [ ] Pass: If downstream accepts >95% of stories
@@ -454,7 +454,7 @@ Every story skill output must pass this test suite before handoff:
 
 ### Agent Stability Index (ASI) Components
 
-**For `/create-stories`, we measure:**
+**For `/create-changes`, we measure:**
 
 1. **Response Consistency (30%)** — Are story formats stable across runs?
    - Measure: Embedding similarity of 5 runs on same input (cosine distance)

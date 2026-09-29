@@ -53,7 +53,7 @@
 ### Production Management
 - **Status**: [X%] complete
 - **Found**:
-  - Sprint plans: [N] in `production/sprints/`
+  - Sprint plans: [N] in `openspec/changes/`
   - Milestones: [N] in `production/milestones/`
   - Roadmap: [Exists | Missing]
 - **Key Gaps**:
@@ -160,7 +160,7 @@ Based on gaps identified, consider running:
 
 - `/reverse-document [type] [path]` — [For which gap]
 - `/architecture-decision` — [For which gap]
-- `/sprint-plan` — [If production planning missing]
+- `/create-changes` — [If production planning missing]
 - `/milestone-review` — [If approaching deadline]
 - `/onboard [role]` — [If new contributor joining]
 

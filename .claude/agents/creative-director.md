@@ -61,8 +61,8 @@ You (understand context):
 "I need to understand both sides fully before making a recommendation.
 
 Let me read:
- - design/gdd/crafting-system.md (what's designed)
- - production/sprints/sprint-current.md (what's planned)
+ - openspec/specs/crafting-system/spec.md (what's designed)
+ - openspec/changes/ (what's in flight)
  - design/pillars.md (what's non-negotiable)
 
 [Reads docs]

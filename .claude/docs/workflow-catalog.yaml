@@ -12,7 +12,7 @@
 #
 # required: true → blocks progression to next phase (shown as REQUIRED)
 # required: false → optional enhancement (shown as OPTIONAL)
-# repeatable: true → runs multiple times (one per system, story, etc.)
+# repeatable: true → runs multiple times (one per system, change, etc.)
 #
 # Phase gates (/gate-check): verdicts are ADVISORY — they guide the decision
 # but never hard-block advancement. The user always decides whether to proceed.
@@ -204,7 +204,7 @@ phases:
         name: "UX Review"
         command: /ux-review
         required: true
-        description: "Validate all key screen UX specs for GDD alignment and accessibility tier compliance. Run before creating epics."
+        description: "Validate all key screen UX specs for GDD alignment and accessibility tier compliance. Run before creating changes."
 
       - id: prototype
         name: "Prototype"
@@ -219,25 +219,25 @@ phases:
           min_count: 1
         description: "Build a throwaway prototype to validate the core mechanic is fun before committing to full production. Recommended for first-time mechanics or high-risk design decisions. Solo devs with proven concepts may skip."
 
-      - id: create-epics
-        name: "Create Epics"
-        command: /create-epics
+      - id: design-system
+        name: "Design Capabilities"
+        command: /design-system
         required: true
         repeatable: true
         artifact:
-          glob: "production/epics/*/EPIC.md"
+          glob: "openspec/specs/*/spec.md"
           min_count: 1
-        description: "Translate GDDs + ADRs into epics — one per architectural module. Run per layer: /create-epics layer: foundation, then /create-epics layer: core"
+        description: "Write one capability spec per game system — a capability IS the system's GDD. Run per layer: /design-system layer:foundation, then /design-system layer:core"
 
-      - id: create-stories
-        name: "Create Stories"
-        command: /create-stories
+      - id: create-changes
+        name: "Create Changes"
+        command: /create-changes
         required: true
         repeatable: true
         artifact:
-          glob: "production/epics/**/*.md"
-          min_count: 2
-        description: "Break each epic into implementable story files. Run per epic: /create-stories [epic-slug]"
+          glob: "openspec/changes/*/tasks.md"
+          note: "A change under openspec/changes/<id>/ is the unit of work — the successor to a story"
+        description: "Break a capability into implementable changes. Run per capability: /create-changes [system]"
 
       - id: test-setup
         name: "Test Framework Setup"
@@ -245,16 +245,7 @@ phases:
         required: false
         artifact:
           note: "Check tests/ directory for engine-specific test framework scaffold"
-        description: "Scaffold the test framework and CI pipeline once before the first sprint. Leads to /test-helpers for fixture generation, /qa-plan per epic, and /smoke-check per sprint."
-
-      - id: sprint-plan
-        name: "First Sprint Plan"
-        command: /sprint-plan
-        required: true
-        artifact:
-          glob: "production/sprints/sprint-*.md"
-          min_count: 1
-        description: "Plan the first sprint with prioritized stories from epics"
+        description: "Scaffold the test framework and CI pipeline once before implementation begins. Leads to /test-helpers for fixture generation, /qa-plan per capability, and /smoke-check per change set."
 
       - id: vertical-slice
         name: "Vertical Slice"
@@ -267,57 +258,60 @@ phases:
           # Pre-Production → Production gate exists to require.
           glob: "prototypes/*-vertical-slice/REPORT.md"
           min_count: 1
-        description: "Build and playtest a vertical slice — a complete end-to-end pass through the core loop. Recommended before committing epics and stories to production. Skipping is a valid solo dev call but increases risk of late-stage design pivots. If built, must be played and documented before advancing."
+        description: "Build and playtest a vertical slice — a complete end-to-end pass through the core loop. Recommended before committing capabilities and changes to production. Skipping is a valid solo dev call but increases risk of late-stage design pivots. If built, must be played and documented before advancing."
 
   production:
     label: "Production"
-    description: "Sprint-based feature development — pick, implement, close stories"
+    description: "OpenSpec change development — propose, apply, archive"
     next_phase: polish
     steps:
-      - id: sprint-plan
-        name: "Sprint Plan"
-        command: /sprint-plan
+      - id: create-changes
+        name: "Plan Changes"
+        command: /create-changes
         required: true
         repeatable: true
         artifact:
-          glob: "production/sprints/sprint-*.md"
-        description: "Plan the current sprint with prioritized, ready stories"
+          glob: "openspec/changes/*/tasks.md"
+          note: "In-flight changes are the unit of work — inspect them with /opsx:explore or 'openspec list'"
+        description: "Plan the next batch of changes against the capability specs"
 
-      - id: story-readiness
-        name: "Story Readiness Check"
-        command: /story-readiness
+      - id: change-readiness
+        name: "Change Readiness Check"
+        command: /change-readiness
         required: false
-        description: "Validate a story is implementation-ready before a developer picks it up"
+        description: "Validate a change is implementation-ready before a developer picks it up"
 
       - id: implement
-        name: "Implement Stories"
-        command: /dev-story
+        name: "Implement Change"
+        command: /dev-change
         required: true
         repeatable: true
         artifact:
-          note: "Check src/ for active code and production/epics/**/*.md for In Progress stories"
-        description: "Pick the next ready story and implement it with /dev-story [story-path]. Routes to the correct programmer agent."
+          note: "Check src/ for active code and openspec/changes/*/tasks.md for checked-off tasks"
+        description: "Pick the next ready change and implement it with /dev-change [change-id]. Routes to the correct programmer agent."
 
       - id: code-review
         name: "Code Review"
         command: /code-review
         required: false
         repeatable: true
-        description: "Architectural code review after each story implementation. Run after /dev-story, before /story-done."
+        description: "Architectural code review after each change implementation. Run after /dev-change, before /change-done."
 
-      - id: story-done
-        name: "Story Done Review"
-        command: /story-done
+      - id: change-done
+        name: "Change Done Review"
+        command: /change-done
         required: true
         repeatable: true
-        description: "Verify all acceptance criteria, check GDD/ADR deviations, close the story"
+        artifact:
+          note: "Archiving is /opsx:archive — it merges the change's delta into openspec/specs/<system>/spec.md"
+        description: "Verify all acceptance criteria, check spec/ADR deviations, then archive the change"
 
       - id: qa-plan
         name: "QA Plan"
         command: /qa-plan
         required: false
         repeatable: true
-        description: "Generate a QA test plan per epic or sprint. Run /qa-plan [epic-slug]. Produces test cases for /smoke-check, /regression-suite, and /test-evidence-review."
+        description: "Generate a QA test plan per capability or change set. Run /qa-plan [system]. Produces test cases for /smoke-check, /regression-suite, and /test-evidence-review."
 
       - id: bug-report
         name: "Bug Report / Triage"
@@ -327,11 +321,11 @@ phases:
         description: "Log and prioritize bugs found during implementation. /bug-report creates a structured report; /bug-triage prioritizes the open backlog."
 
       - id: retrospective
-        name: "Sprint Retrospective"
+        name: "Retrospective"
         command: /retrospective
         required: false
         repeatable: true
-        description: "Post-sprint review to capture what worked and what to change. Run at the end of each sprint, before planning the next."
+        description: "Review what worked and what to change. Run at the end of a change set or milestone, before planning the next."
 
       - id: team-feature
         name: "Team Orchestration (optional)"
@@ -345,15 +339,15 @@ phases:
         required: false
         repeatable: true
         artifact:
-          glob: "production/sprints/sprint-*.md"
-          note: "Run when stories are added mid-sprint, or before sprint retrospectives"
-        description: "Detect scope creep by comparing current sprint scope to original epic scope. Run (a) when stories are added mid-sprint, or (b) before sprint retrospectives."
+          glob: "openspec/changes/*/tasks.md"
+          note: "Run when changes are added mid-flight, or before a retrospective"
+        description: "Detect scope creep by comparing current change-set scope to the capability spec. Run (a) when changes are added mid-flight, or (b) before a retrospective."
 
-      - id: sprint-status
-        name: "Sprint Status"
-        command: /sprint-status
+      - id: change-status
+        name: "Change Status"
+        command: openspec status
         required: false
-        description: "Quick 30-line snapshot of sprint progress without a full report"
+        description: "Quick snapshot of in-flight change progress, read from the tasks.md checkboxes"
 
   polish:
     label: "Polish"
@@ -411,13 +405,13 @@ phases:
         name: "Patch Notes"
         command: /patch-notes
         required: false
-        description: "Generate player-facing patch notes from git history and sprint data"
+        description: "Generate player-facing patch notes from git history and change data"
 
       - id: changelog
         name: "Changelog"
         command: /changelog
         required: false
-        description: "Auto-generate internal changelog from commits, sprints, and design docs"
+        description: "Auto-generate internal changelog from commits, changes, and design docs"
 
       - id: launch-checklist
         name: "Launch Checklist"

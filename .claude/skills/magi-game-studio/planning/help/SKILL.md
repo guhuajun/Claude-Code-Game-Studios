@@ -17,7 +17,7 @@ gap analysis, use `/project-stage-detect`.
 
 !`bash "${CLAUDE_SKILL_DIR}/../../../../hooks/yaml-helper.sh" resolve_config --keys project.stage,workflow`
 
-!`echo "Latest sprint: $(ls -t production/sprints/*.md 2>/dev/null | head -1 || echo 'none')"; echo "Session state: $(head -5 production/session-state/active.md 2>/dev/null || echo 'none')"`
+!`echo "Latest change set: $(ls -t openspec/changes/*.md 2>/dev/null | head -1 || echo 'none')"; echo "Session state: $(head -5 production/session-state/active.md 2>/dev/null || echo 'none')"`
 
 Both blocks are resolved before this skill runs. Use them as-is:
 
@@ -76,7 +76,7 @@ Check in this order:
 
 2. **If neither is set**, infer phase from artifacts (most-advanced match wins):
    - code root has 10+ source files → `production`
-   - `production/epics/**/story-*.md` exists → `pre-production`
+   - `openspec/changes/**/tasks.md` exists → `pre-production`
    - `docs/architecture/adr-*.md` exists → `technical-setup`
    - `design/gdd/systems-index.md` exists → `systems-design`
    - `design/gdd/game-concept.md` (or `design/game-brief.md`) exists → `concept`
@@ -93,7 +93,7 @@ Check in this order:
 Read `production/session-state/active.md` if it exists — it is append-only and grows unbounded, and only the latest block is relevant, so read just the tail rather than the whole file: grep the last heading (`Grep pattern="^## (Session Extract|STATUS)" path="production/session-state/active.md" output_mode="content" -n`, take the highest line number) and `Read(offset=that line)`. Extract:
 - What was most recently worked on
 - Any in-progress tasks or open questions
-- Current epic/feature/task from STATUS block (if present)
+- Current capability/feature/task from STATUS block (if present)
 
 This tells you what the user just finished or is stuck on — use it to personalize
 the output.
@@ -134,18 +134,18 @@ matched (`alt=`/`match=`).
 rows; if most of a phase is NO_CHECK, say that plainly rather than implying the
 phase is nearly complete.
 
-### Special case: production phase — read `sprint-status.yaml`
+### Special case: production phase — read `openspec status`
 
-When the current phase is `production`, check for `production/sprint-status.yaml`
-before doing any glob-based story checks. If it exists, read it directly:
+When the current phase is `production`, check for `openspec status`
+before doing any glob-based change checks. If it exists, read it directly:
 
-- Stories with `status: in-progress` → surface as "currently active"
-- Stories with `status: ready-for-dev` → surface as "next up"
-- Stories with `status: done` → count as complete
-- Stories with `status: blocked` → surface as blocker with the `blocker` field
+- Changes with `status: in-progress` → surface as "currently active"
+- Changes with `status: ready-for-dev` → surface as "next up"
+- Changes with `status: done` → count as complete
+- Changes with `status: blocked` → surface as blocker with the `blocker` field
 
-This gives precise per-story status without markdown scanning. Skip the glob
-artifact check for the `implement` and `story-done` steps — the YAML is authoritative.
+This gives precise per-change status without markdown scanning. Skip the glob
+artifact check for the `implement` and `change-done` steps — the YAML is authoritative.
 
 ### Special case: `repeatable: true` (non-production)
 
@@ -167,7 +167,7 @@ From the completion data, determine:
    `full`, list all of them; at `standard`, list an optional doc only if it is
    required for the current system/phase (do not flag genuinely-optional docs as
    gaps); at `minimal`, do not surface optional docs at all — once the brief,
-   engine, and a sprint plan exist, the next step is code
+   engine, and a change list exist, the next step is code
 4. **Upcoming required steps** — required steps after the current blocker
    (show as "coming up" so user can plan ahead)
 
@@ -178,7 +178,7 @@ to advance past the step they named even if the artifact check is ambiguous.
 
 ## Step 6: Check for In-Progress Work
 
-If `active.md` shows an active task or epic:
+If `active.md` shows an active task or capability:
 - Surface it prominently at the top: "It looks like you were working on [X]"
 - Suggest continuing it or confirm if it's done
 
@@ -218,7 +218,7 @@ Approaching **[next phase]** gate → run `/gate-check` when ready.
 - `→` for the current required next step (only one — the first blocker)
 - `~` for optional steps available now
 - Show commands inline as backtick code
-- If a step has no command (e.g. "Implement Stories"), explain what to do instead of showing a slash command
+- If a step has no command (e.g. "Implement Changes"), explain what to do instead of showing a slash command
 - For MANUAL steps, ask the user: "I can't tell if [step] is done — has it been completed?"
 
 Verdict: **COMPLETE** — next steps identified.

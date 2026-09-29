@@ -3,7 +3,7 @@
 ## Skill Summary
 
 `/onboard` generates a contextual project onboarding summary tailored for a new
-team member. It reads CLAUDE.md, `technical-preferences.md`, the active sprint
+team member. It reads CLAUDE.md, `technical-preferences.md`, the active change set
 file, recent git commits, and `production/stage.txt` to produce a structured
 orientation document. The skill runs on the Haiku model (read-only, formatting
 task) and produces no file writes — all output is conversational.
@@ -35,41 +35,41 @@ None. `/onboard` is a read-only orientation skill. No director gates apply.
 
 ## Test Cases
 
-### Case 1: Happy Path — Configured project in Production stage with active sprint
+### Case 1: Happy Path — Configured project in Production stage with active change set
 
 **Fixture:**
 - `production/stage.txt` contains `Production`
 - `technical-preferences.md` has engine, language, and specialists populated
-- `production/sprints/sprint-005.md` exists with stories in progress
+- `openspec/changes/change set-005.md` exists with changes in progress
 - Git log contains 5 recent commits
 
 **Input:** `/onboard`
 
 **Expected behavior:**
-1. Skill reads stage.txt, technical-preferences.md, active sprint, and git log
+1. Skill reads stage.txt, technical-preferences.md, active change set, and git log
 2. Skill produces an onboarding summary with sections: Project Overview, Tech Stack,
-   Current Stage, Active Sprint Summary, Recent Activity
+   Current Stage, Active Change Set Summary, Recent Activity
 3. Summary is formatted for readability (headers, bullet points)
-4. Next-step suggestions are appropriate for Production stage (e.g., `/sprint-status`,
-   `/dev-story`)
+4. Next-step suggestions are appropriate for Production stage (e.g., `/change set-status`,
+   `/dev-change`)
 5. Verdict ONBOARDING COMPLETE is stated
 
 **Assertions:**
 - [ ] Output includes current stage name from stage.txt
 - [ ] Output includes engine and language from technical-preferences.md
-- [ ] Active sprint stories are summarized (not just the sprint file name)
+- [ ] Active changes are summarized (not just the change list name)
 - [ ] Recent commit context is present
 - [ ] Verdict is ONBOARDING COMPLETE
 - [ ] No files are written
 
 ---
 
-### Case 2: Fresh Project — No engine, no sprint, suggests /start
+### Case 2: Fresh Project — No engine, no change set, suggests /start
 
 **Fixture:**
 - `technical-preferences.md` contains only placeholders (`[TO BE CONFIGURED]`)
 - No `production/stage.txt`
-- No sprint files
+- No change lists
 - No CLAUDE.md overrides beyond defaults
 
 **Input:** `/onboard`
@@ -116,14 +116,14 @@ None. `/onboard` is a read-only orientation skill. No director gates apply.
 **Fixture:**
 - Fully configured project in Production stage
 - `art-bible.md` exists in `design/`
-- Active sprint has visual story types (animation, VFX)
+- Active change set has visual change types (animation, VFX)
 
 **Input:** `/onboard artist`
 
 **Expected behavior:**
 1. Skill reads all standard files plus any art-relevant docs (art bible, asset specs)
 2. Summary is tailored to the artist role: art bible overview, asset pipeline,
-   current visual stories in the active sprint
+   current visual changes in the active change set
 3. Technical architecture details (code structure, ADRs) are de-emphasized
 4. Specialist agents for art/audio are highlighted in the summary
 5. Verdict is ONBOARDING COMPLETE
@@ -131,7 +131,7 @@ None. `/onboard` is a read-only orientation skill. No director gates apply.
 **Assertions:**
 - [ ] Role argument is acknowledged in the output ("Onboarding for: Artist")
 - [ ] Art bible summary is included if the file exists
-- [ ] Current visual stories from the active sprint are shown
+- [ ] Current visual changes from the active change set are shown
 - [ ] Technical implementation details are not the primary focus
 - [ ] Verdict is ONBOARDING COMPLETE
 

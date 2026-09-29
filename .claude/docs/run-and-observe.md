@@ -1,8 +1,8 @@
 # Run and Observe
 
 Shared procedure for any skill that closes a story which changes something a
-player can see. Referenced from the point of use in `/dev-story` (Phase 6) and
-`/story-done` (Phase 3). Those skills keep the one load-bearing imperative
+player can see. Referenced from the point of use in `/dev-change` (Phase 6) and
+`/change-done` (Phase 3). Those skills keep the one load-bearing imperative
 inline — **a parse check is not a run, and a story nobody looked at does not
 close** — and cite this file for how to look.
 

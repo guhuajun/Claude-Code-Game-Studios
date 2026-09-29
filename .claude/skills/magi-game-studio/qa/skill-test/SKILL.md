@@ -103,7 +103,7 @@ The skill must contain ask-before-write language. Look for:
 
 ### Check 5 — Next-Step Handoff
 The skill must end with a recommended next action or follow-up path. Look for:
-- A final section mentioning another skill (e.g., `/story-done`, `/gate-check`)
+- A final section mentioning another skill (e.g., `/change-done`, `/gate-check`)
 - "Recommended next" or "next step" phrasing
 - A "Follow-Up" or "After this" section
 
@@ -151,7 +151,7 @@ Skill                  | Result       | Issues
 -----------------------|--------------|-------
 gate-check             | COMPLIANT    |
 design-review          | COMPLIANT    |
-story-readiness        | WARNINGS     | Check 5: no handoff
+change-readiness        | WARNINGS     | Check 5: no handoff
 ...
 
 Summary: 48 COMPLIANT, 3 WARNINGS, 1 NON-COMPLIANT, 1 NOT ASSESSED

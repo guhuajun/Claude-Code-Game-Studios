@@ -4,7 +4,7 @@
 
 `/smoke-check` is the gate between implementation and QA hand-off. It detects the
 test environment, runs the automated test suite (via Bash), scans test coverage
-against sprint stories, and uses `AskUserQuestion` to batch-verify manual smoke
+against changes, and uses `AskUserQuestion` to batch-verify manual smoke
 checks with the developer. It writes a report to `production/qa/smoke-[date].md`
 after explicit user approval.
 
@@ -42,10 +42,10 @@ None. `/smoke-check` is a pre-QA utility skill. No director gates apply.
 **Fixture:**
 - `tests/` directory exists with a GDUnit4 runner script
 - Engine detected as Godot from `technical-preferences.md`
-- `production/qa/qa-plan-sprint-005.md` exists
+- `production/qa/qa-plan-change set-005.md` exists
 - Automated test runner reports 12 tests, 12 passing, 0 failing
 - Developer confirms all Batch 1 and Batch 2 smoke checks as PASS
-- All sprint stories have matching test files (no MISSING coverage)
+- All changes have matching test files (no MISSING coverage)
 
 **Input:** `/smoke-check`
 
@@ -53,8 +53,8 @@ None. `/smoke-check` is a pre-QA utility skill. No director gates apply.
 1. Skill detects test directory and engine, notes QA plan found
 2. Runs `godot --headless --script tests/gdunit4_runner.gd` via Bash
 3. Parses output: 12/12 passing
-4. Scans test coverage — all stories COVERED or EXPECTED
-5. Uses `AskUserQuestion` for Batch 1 (core stability) and Batch 2 (sprint mechanics)
+4. Scans test coverage — all changes COVERED or EXPECTED
+5. Uses `AskUserQuestion` for Batch 1 (core stability) and Batch 2 (change set mechanics)
 6. Developer selects PASS for all items
 7. Report assembled: automated tests PASS, all smoke checks PASS, no MISSING coverage
 8. Asks "May I write this smoke check report to `production/qa/smoke-[date].md`?"
@@ -104,25 +104,25 @@ None. `/smoke-check` is a pre-QA utility skill. No director gates apply.
 **Fixture:**
 - `tests/` directory exists, engine is Godot
 - Automated test runner reports all tests passing (8/8)
-- One Logic story has no matching test file (MISSING coverage)
+- One Logic change has no matching test file (MISSING coverage)
 - Developer confirms all Batch 1 and Batch 2 smoke checks as PASS
 
 **Input:** `/smoke-check`
 
 **Expected behavior:**
 1. Automated tests PASS
-2. Coverage scan finds 1 MISSING entry for a Logic story
+2. Coverage scan finds 1 MISSING entry for a Logic change
 3. `AskUserQuestion` is used for Batch 1 and Batch 2 — developer confirms all PASS
 4. Report shows: automated tests PASS, manual checks all PASS, 1 MISSING coverage entry
 5. Verdict is PASS WITH WARNINGS — build ready for QA, but MISSING entry must be
-   resolved before `/story-done` closes the affected story
+   resolved before `/change-done` closes the affected change
 6. Asks to write report; writes after approval
 
 **Assertions:**
 - [ ] `AskUserQuestion` is used for manual smoke check batches (not inline text prompts)
 - [ ] MISSING test coverage entry appears in the report
 - [ ] Verdict is PASS WITH WARNINGS (not PASS, not FAIL)
-- [ ] Advisory note explains MISSING entry must be resolved before `/story-done`
+- [ ] Advisory note explains MISSING entry must be resolved before `/change-done`
 - [ ] Report file is written to `production/qa/smoke-[date].md`
 
 ---

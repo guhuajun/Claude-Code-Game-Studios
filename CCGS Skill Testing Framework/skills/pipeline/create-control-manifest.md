@@ -5,8 +5,8 @@
 `/create-control-manifest` reads all Accepted ADRs from `docs/architecture/` and
 generates a control manifest — a summary document that captures all architectural
 constraints, required patterns, and forbidden patterns in one place. The manifest
-is the reference document that story authors use when writing story files, ensuring
-stories inherit the correct architectural rules without having to read all ADRs
+is the reference document that change authors use when writing change directorys, ensuring
+changes inherit the correct architectural rules without having to read all ADRs
 individually.
 
 The skill only includes Accepted ADRs; Proposed ADRs are excluded and noted. It
@@ -23,7 +23,7 @@ Verified automatically by `/skill-test static` — no fixture needed.
 - [ ] Has ≥2 phase headings
 - [ ] Contains verdict keywords: CREATED, BLOCKED
 - [ ] Contains "May I write" collaborative protocol language (for control-manifest.md)
-- [ ] Has a next-step handoff at the end (`/create-epics` or `/create-stories`)
+- [ ] Has a next-step handoff at the end (`/create-capabilities` or `/create-changes`)
 - [ ] Documents that only Accepted ADRs are included (not Proposed)
 
 ---
@@ -161,7 +161,7 @@ review gate is needed.
 - [ ] Manifest draft shown to user before "May I write" ask
 - [ ] "May I write `docs/architecture/control-manifest.md`?" asked before writing
 - [ ] No director gates — no review-mode.txt read
-- [ ] Ends with next-step handoff: `/create-epics` or `/create-stories`
+- [ ] Ends with next-step handoff: `/create-capabilities` or `/create-changes`
 
 ---
 

@@ -2,7 +2,7 @@
 
 ## Agent Summary
 **Domain owned:** Music direction and palette, sound design philosophy, audio implementation strategy, mix balance, audio aspects of phase gates.
-**Does NOT own:** Visual design (art-director), code implementation (lead-programmer), narrative story content (narrative-director), UX interaction flows (ux-designer).
+**Does NOT own:** Visual design (art-director), code implementation (lead-programmer), narrative change content (narrative-director), UX interaction flows (ux-designer).
 **Model tier:** Sonnet (individual system analysis — audio direction and spec review).
 **Gate IDs handled:** AD-VISUAL (audio aspect of the phase gate; may be referenced as part of AD-PHASE-GATE in the audio dimension).
 
@@ -57,7 +57,7 @@ Verified by reading the agent's `.claude/agents/audio-director.md` frontmatter:
 - [ ] Frames the handoff clearly: "audio-director owns what, technical lead owns how"
 
 ### Case 5: Context pass — uses provided context
-**Scenario:** Agent receives a gate context block that includes the game's three pillars: "emergent stories," "meaningful sacrifice," and "lived-in world." A sound design spec for ambient environmental audio is submitted.
+**Scenario:** Agent receives a gate context block that includes the game's three pillars: "emergent changes," "meaningful sacrifice," and "lived-in world." A sound design spec for ambient environmental audio is submitted.
 **Expected:** Assessment evaluates the ambient audio spec against all three pillars specifically — how does the audio support (or undermine) each pillar? Uses the pillar vocabulary directly in the rationale.
 **Assertions:**
 - [ ] References all three provided pillars by name in the assessment

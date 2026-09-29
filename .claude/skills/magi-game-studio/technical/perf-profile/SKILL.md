@@ -217,7 +217,7 @@ This skill is read-only — no files are written. Verdict: **COMPLETE** — perf
 
 - If bottlenecks require architectural change: run `/architecture-decision`.
 - If scope reduction is needed: run `/scope-check [feature]`.
-- To schedule optimizations: run `/sprint-plan update`.
+- To schedule optimizations: run `/create-changes`.
 
 ### Rules
 - Never optimize without measuring first — gut feelings about performance are unreliable

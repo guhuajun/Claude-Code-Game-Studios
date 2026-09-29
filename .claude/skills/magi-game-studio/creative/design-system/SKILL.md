@@ -970,7 +970,7 @@ UI requirements, output this flag immediately:
 
 > **📌 UX Flag — [System Name]**: This system has UI requirements. In Phase 4
 > (Pre-Production), run `/ux-design` to create a UX spec for each screen or
-> HUD element this system contributes to **before** writing epics. Stories that
+> HUD element this system contributes to **before** writing capabilities. Changes that
 > reference UI should cite `design/ux/[screen].md`, not the GDD directly.
 >
 > Note this in the systems index for this system if you update it.
@@ -990,7 +990,7 @@ Write `## Summary` and its `> **Quick reference**` line now — after the design
 exists, so the summary distils real content rather than intentions. This runs
 **at every tier**, including `standard` and a voluntary `minimal` GDD: the
 Summary is what lets a later skill scan 20 GDDs and decide which to read in full
-(`/create-epics`, `/architecture-review`, `/review-all-gdds` all grep it), so a
+(`/design-system`, `/architecture-review`, `/review-all-gdds` all grep it), so a
 GDD without it silently forces those consumers back to full reads.
 
 - **Summary body**: 2–3 sentences — what this system is, what it does for the
@@ -1188,7 +1188,7 @@ If two rows fit, spawn the union of their Primary agents and say why.
 | Combat, damage, health | `game-designer` | `systems-designer` (formulas), `ai-programmer` (enemy AI), `art-director` (hit feedback visual direction, VFX intent) |
 | Economy, loot, crafting | `economy-designer` | `systems-designer` (curves), `game-designer` (loops) |
 | Progression, XP, skills | `game-designer` | `systems-designer` (curves), `economy-designer` (sinks) |
-| Dialogue, quests, lore | `game-designer` | `narrative-director` (story), `writer` (content), `art-director` (character visual profiles, cinematic tone) |
+| Dialogue, quests, lore | `game-designer` | `narrative-director` (change), `writer` (content), `art-director` (character visual profiles, cinematic tone) |
 | UI systems (HUD, menus) | `game-designer` | `ux-designer` (flows), `ui-programmer` (feasibility), `art-director` (visual style direction), `technical-artist` (render/shader constraints) |
 | Audio systems | `game-designer` | `audio-director` (direction), `sound-designer` (specs) |
 | AI, pathfinding, behavior | `game-designer` | `ai-programmer` (implementation), `systems-designer` (scoring) |
